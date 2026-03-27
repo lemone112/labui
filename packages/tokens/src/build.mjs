@@ -83,14 +83,14 @@ async function generateBrandHueLayer() {
 
 :root {
   /* ═══ THE SINGLE SLIDER ═══ */
-  --brand-hue: 259;
-  --brand-chroma: 0.220;
-  --brand-lightness: 0.588;
+  --brand-hue: 257;
+  --brand-chroma: 0.218;
+  --brand-lightness: 0.603;
 
-  /* ═══ FIXED SENTIMENT HUES ═══ */
-  --danger-hue: 25;
-  --warning-hue: 75;
-  --success-hue: 152;
+  /* ═══ FIXED SENTIMENT HUES (verified via Color.js) ═══ */
+  --danger-hue: 29;
+  --warning-hue: 69;
+  --success-hue: 147;
   --info-hue: var(--brand-hue);
 
   /* ═══ CONFIGURABLE NEUTRAL ═══ */
@@ -99,10 +99,10 @@ async function generateBrandHueLayer() {
 
   /* ═══ COMPUTED BRAND ACCENT ═══ */
   --brand: oklch(var(--brand-lightness) var(--brand-chroma) var(--brand-hue));
-  --danger: oklch(0.634 0.232 var(--danger-hue));
-  --warning: oklch(0.750 0.160 var(--warning-hue));
-  --success: oklch(0.700 0.190 var(--success-hue));
-  --info: oklch(0.630 0.195 var(--info-hue));
+  --danger: oklch(0.654 0.232 var(--danger-hue));
+  --warning: oklch(0.786 0.172 var(--warning-hue));
+  --success: oklch(0.730 0.194 var(--success-hue));
+  --info: oklch(0.640 0.193 var(--info-hue));
 }
 
 /* ═══ Display P3 enhanced accents ═══ */

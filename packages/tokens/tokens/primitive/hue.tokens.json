@@ -1,76 +1,82 @@
 {
   "$schema": "https://tr.designtokens.org/format/",
   "hue": {
-    "$description": "Base accent hues. Brand is configurable via --brand-hue. Sentiments are fixed.",
+    "$description": "Base accent hues. Verified via Color.js (sRGB → OKLab → OKLCH). Brand configurable via --brand-hue.",
     "brand": {
       "$type": "color",
-      "$value": "oklch(0.588 0.220 259)",
-      "$description": "Primary brand color. Hue configurable at runtime via --brand-hue.",
+      "$value": "oklch(0.603 0.218 257)",
+      "$description": "Primary brand color (#007AFF). Hue configurable at runtime.",
       "$extensions": {
-        "lab-ui": { "hue": 259, "role": "brand", "configurable": true }
+        "lab-ui": { "hex": "#007AFF", "hue": 257, "role": "brand", "configurable": true }
       }
     },
     "danger": {
       "$type": "color",
-      "$value": "oklch(0.634 0.232 25)",
-      "$description": "Danger/error. Fixed hue — red is always danger.",
+      "$value": "oklch(0.654 0.232 29)",
+      "$description": "Danger/error (#FF3B30). Fixed hue — red is always danger.",
       "$extensions": {
-        "lab-ui": { "hue": 25, "role": "sentiment", "configurable": false }
+        "lab-ui": { "hex": "#FF3B30", "hue": 29, "role": "sentiment", "configurable": false }
       }
     },
     "warning": {
       "$type": "color",
-      "$value": "oklch(0.750 0.160 75)",
-      "$description": "Warning/caution. Fixed hue — orange is always warning.",
+      "$value": "oklch(0.786 0.172 69)",
+      "$description": "Warning/caution (#FFA100). Fixed hue — orange is always warning.",
       "$extensions": {
-        "lab-ui": { "hue": 75, "role": "sentiment", "configurable": false }
+        "lab-ui": { "hex": "#FFA100", "hue": 69, "role": "sentiment", "configurable": false }
       }
     },
     "success": {
       "$type": "color",
-      "$value": "oklch(0.700 0.190 152)",
-      "$description": "Success/positive. Fixed hue — green is always success.",
+      "$value": "oklch(0.730 0.194 147)",
+      "$description": "Success/positive (#34C759). Fixed hue — green is always success.",
       "$extensions": {
-        "lab-ui": { "hue": 152, "role": "sentiment", "configurable": false }
+        "lab-ui": { "hex": "#34C759", "hue": 147, "role": "sentiment", "configurable": false }
       }
     },
     "info": {
       "$type": "color",
-      "$value": "oklch(0.630 0.195 255)",
-      "$description": "Informational. Derived from brand hue at runtime.",
+      "$value": "oklch(0.640 0.193 260)",
+      "$description": "Informational (#3E87FF). Derived from brand hue at runtime.",
       "$extensions": {
-        "lab-ui": { "hue": "brand", "role": "sentiment", "configurable": false }
+        "lab-ui": { "hex": "#3E87FF", "hue": "brand", "role": "sentiment", "configurable": false }
       }
     },
     "yellow": {
       "$type": "color",
-      "$value": "oklch(0.879 0.174 90)",
-      "$description": "Decorative yellow"
+      "$value": "oklch(0.873 0.179 92)",
+      "$description": "Decorative yellow (#FFD000)",
+      "$extensions": { "lab-ui": { "hex": "#FFD000" } }
     },
     "teal": {
       "$type": "color",
-      "$value": "oklch(0.795 0.112 224)",
-      "$description": "Decorative teal"
+      "$value": "oklch(0.789 0.122 231)",
+      "$description": "Decorative teal (#5AC8FA)",
+      "$extensions": { "lab-ui": { "hex": "#5AC8FA" } }
     },
     "mint": {
       "$type": "color",
-      "$value": "oklch(0.763 0.131 186)",
-      "$description": "Decorative mint"
+      "$value": "oklch(0.748 0.130 189)",
+      "$description": "Decorative mint (#00C7BE)",
+      "$extensions": { "lab-ui": { "hex": "#00C7BE" } }
     },
     "indigo": {
       "$type": "color",
-      "$value": "oklch(0.532 0.195 289)",
-      "$description": "Decorative indigo"
+      "$value": "oklch(0.529 0.191 278)",
+      "$description": "Decorative indigo (#5856D6)",
+      "$extensions": { "lab-ui": { "hex": "#5856D6" } }
     },
     "purple": {
       "$type": "color",
-      "$value": "oklch(0.589 0.210 310)",
-      "$description": "Decorative purple"
+      "$value": "oklch(0.615 0.213 312)",
+      "$description": "Decorative purple (#AF52DE)",
+      "$extensions": { "lab-ui": { "hex": "#AF52DE" } }
     },
     "pink": {
       "$type": "color",
-      "$value": "oklch(0.640 0.246 14)",
-      "$description": "Decorative pink"
+      "$value": "oklch(0.650 0.238 18)",
+      "$description": "Decorative pink (#FF2D55)",
+      "$extensions": { "lab-ui": { "hex": "#FF2D55" } }
     }
   }
 }

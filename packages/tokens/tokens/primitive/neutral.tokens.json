@@ -1,34 +1,34 @@
 {
   "$schema": "https://tr.designtokens.org/format/",
   "neutral": {
-    "$description": "Neutral gray scale. 19 solid steps from white to near-black. Hue configurable via --neutral-hue (default: 257, cool-purple tint).",
+    "$description": "Neutral scales. Gray = solid. Light/Dark = GENERATED at build time from white/near-black × opacity. Verified via Color.js.",
     "gray": {
-      "$description": "Solid neutral grays",
-      "0":    { "$type": "color", "$value": "oklch(1.000 0 0)" },
-      "10":   { "$type": "color", "$value": "oklch(0.985 0.002 257)" },
-      "25":   { "$type": "color", "$value": "oklch(0.975 0.003 257)" },
-      "50":   { "$type": "color", "$value": "oklch(0.960 0.004 257)" },
-      "75":   { "$type": "color", "$value": "oklch(0.945 0.004 257)" },
-      "100":  { "$type": "color", "$value": "oklch(0.930 0.005 257)" },
-      "200":  { "$type": "color", "$value": "oklch(0.870 0.006 257)" },
-      "300":  { "$type": "color", "$value": "oklch(0.820 0.007 257)" },
-      "400":  { "$type": "color", "$value": "oklch(0.740 0.008 257)" },
-      "500":  { "$type": "color", "$value": "oklch(0.640 0.010 257)" },
-      "600":  { "$type": "color", "$value": "oklch(0.520 0.009 257)" },
-      "700":  { "$type": "color", "$value": "oklch(0.430 0.008 257)" },
-      "800":  { "$type": "color", "$value": "oklch(0.380 0.007 257)" },
-      "900":  { "$type": "color", "$value": "oklch(0.310 0.006 257)" },
-      "925":  { "$type": "color", "$value": "oklch(0.270 0.005 257)" },
-      "950":  { "$type": "color", "$value": "oklch(0.220 0.005 257)" },
-      "975":  { "$type": "color", "$value": "oklch(0.130 0.006 257)" },
-      "990":  { "$type": "color", "$value": "oklch(0.090 0.005 257)" },
-      "1000": { "$type": "color", "$value": "oklch(0.070 0.006 257)" }
+      "$description": "19 solid neutral grays. Cool-blue hue bias (H ~265-286) with near-zero chroma.",
+      "0":    { "$type": "color", "$value": "oklch(1.000 0.000 0)",   "$extensions": { "lab-ui": { "hex": "#FFFFFF" } } },
+      "10":   { "$type": "color", "$value": "oklch(0.988 0.002 248)", "$extensions": { "lab-ui": { "hex": "#FAFBFC" } } },
+      "25":   { "$type": "color", "$value": "oklch(0.979 0.003 265)", "$extensions": { "lab-ui": { "hex": "#F7F8FA" } } },
+      "50":   { "$type": "color", "$value": "oklch(0.964 0.006 265)", "$extensions": { "lab-ui": { "hex": "#F1F3F7" } } },
+      "75":   { "$type": "color", "$value": "oklch(0.943 0.006 265)", "$extensions": { "lab-ui": { "hex": "#EAECF0" } } },
+      "100":  { "$type": "color", "$value": "oklch(0.928 0.005 275)", "$extensions": { "lab-ui": { "hex": "#E6E7EB" } } },
+      "200":  { "$type": "color", "$value": "oklch(0.864 0.006 275)", "$extensions": { "lab-ui": { "hex": "#D1D2D6" } } },
+      "300":  { "$type": "color", "$value": "oklch(0.833 0.006 275)", "$extensions": { "lab-ui": { "hex": "#C7C8CC" } } },
+      "400":  { "$type": "color", "$value": "oklch(0.752 0.006 286)", "$extensions": { "lab-ui": { "hex": "#AEAEB2" } } },
+      "500":  { "$type": "color", "$value": "oklch(0.642 0.007 286)", "$extensions": { "lab-ui": { "hex": "#8C8C91" } } },
+      "600":  { "$type": "color", "$value": "oklch(0.501 0.005 286)", "$extensions": { "lab-ui": { "hex": "#636366" } } },
+      "700":  { "$type": "color", "$value": "oklch(0.402 0.003 286)", "$extensions": { "lab-ui": { "hex": "#48484A" } } },
+      "800":  { "$type": "color", "$value": "oklch(0.349 0.003 286)", "$extensions": { "lab-ui": { "hex": "#3A3A3C" } } },
+      "900":  { "$type": "color", "$value": "oklch(0.294 0.004 286)", "$extensions": { "lab-ui": { "hex": "#2C2C2E" } } },
+      "925":  { "$type": "color", "$value": "oklch(0.261 0.004 286)", "$extensions": { "lab-ui": { "hex": "#242426" } } },
+      "950":  { "$type": "color", "$value": "oklch(0.227 0.004 286)", "$extensions": { "lab-ui": { "hex": "#1C1C1E" } } },
+      "975":  { "$type": "color", "$value": "oklch(0.174 0.004 286)", "$extensions": { "lab-ui": { "hex": "#101012" } } },
+      "990":  { "$type": "color", "$value": "oklch(0.135 0.005 286)", "$extensions": { "lab-ui": { "hex": "#08080A" } } },
+      "1000": { "$type": "color", "$value": "oklch(0.086 0.006 285)", "$extensions": { "lab-ui": { "hex": "#020203" } } }
     },
     "light": {
-      "$description": "White × opacity scale. GENERATED at build time from #ffffff × opacity stops."
+      "$description": "White × opacity scale. GENERATED at build time from #FFFFFF × 19 opacity stops."
     },
     "dark": {
-      "$description": "Near-black × opacity scale. GENERATED at build time from neutral.gray.1000 × opacity stops."
+      "$description": "Near-black × opacity scale. GENERATED at build time from Gray.1000 (#020203) × 19 opacity stops."
     }
   }
 }
