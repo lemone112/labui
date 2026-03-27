@@ -9,6 +9,7 @@ packages/
   tokens/     @lab-ui/tokens — DTCG tokens → CSS vars + Tailwind v4
   svelte/     @lab-ui/svelte — Svelte 5 components (registry)
   react/      @lab-ui/react  — React components (registry)
+  vue/        @lab-ui/vue    — Vue 3 components (registry)
   cli/        @lab-ui/cli    — Component installer
   icons/      @lab-ui/icons  — SVG icon pipeline
 apps/
