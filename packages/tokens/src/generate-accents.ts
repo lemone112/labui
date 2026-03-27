@@ -323,7 +323,9 @@ export async function generateAccentTokens(
   });
 
   const tokens: Record<string, unknown> = {
+    $schema: "https://tr.designtokens.org/format/",
     hue: {
+      $description: "Brand, sentiment, and decorative accent hues generated from the brand color",
       brand: formatVariant(accents.brand),
       ...Object.fromEntries(
         Object.entries(accents.sentiments).map(([key, variant]) => [

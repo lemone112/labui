@@ -170,17 +170,18 @@ await generateNeutralTokens({
   chroma: 0.012,  // subtle colorfulness (configurable)
 });
 
-console.log('-> Phase 0c: Generating typography scale...');
+console.log('-> Phase 2: Generating typography scale...');
 await generateTypographyTokens();
 
-console.log('-> Phase 2: Generating alpha variants...');
+console.log('-> Phase 3: Generating alpha variants...');
 await generateAlphaTokens();
 
-console.log('-> Phase 2b: Computing label tokens...');
+console.log('-> Phase 4: Computing label tokens...');
 await computeAndInjectLabels();
 
+let themePhase = 5;
 for (const theme of themes) {
-  console.log(`-> Building ${theme.name} theme...`);
+  console.log(`-> Phase ${themePhase++}: Building ${theme.name} theme...`);
 
   const sd = new StyleDictionary({
     log: {
@@ -217,10 +218,8 @@ for (const theme of themes) {
   await sd.buildAllPlatforms();
 }
 
-console.log('-> Phase 9a: Generating Tailwind v4 theme...');
+console.log('-> Phase 9: Generating Tailwind v4 theme + index.css...');
 await generateTailwindTheme();
-
-console.log('-> Phase 9b: Generating index.css...');
 await generateIndex();
 
 console.log('OK Lab UI tokens built successfully');
