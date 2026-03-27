@@ -1,0 +1,34 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "neutral": {
+    "$description": "Neutral gray scale. 19 solid steps from white to near-black. Hue configurable via --neutral-hue (default: 257, cool-purple tint).",
+    "gray": {
+      "$description": "Solid neutral grays",
+      "0":    { "$type": "color", "$value": "oklch(1.000 0 0)" },
+      "10":   { "$type": "color", "$value": "oklch(0.985 0.002 257)" },
+      "25":   { "$type": "color", "$value": "oklch(0.975 0.003 257)" },
+      "50":   { "$type": "color", "$value": "oklch(0.960 0.004 257)" },
+      "75":   { "$type": "color", "$value": "oklch(0.945 0.004 257)" },
+      "100":  { "$type": "color", "$value": "oklch(0.930 0.005 257)" },
+      "200":  { "$type": "color", "$value": "oklch(0.870 0.006 257)" },
+      "300":  { "$type": "color", "$value": "oklch(0.820 0.007 257)" },
+      "400":  { "$type": "color", "$value": "oklch(0.740 0.008 257)" },
+      "500":  { "$type": "color", "$value": "oklch(0.640 0.010 257)" },
+      "600":  { "$type": "color", "$value": "oklch(0.520 0.009 257)" },
+      "700":  { "$type": "color", "$value": "oklch(0.430 0.008 257)" },
+      "800":  { "$type": "color", "$value": "oklch(0.380 0.007 257)" },
+      "900":  { "$type": "color", "$value": "oklch(0.310 0.006 257)" },
+      "925":  { "$type": "color", "$value": "oklch(0.270 0.005 257)" },
+      "950":  { "$type": "color", "$value": "oklch(0.220 0.005 257)" },
+      "975":  { "$type": "color", "$value": "oklch(0.130 0.006 257)" },
+      "990":  { "$type": "color", "$value": "oklch(0.090 0.005 257)" },
+      "1000": { "$type": "color", "$value": "oklch(0.070 0.006 257)" }
+    },
+    "light": {
+      "$description": "White × opacity scale. GENERATED at build time from #ffffff × opacity stops."
+    },
+    "dark": {
+      "$description": "Near-black × opacity scale. GENERATED at build time from neutral.gray.1000 × opacity stops."
+    }
+  }
+}

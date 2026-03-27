@@ -1,0 +1,29 @@
+{
+  "name": "@lab-ui/tokens",
+  "version": "0.1.0",
+  "description": "Lab UI design tokens — OKLCH colors, spacing, typography, radius, shadows",
+  "type": "module",
+  "main": "dist/index.css",
+  "exports": {
+    ".": "./dist/index.css",
+    "./css": "./dist/css/tokens.css",
+    "./css/*": "./dist/css/*.css",
+    "./tailwind": "./dist/tailwind/theme.css",
+    "./json": "./dist/json/tokens.json"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node src/build.mjs",
+    "lint": "node src/lint.mjs",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "style-dictionary": "^4.3.0",
+    "@tokens-studio/sd-transforms": "^1.5.0"
+  },
+  "keywords": ["design-tokens", "oklch", "tailwindcss", "css-variables"],
+  "license": "MIT"
+}

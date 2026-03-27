@@ -1,0 +1,200 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Light theme semantic tokens. 4 layers: BG → Fill → Label → Border + FX.",
+
+  "bg": {
+    "$description": "Backgrounds — lowest layer, solid colors from neutral gray scale",
+    "neutral": {
+      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.0}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.gray.975}" }
+    },
+    "grouped": {
+      "$description": "Apple HIG grouped backgrounds for nested screens",
+      "primary":   { "$type": "color", "$value": "{neutral.gray.25}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.0}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.25}" }
+    },
+    "overlay": {
+      "$description": "Scrim/dimming layers",
+      "ghost":  { "$type": "color", "$value": "{neutral.dark.10}" },
+      "soft":   { "$type": "color", "$value": "{neutral.dark.200}" },
+      "base":   { "$type": "color", "$value": "{neutral.dark.500}" },
+      "strong": { "$type": "color", "$value": "{neutral.dark.800}" }
+    },
+    "static": {
+      "$description": "Theme-independent backgrounds",
+      "light": { "$type": "color", "$value": "{neutral.gray.0}" },
+      "dark":  { "$type": "color", "$value": "{neutral.gray.975}" }
+    }
+  },
+
+  "fill": {
+    "$description": "Fills — transparent component surfaces on top of BG. Base color = neutral midpoint × opacity.",
+    "primary":    { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.20)" },
+    "secondary":  { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.16)" },
+    "tertiary":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.12)" },
+    "quaternary": { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.08)" },
+    "none":       { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0)" },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.20)" },
+        "secondary":  { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.16)" },
+        "tertiary":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.12)" },
+        "quaternary": { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.08)" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.36)" },
+        "secondary":  { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.32)" },
+        "tertiary":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.24)" },
+        "quaternary": { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.18)" }
+      }
+    }
+  },
+
+  "label": {
+    "$description": "Labels — text + icons. Opacity ladder on dark base for light theme.",
+    "neutral": {
+      "primary":    { "$type": "color", "$value": "{neutral.dark.1000}" },
+      "secondary":  { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.70)" },
+      "tertiary":   { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.40)" },
+      "quaternary": { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.25)" }
+    },
+    "neutral-inverted": {
+      "primary":    { "$type": "color", "$value": "{neutral.light.1000}" },
+      "secondary":  { "$type": "color", "$value": "oklch(0.950 0.004 257 / 0.70)" },
+      "tertiary":   { "$type": "color", "$value": "oklch(0.950 0.004 257 / 0.40)" },
+      "quaternary": { "$type": "color", "$value": "oklch(0.950 0.004 257 / 0.25)" }
+    },
+    "brand": {
+      "primary":    { "$type": "color", "$value": "{hue.brand}" },
+      "secondary":  { "$type": "color", "$value": "{hue.brand.800}" },
+      "tertiary":   { "$type": "color", "$value": "{hue.brand.600}" },
+      "quaternary": { "$type": "color", "$value": "{hue.brand.300}" }
+    },
+    "danger": {
+      "primary":    { "$type": "color", "$value": "{hue.danger}" },
+      "secondary":  { "$type": "color", "$value": "{hue.danger.800}" },
+      "tertiary":   { "$type": "color", "$value": "{hue.danger.600}" },
+      "quaternary": { "$type": "color", "$value": "{hue.danger.300}" }
+    },
+    "warning": {
+      "primary":    { "$type": "color", "$value": "{hue.warning}" },
+      "secondary":  { "$type": "color", "$value": "{hue.warning.800}" },
+      "tertiary":   { "$type": "color", "$value": "{hue.warning.600}" },
+      "quaternary": { "$type": "color", "$value": "{hue.warning.300}" }
+    },
+    "success": {
+      "primary":    { "$type": "color", "$value": "{hue.success}" },
+      "secondary":  { "$type": "color", "$value": "{hue.success.800}" },
+      "tertiary":   { "$type": "color", "$value": "{hue.success.600}" },
+      "quaternary": { "$type": "color", "$value": "{hue.success.300}" }
+    },
+    "info": {
+      "primary":    { "$type": "color", "$value": "{hue.info}" },
+      "secondary":  { "$type": "color", "$value": "{hue.info.800}" },
+      "tertiary":   { "$type": "color", "$value": "{hue.info.600}" },
+      "quaternary": { "$type": "color", "$value": "{hue.info.300}" }
+    },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "{neutral.light.1000}" },
+        "secondary":  { "$type": "color", "$value": "{neutral.light.700}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral.light.400}" },
+        "quaternary": { "$type": "color", "$value": "{neutral.light.200}" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "{neutral.dark.1000}" },
+        "secondary":  { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.70)" },
+        "tertiary":   { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.40)" },
+        "quaternary": { "$type": "color", "$value": "oklch(0.300 0.007 257 / 0.25)" }
+      }
+    }
+  },
+
+  "border": {
+    "$description": "Borders — 4 levels from ghost to strong, per accent",
+    "neutral": {
+      "strong":   { "$type": "color", "$value": "{neutral.dark.1000}" },
+      "base":     { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.10)" },
+      "soft":     { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.05)" },
+      "ghost":    { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0)" },
+      "inverted": { "$type": "color", "$value": "{neutral.light.1000}" }
+    },
+    "brand": {
+      "strong": { "$type": "color", "$value": "{hue.brand}" },
+      "base":   { "$type": "color", "$value": "{hue.brand.200}" },
+      "soft":   { "$type": "color", "$value": "{hue.brand.100}" }
+    },
+    "danger": {
+      "strong": { "$type": "color", "$value": "{hue.danger}" },
+      "base":   { "$type": "color", "$value": "{hue.danger.200}" },
+      "soft":   { "$type": "color", "$value": "{hue.danger.100}" }
+    },
+    "warning": {
+      "strong": { "$type": "color", "$value": "{hue.warning}" },
+      "base":   { "$type": "color", "$value": "{hue.warning.200}" },
+      "soft":   { "$type": "color", "$value": "{hue.warning.100}" }
+    },
+    "success": {
+      "strong": { "$type": "color", "$value": "{hue.success}" },
+      "base":   { "$type": "color", "$value": "{hue.success.200}" },
+      "soft":   { "$type": "color", "$value": "{hue.success.100}" }
+    },
+    "info": {
+      "strong": { "$type": "color", "$value": "{hue.info}" },
+      "base":   { "$type": "color", "$value": "{hue.info.200}" },
+      "soft":   { "$type": "color", "$value": "{hue.info.100}" }
+    },
+    "static": {
+      "light": {
+        "strong": { "$type": "color", "$value": "{neutral.light.1000}" },
+        "base":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.15)" },
+        "soft":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.10)" }
+      },
+      "dark": {
+        "strong": { "$type": "color", "$value": "{neutral.dark.1000}" },
+        "base":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.10)" },
+        "soft":   { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.05)" }
+      }
+    }
+  },
+
+  "fx": {
+    "$description": "Effects — shadows, glows, focus rings, skeleton",
+    "focus-ring": {
+      "brand":   { "$type": "color", "$value": "{hue.brand}" },
+      "danger":  { "$type": "color", "$value": "{hue.danger}" },
+      "neutral": { "$type": "color", "$value": "{neutral.dark.1000}" },
+      "warning": { "$type": "color", "$value": "{hue.warning}" }
+    },
+    "shadow": {
+      "major":    { "$type": "color", "$value": "{neutral.dark.100}" },
+      "penumbra": { "$type": "color", "$value": "{neutral.dark.50}" },
+      "ambient":  { "$type": "color", "$value": "{neutral.dark.25}" },
+      "minor":    { "$type": "color", "$value": "{neutral.dark.10}" }
+    },
+    "glow": {
+      "brand":    { "$type": "color", "$value": "{hue.brand.500}" },
+      "neutral":  { "$type": "color", "$value": "{neutral.light.500}" },
+      "danger":   { "$type": "color", "$value": "{hue.danger.500}" },
+      "warning":  { "$type": "color", "$value": "{hue.warning.500}" },
+      "inverted": { "$type": "color", "$value": "{neutral.gray.400}" }
+    },
+    "skeleton": {
+      "base":      { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.08)" },
+      "highlight": { "$type": "color", "$value": "oklch(0.580 0.007 257 / 0.04)" }
+    }
+  },
+
+  "misc": {
+    "control": {
+      "bg": { "$type": "color", "$value": "{bg.neutral.primary}" }
+    },
+    "badge": {
+      "label-contrast": { "$type": "color", "$value": "{label.static.dark.primary}" },
+      "label-default":  { "$type": "color", "$value": "{label.static.light.primary}" }
+    }
+  }
+}
