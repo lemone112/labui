@@ -2,12 +2,12 @@
  * Alpha Variant Generator
  *
  * Generates hue × opacity matrix at build time:
- * - 13 accent hues × 19 opacity stops = 247 alpha color tokens
- * - Neutral/Light (white × 19 opacity) = 19 tokens
- * - Neutral/Dark (near-black × 19 opacity) = 19 tokens
- * - Neutral/Gray-500 (midpoint × 19 opacity) = 19 tokens (for fills/borders)
+ * - 11 accent hues × 9 opacity stops = 99 alpha color tokens
+ * - Neutral/Light (white × 9 opacity) = 9 tokens
+ * - Neutral/Dark (near-black × 9 opacity) = 9 tokens
+ * - Neutral/Mid (gray-500 × 9 opacity) = 9 tokens (for fills/borders)
  *
- * Total generated: ~300 tokens from base colors + 19 stops
+ * Total generated: ~126 tokens from base colors + 9 stops (2,4,8,12,20,32,52,72,80)
  */
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -127,7 +127,7 @@ export async function generateAlphaTokens(): Promise<void> {
 
   const output: DTCGTokenGroup = {
     $schema: 'https://tr.designtokens.org/format/',
-    $description: 'GENERATED — Do not edit. Alpha variants computed from base hues × 19 opacity stops.',
+    $description: 'GENERATED — Do not edit. Alpha variants computed from base hues × 9 opacity stops.',
     ...generated,
   };
 

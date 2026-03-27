@@ -1,0 +1,227 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Dark Increased Contrast theme. Same structure as dark, further elevated opacity stops. Pure black primary bg. IC hue corrections computed by build pipeline.",
+
+  "bg": {
+    "$description": "Backgrounds -- pure black primary for maximum contrast",
+    "neutral": {
+      "primary":   { "$type": "color", "$value": "{neutral.12}" },
+      "secondary": { "$type": "color", "$value": "{neutral.11}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.10}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.0}" }
+    },
+    "grouped": {
+      "$description": "Apple HIG grouped -- dark IC: progressive 12/11/10",
+      "primary":   { "$type": "color", "$value": "{neutral.12}" },
+      "secondary": { "$type": "color", "$value": "{neutral.11}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.10}" }
+    },
+    "overlay": {
+      "$description": "Scrim/dimming -- further elevated for dark IC",
+      "ghost":  { "$type": "color", "$value": "{neutral-dark.4}" },
+      "soft":   { "$type": "color", "$value": "{neutral-dark.32}" },
+      "base":   { "$type": "color", "$value": "{neutral-dark.72}" },
+      "strong": { "$type": "color", "$value": "{neutral-dark.80}" }
+    },
+    "static": {
+      "light": { "$type": "color", "$value": "{neutral.12}" },
+      "dark":  { "$type": "color", "$value": "{neutral.1}" }
+    }
+  },
+
+  "fill": {
+    "$description": "Fills -- dark IC: further elevated opacity for stronger visibility.",
+    "primary":    { "$type": "color", "$value": "{neutral-mid.52}" },
+    "secondary":  { "$type": "color", "$value": "{neutral-mid.32}" },
+    "tertiary":   { "$type": "color", "$value": "{neutral-mid.20}" },
+    "quaternary": { "$type": "color", "$value": "{neutral-mid.12}" },
+    "none":       { "$type": "color", "$value": "{neutral-mid.2}" },
+    "brand":      { "$type": "color", "$value": "{brand.20}", "$description": "Accent tint fill -- elevated for IC" },
+    "danger":     { "$type": "color", "$value": "{danger.20}", "$description": "Accent tint fill -- elevated for IC" },
+    "warning":    { "$type": "color", "$value": "{warning.20}", "$description": "Accent tint fill -- elevated for IC" },
+    "success":    { "$type": "color", "$value": "{success.20}", "$description": "Accent tint fill -- elevated for IC" },
+    "info":       { "$type": "color", "$value": "{info.20}", "$description": "Accent tint fill -- elevated for IC" },
+    "brand-solid":   { "$type": "color", "$value": "{hue.brand}", "$description": "Solid accent fill" },
+    "danger-solid":  { "$type": "color", "$value": "{hue.danger}", "$description": "Solid accent fill" },
+    "warning-solid": { "$type": "color", "$value": "{hue.warning}", "$description": "Solid accent fill" },
+    "success-solid": { "$type": "color", "$value": "{hue.success}", "$description": "Solid accent fill" },
+    "info-solid":    { "$type": "color", "$value": "{hue.info}", "$description": "Solid accent fill" },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "{neutral-mid.32}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.20}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.12}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.8}" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "{neutral-mid.52}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.32}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.20}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.12}" }
+      }
+    }
+  },
+
+  "label": {
+    "$description": "Labels -- dark IC: max contrast, further elevated alpha ladder.",
+    "neutral": {
+      "primary":    { "$type": "color", "$value": "{neutral.0}" },
+      "secondary":  { "$type": "color", "$value": "{neutral-light.80}" },
+      "tertiary":   { "$type": "color", "$value": "{neutral-light.72}" },
+      "quaternary": { "$type": "color", "$value": "{neutral-light.52}" }
+    },
+    "neutral-inverted": {
+      "primary":    { "$type": "color", "$value": "{neutral.12}" },
+      "secondary":  { "$type": "color", "$value": "{neutral-dark.80}" },
+      "tertiary":   { "$type": "color", "$value": "{neutral-dark.72}" },
+      "quaternary": { "$type": "color", "$value": "{neutral-dark.52}" }
+    },
+    "brand": {
+      "primary":    { "$type": "color", "$value": "{brand.80}" },
+      "secondary":  { "$type": "color", "$value": "{brand.80}" },
+      "tertiary":   { "$type": "color", "$value": "{brand.72}" },
+      "quaternary": { "$type": "color", "$value": "{brand.52}" },
+      "on-tint":    { "$type": "color", "$value": "{brand.80}", "$description": "IC-corrected accent on tinted background" }
+    },
+    "danger": {
+      "primary":    { "$type": "color", "$value": "{danger.80}" },
+      "secondary":  { "$type": "color", "$value": "{danger.80}" },
+      "tertiary":   { "$type": "color", "$value": "{danger.72}" },
+      "quaternary": { "$type": "color", "$value": "{danger.52}" },
+      "on-tint":    { "$type": "color", "$value": "{danger.80}", "$description": "IC-corrected accent on tinted background" }
+    },
+    "warning": {
+      "primary":    { "$type": "color", "$value": "{warning.80}" },
+      "secondary":  { "$type": "color", "$value": "{warning.80}" },
+      "tertiary":   { "$type": "color", "$value": "{warning.72}" },
+      "quaternary": { "$type": "color", "$value": "{warning.52}" },
+      "on-tint":    { "$type": "color", "$value": "{warning.80}", "$description": "IC-corrected accent on tinted background" }
+    },
+    "success": {
+      "primary":    { "$type": "color", "$value": "{success.80}" },
+      "secondary":  { "$type": "color", "$value": "{success.80}" },
+      "tertiary":   { "$type": "color", "$value": "{success.72}" },
+      "quaternary": { "$type": "color", "$value": "{success.52}" },
+      "on-tint":    { "$type": "color", "$value": "{success.80}", "$description": "IC-corrected accent on tinted background" }
+    },
+    "info": {
+      "primary":    { "$type": "color", "$value": "{info.80}" },
+      "secondary":  { "$type": "color", "$value": "{info.80}" },
+      "tertiary":   { "$type": "color", "$value": "{info.72}" },
+      "quaternary": { "$type": "color", "$value": "{info.52}" },
+      "on-tint":    { "$type": "color", "$value": "{info.80}", "$description": "IC-corrected accent on tinted background" }
+    },
+    "on": {
+      "$description": "Text on solid accent backgrounds",
+      "brand":   { "$type": "color", "$value": "{neutral.0}" },
+      "danger":  { "$type": "color", "$value": "{neutral.0}" },
+      "warning": { "$type": "color", "$value": "{neutral.0}" },
+      "success": { "$type": "color", "$value": "{neutral.0}" },
+      "info":    { "$type": "color", "$value": "{neutral.0}" }
+    },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "{neutral.0}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-light.80}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-light.72}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-light.52}" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "{neutral.12}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-dark.80}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-dark.72}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-dark.52}" }
+      }
+    }
+  },
+
+  "border": {
+    "$description": "Borders -- dark IC: further elevated opacity",
+    "neutral": {
+      "strong":   { "$type": "color", "$value": "{neutral.0}" },
+      "base":     { "$type": "color", "$value": "{neutral-mid.20}" },
+      "soft":     { "$type": "color", "$value": "{neutral-mid.12}" },
+      "ghost":    { "$type": "color", "$value": "{neutral-mid.4}" },
+      "inverted": { "$type": "color", "$value": "{neutral.12}" }
+    },
+    "brand": {
+      "strong": { "$type": "color", "$value": "{brand.80}" },
+      "base":   { "$type": "color", "$value": "{brand.32}" },
+      "soft":   { "$type": "color", "$value": "{brand.20}" }
+    },
+    "danger": {
+      "strong": { "$type": "color", "$value": "{danger.80}" },
+      "base":   { "$type": "color", "$value": "{danger.32}" },
+      "soft":   { "$type": "color", "$value": "{danger.20}" }
+    },
+    "warning": {
+      "strong": { "$type": "color", "$value": "{warning.80}" },
+      "base":   { "$type": "color", "$value": "{warning.32}" },
+      "soft":   { "$type": "color", "$value": "{warning.20}" }
+    },
+    "success": {
+      "strong": { "$type": "color", "$value": "{success.80}" },
+      "base":   { "$type": "color", "$value": "{success.32}" },
+      "soft":   { "$type": "color", "$value": "{success.20}" }
+    },
+    "info": {
+      "strong": { "$type": "color", "$value": "{info.80}" },
+      "base":   { "$type": "color", "$value": "{info.32}" },
+      "soft":   { "$type": "color", "$value": "{info.20}" }
+    },
+    "static": {
+      "light": {
+        "strong": { "$type": "color", "$value": "{neutral.0}" },
+        "base":   { "$type": "color", "$value": "{neutral-mid.20}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.12}" }
+      },
+      "dark": {
+        "strong": { "$type": "color", "$value": "{neutral.12}" },
+        "base":   { "$type": "color", "$value": "{neutral-mid.12}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.8}" }
+      }
+    }
+  },
+
+  "fx": {
+    "focus-ring": {
+      "brand":   { "$type": "color", "$value": "{brand.80}" },
+      "danger":  { "$type": "color", "$value": "{danger.80}" },
+      "neutral": { "$type": "color", "$value": "{neutral.0}" },
+      "warning": { "$type": "color", "$value": "{warning.80}" },
+      "success": { "$type": "color", "$value": "{success.80}" },
+      "info":    { "$type": "color", "$value": "{info.80}" }
+    },
+    "shadow": {
+      "$description": "Dark IC: further elevated shadow opacity",
+      "major":    { "$type": "color", "$value": "{neutral-dark.32}" },
+      "penumbra": { "$type": "color", "$value": "{neutral-dark.20}" },
+      "ambient":  { "$type": "color", "$value": "{neutral-dark.12}" },
+      "minor":    { "$type": "color", "$value": "{neutral-dark.8}" }
+    },
+    "glow": {
+      "brand":    { "$type": "color", "$value": "{brand.52}" },
+      "neutral":  { "$type": "color", "$value": "{neutral-light.52}" },
+      "danger":   { "$type": "color", "$value": "{danger.52}" },
+      "warning":  { "$type": "color", "$value": "{warning.52}" },
+      "success":  { "$type": "color", "$value": "{success.52}" },
+      "info":     { "$type": "color", "$value": "{info.52}" },
+      "inverted": { "$type": "color", "$value": "{neutral.4}" }
+    },
+    "skeleton": {
+      "$description": "Stronger in dark IC for visibility",
+      "base":      { "$type": "color", "$value": "{neutral-mid.20}" },
+      "highlight": { "$type": "color", "$value": "{neutral-mid.12}" }
+    }
+  },
+
+  "misc": {
+    "control": {
+      "bg": { "$type": "color", "$value": "{bg.neutral.primary}" }
+    },
+    "badge": {
+      "label-contrast": { "$type": "color", "$value": "{label.static.dark.primary}" },
+      "label-default":  { "$type": "color", "$value": "{label.static.light.primary}" }
+    }
+  }
+}
