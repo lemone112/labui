@@ -6,10 +6,11 @@
   "main": "dist/index.css",
   "exports": {
     ".": "./dist/index.css",
-    "./css": "./dist/css/tokens.css",
+    "./css/light": "./dist/css/light.css",
+    "./css/dark": "./dist/css/dark.css",
+    "./css/brand": "./dist/css/brand.css",
     "./css/*": "./dist/css/*.css",
-    "./tailwind": "./dist/tailwind/theme.css",
-    "./json": "./dist/json/tokens.json"
+    "./tailwind": "./dist/tailwind/theme.css"
   },
   "files": [
     "dist/",

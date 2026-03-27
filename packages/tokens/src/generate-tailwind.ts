@@ -47,6 +47,13 @@ export async function generateTailwindTheme(): Promise<void> {
   --color-label-tertiary: var(--label-neutral-tertiary);
   --color-label-quaternary: var(--label-neutral-quaternary);
 
+  /* Accent labels */
+  --color-brand-label: var(--label-brand-primary);
+  --color-danger-label: var(--label-danger-primary);
+  --color-warning-label: var(--label-warning-primary);
+  --color-success-label: var(--label-success-primary);
+  --color-info-label: var(--label-info-primary);
+
   /* Accents */
   --color-brand: var(--brand);
   --color-danger: var(--danger);
@@ -69,6 +76,8 @@ export async function generateTailwindTheme(): Promise<void> {
   --color-focus-brand: var(--fx-focus-ring-brand);
   --color-focus-danger: var(--fx-focus-ring-danger);
   --color-focus-neutral: var(--fx-focus-ring-neutral);
+  --color-focus-warning: var(--fx-focus-ring-warning);
+  --color-focus-success: var(--fx-focus-ring-success);
   --color-focus-info: var(--fx-focus-ring-info);
 
   /* Shadows */

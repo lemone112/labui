@@ -168,6 +168,7 @@
       "danger":  { "$type": "color", "$value": "{danger.1000}" },
       "neutral": { "$type": "color", "$value": "{neutral-dark.1000}" },
       "warning": { "$type": "color", "$value": "{warning.1000}" },
+      "success": { "$type": "color", "$value": "{success.1000}" },
       "info":    { "$type": "color", "$value": "{info.1000}" }
     },
     "shadow": {

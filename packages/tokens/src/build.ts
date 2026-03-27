@@ -69,7 +69,23 @@ await generateTailwindTheme();
 console.log('→ Generating brand hue runtime layer...');
 await generateBrandHueLayer();
 
+// ─── Phase 5: Generate index.css entry point ────────────────────
+
+console.log('→ Generating index.css...');
+await generateIndex();
+
 console.log('✓ Lab UI tokens built successfully');
+
+async function generateIndex(): Promise<void> {
+  const css = `/* Lab UI Tokens — Entry Point
+ * Imports brand config + light theme (default) + dark theme override.
+ */
+@import "./css/brand.css";
+@import "./css/light.css";
+@import "./css/dark.css";
+`;
+  await writeFile('dist/index.css', css);
+}
 
 // ─── Brand hue runtime CSS ──────────────────────────────────────
 

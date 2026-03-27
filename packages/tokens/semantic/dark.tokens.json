@@ -3,18 +3,18 @@
   "$description": "Dark theme semantic tokens. Same structure as light, different primitive references. Higher opacity for fills/borders. No hardcoded OKLCH.",
 
   "bg": {
-    "$description": "Backgrounds — dark: progressive steps 0/1/2",
+    "$description": "Backgrounds — dark: progressive from dark end of gray scale (975/950/925)",
     "neutral": {
-      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.50}" },
-      "inverted":  { "$type": "color", "$value": "{neutral.gray.975}" }
+      "primary":   { "$type": "color", "$value": "{neutral.gray.975}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.950}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.925}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.gray.0}" }
     },
     "grouped": {
-      "$description": "Apple HIG grouped backgrounds — dark: progressive 0/1/2",
-      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.50}" }
+      "$description": "Apple HIG grouped — dark: progressive 975/950/925",
+      "primary":   { "$type": "color", "$value": "{neutral.gray.975}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.950}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.925}" }
     },
     "overlay": {
       "ghost":  { "$type": "color", "$value": "{neutral-dark.10}" },
@@ -166,6 +166,7 @@
       "danger":  { "$type": "color", "$value": "{danger.1000}" },
       "neutral": { "$type": "color", "$value": "{neutral-light.1000}" },
       "warning": { "$type": "color", "$value": "{warning.1000}" },
+      "success": { "$type": "color", "$value": "{success.1000}" },
       "info":    { "$type": "color", "$value": "{info.1000}" }
     },
     "shadow": {
