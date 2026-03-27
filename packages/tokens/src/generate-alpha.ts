@@ -109,18 +109,17 @@ export async function generateAlphaTokens(): Promise<void> {
   // ─── Neutral/Dark (near-black × opacity) ───
 
   const neutral = neutralFile.neutral as DTCGTokenGroup;
-  const gray = neutral.gray as DTCGTokenGroup;
-  const darkBase = (gray['1000'] as DTCGColorToken).$value;
+  const darkBase = (neutral['1000'] as DTCGColorToken).$value;
   const darkParsed = parseOklch(darkBase) ?? ['0.086', '0.006', '285'];
 
   generated['neutral-dark'] = generateAlphaScale(...darkParsed);
 
-  // ─── Neutral/Gray-500 midpoint × opacity (for fills/borders) ───
+  // ─── Neutral midpoint (500) × opacity — used by fills and borders ───
 
-  const midBase = (gray['500'] as DTCGColorToken).$value;
+  const midBase = (neutral['500'] as DTCGColorToken).$value;
   const midParsed = parseOklch(midBase) ?? ['0.642', '0.007', '286'];
 
-  generated['neutral-gray-500'] = generateAlphaScale(...midParsed);
+  generated['neutral-mid'] = generateAlphaScale(...midParsed);
 
   // ─── Write generated tokens ───
 

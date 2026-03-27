@@ -5,16 +5,16 @@
   "bg": {
     "$description": "Backgrounds — solid colors from neutral gray scale",
     "neutral": {
-      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.0}" },
-      "inverted":  { "$type": "color", "$value": "{neutral.gray.975}" }
+      "primary":   { "$type": "color", "$value": "{neutral.0}" },
+      "secondary": { "$type": "color", "$value": "{neutral.25}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.0}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.975}" }
     },
     "grouped": {
       "$description": "Apple HIG grouped backgrounds — alternating 1/0/1",
-      "primary":   { "$type": "color", "$value": "{neutral.gray.25}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.0}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.25}" }
+      "primary":   { "$type": "color", "$value": "{neutral.25}" },
+      "secondary": { "$type": "color", "$value": "{neutral.0}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.25}" }
     },
     "overlay": {
       "$description": "Scrim/dimming — references generated neutral-dark alpha tokens",
@@ -25,30 +25,30 @@
     },
     "static": {
       "$description": "Theme-independent backgrounds",
-      "light": { "$type": "color", "$value": "{neutral.gray.0}" },
-      "dark":  { "$type": "color", "$value": "{neutral.gray.975}" }
+      "light": { "$type": "color", "$value": "{neutral.0}" },
+      "dark":  { "$type": "color", "$value": "{neutral.975}" }
     }
   },
 
   "fill": {
     "$description": "Fills — transparent component surfaces. References generated neutral-gray-500 alpha tokens (midpoint gray × opacity).",
-    "primary":    { "$type": "color", "$value": "{neutral-gray-500.200}" },
-    "secondary":  { "$type": "color", "$value": "{neutral-gray-500.100}" },
-    "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.75}" },
-    "quaternary": { "$type": "color", "$value": "{neutral-gray-500.50}" },
-    "none":       { "$type": "color", "$value": "{neutral-gray-500.0}" },
+    "primary":    { "$type": "color", "$value": "{neutral-mid.200}" },
+    "secondary":  { "$type": "color", "$value": "{neutral-mid.100}" },
+    "tertiary":   { "$type": "color", "$value": "{neutral-mid.75}" },
+    "quaternary": { "$type": "color", "$value": "{neutral-mid.50}" },
+    "none":       { "$type": "color", "$value": "{neutral-mid.0}" },
     "static": {
       "light": {
-        "primary":    { "$type": "color", "$value": "{neutral-gray-500.200}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.75}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.50}" }
+        "primary":    { "$type": "color", "$value": "{neutral-mid.200}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.100}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.75}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.50}" }
       },
       "dark": {
-        "primary":    { "$type": "color", "$value": "{neutral-gray-500.300}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.200}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.75}" }
+        "primary":    { "$type": "color", "$value": "{neutral-mid.300}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.200}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.100}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.75}" }
       }
     }
   },
@@ -117,9 +117,9 @@
     "$description": "Borders — 4 levels per accent. References generated alpha tokens.",
     "neutral": {
       "strong":   { "$type": "color", "$value": "{neutral-dark.1000}" },
-      "base":     { "$type": "color", "$value": "{neutral-gray-500.100}" },
-      "soft":     { "$type": "color", "$value": "{neutral-gray-500.50}" },
-      "ghost":    { "$type": "color", "$value": "{neutral-gray-500.0}" },
+      "base":     { "$type": "color", "$value": "{neutral-mid.100}" },
+      "soft":     { "$type": "color", "$value": "{neutral-mid.50}" },
+      "ghost":    { "$type": "color", "$value": "{neutral-mid.0}" },
       "inverted": { "$type": "color", "$value": "{neutral-light.1000}" }
     },
     "brand": {
@@ -150,13 +150,13 @@
     "static": {
       "light": {
         "strong": { "$type": "color", "$value": "{neutral-light.1000}" },
-        "base":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "soft":   { "$type": "color", "$value": "{neutral-gray-500.100}" }
+        "base":   { "$type": "color", "$value": "{neutral-mid.100}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.100}" }
       },
       "dark": {
         "strong": { "$type": "color", "$value": "{neutral-dark.1000}" },
-        "base":   { "$type": "color", "$value": "{neutral-gray-500.50}" },
-        "soft":   { "$type": "color", "$value": "{neutral-gray-500.50}" }
+        "base":   { "$type": "color", "$value": "{neutral-mid.50}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.50}" }
       }
     }
   },
@@ -183,11 +183,11 @@
       "danger":   { "$type": "color", "$value": "{danger.500}" },
       "warning":  { "$type": "color", "$value": "{warning.500}" },
       "info":     { "$type": "color", "$value": "{info.500}" },
-      "inverted": { "$type": "color", "$value": "{neutral.gray.400}" }
+      "inverted": { "$type": "color", "$value": "{neutral.400}" }
     },
     "skeleton": {
-      "base":      { "$type": "color", "$value": "{neutral-gray-500.50}" },
-      "highlight": { "$type": "color", "$value": "{neutral-gray-500.25}" }
+      "base":      { "$type": "color", "$value": "{neutral-mid.50}" },
+      "highlight": { "$type": "color", "$value": "{neutral-mid.25}" }
     }
   },
 

@@ -5,16 +5,16 @@
   "bg": {
     "$description": "Backgrounds — dark: progressive from dark end of gray scale (975/950/925)",
     "neutral": {
-      "primary":   { "$type": "color", "$value": "{neutral.gray.975}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.950}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.925}" },
-      "inverted":  { "$type": "color", "$value": "{neutral.gray.0}" }
+      "primary":   { "$type": "color", "$value": "{neutral.975}" },
+      "secondary": { "$type": "color", "$value": "{neutral.950}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.925}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.0}" }
     },
     "grouped": {
       "$description": "Apple HIG grouped — dark: progressive 975/950/925",
-      "primary":   { "$type": "color", "$value": "{neutral.gray.975}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.950}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.925}" }
+      "primary":   { "$type": "color", "$value": "{neutral.975}" },
+      "secondary": { "$type": "color", "$value": "{neutral.950}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.925}" }
     },
     "overlay": {
       "ghost":  { "$type": "color", "$value": "{neutral-dark.10}" },
@@ -24,30 +24,30 @@
     },
     "static": {
       "$description": "Fixed-tone backgrounds. Values SWAP between themes.",
-      "light": { "$type": "color", "$value": "{neutral.gray.1000}" },
-      "dark":  { "$type": "color", "$value": "{neutral.gray.25}" }
+      "light": { "$type": "color", "$value": "{neutral.1000}" },
+      "dark":  { "$type": "color", "$value": "{neutral.25}" }
     }
   },
 
   "fill": {
     "$description": "Fills — dark mode: HIGHER opacity stops for visibility on dark backgrounds.",
-    "primary":    { "$type": "color", "$value": "{neutral-gray-500.300}" },
-    "secondary":  { "$type": "color", "$value": "{neutral-gray-500.200}" },
-    "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
-    "quaternary": { "$type": "color", "$value": "{neutral-gray-500.75}" },
-    "none":       { "$type": "color", "$value": "{neutral-gray-500.0}" },
+    "primary":    { "$type": "color", "$value": "{neutral-mid.300}" },
+    "secondary":  { "$type": "color", "$value": "{neutral-mid.200}" },
+    "tertiary":   { "$type": "color", "$value": "{neutral-mid.100}" },
+    "quaternary": { "$type": "color", "$value": "{neutral-mid.75}" },
+    "none":       { "$type": "color", "$value": "{neutral-mid.0}" },
     "static": {
       "light": {
-        "primary":    { "$type": "color", "$value": "{neutral-gray-500.200}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.75}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.50}" }
+        "primary":    { "$type": "color", "$value": "{neutral-mid.200}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.100}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.75}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.50}" }
       },
       "dark": {
-        "primary":    { "$type": "color", "$value": "{neutral-gray-500.300}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.200}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.75}" }
+        "primary":    { "$type": "color", "$value": "{neutral-mid.300}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-mid.200}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-mid.100}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-mid.75}" }
       }
     }
   },
@@ -116,9 +116,9 @@
     "$description": "Borders — dark: HIGHER opacity for visibility",
     "neutral": {
       "strong":   { "$type": "color", "$value": "{neutral-light.1000}" },
-      "base":     { "$type": "color", "$value": "{neutral-gray-500.100}" },
-      "soft":     { "$type": "color", "$value": "{neutral-gray-500.100}" },
-      "ghost":    { "$type": "color", "$value": "{neutral-gray-500.0}" },
+      "base":     { "$type": "color", "$value": "{neutral-mid.100}" },
+      "soft":     { "$type": "color", "$value": "{neutral-mid.100}" },
+      "ghost":    { "$type": "color", "$value": "{neutral-mid.0}" },
       "inverted": { "$type": "color", "$value": "{neutral-dark.1000}" }
     },
     "brand": {
@@ -149,13 +149,13 @@
     "static": {
       "light": {
         "strong": { "$type": "color", "$value": "{neutral-light.1000}" },
-        "base":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
-        "soft":   { "$type": "color", "$value": "{neutral-gray-500.100}" }
+        "base":   { "$type": "color", "$value": "{neutral-mid.100}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.100}" }
       },
       "dark": {
         "strong": { "$type": "color", "$value": "{neutral-dark.1000}" },
-        "base":   { "$type": "color", "$value": "{neutral-gray-500.50}" },
-        "soft":   { "$type": "color", "$value": "{neutral-gray-500.50}" }
+        "base":   { "$type": "color", "$value": "{neutral-mid.50}" },
+        "soft":   { "$type": "color", "$value": "{neutral-mid.50}" }
       }
     }
   },
@@ -182,12 +182,12 @@
       "danger":   { "$type": "color", "$value": "{danger.500}" },
       "warning":  { "$type": "color", "$value": "{warning.500}" },
       "info":     { "$type": "color", "$value": "{info.500}" },
-      "inverted": { "$type": "color", "$value": "{neutral.gray.400}" }
+      "inverted": { "$type": "color", "$value": "{neutral.400}" }
     },
     "skeleton": {
       "$description": "Slightly stronger in dark mode",
-      "base":      { "$type": "color", "$value": "{neutral-gray-500.100}" },
-      "highlight": { "$type": "color", "$value": "{neutral-gray-500.50}" }
+      "base":      { "$type": "color", "$value": "{neutral-mid.100}" },
+      "highlight": { "$type": "color", "$value": "{neutral-mid.50}" }
     }
   },
 
