@@ -1,0 +1,202 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Light theme semantic tokens. 4 layers: BG → Fill → Label → Border + FX. All values reference primitives or generated alpha tokens — no hardcoded OKLCH.",
+
+  "bg": {
+    "$description": "Backgrounds — solid colors from neutral gray scale",
+    "neutral": {
+      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.0}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.gray.975}" }
+    },
+    "grouped": {
+      "$description": "Apple HIG grouped backgrounds — alternating 1/0/1",
+      "primary":   { "$type": "color", "$value": "{neutral.gray.25}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.0}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.25}" }
+    },
+    "overlay": {
+      "$description": "Scrim/dimming — references generated neutral-dark alpha tokens",
+      "ghost":  { "$type": "color", "$value": "{neutral-dark.10}" },
+      "soft":   { "$type": "color", "$value": "{neutral-dark.200}" },
+      "base":   { "$type": "color", "$value": "{neutral-dark.500}" },
+      "strong": { "$type": "color", "$value": "{neutral-dark.800}" }
+    },
+    "static": {
+      "$description": "Theme-independent backgrounds",
+      "light": { "$type": "color", "$value": "{neutral.gray.0}" },
+      "dark":  { "$type": "color", "$value": "{neutral.gray.975}" }
+    }
+  },
+
+  "fill": {
+    "$description": "Fills — transparent component surfaces. References generated neutral-gray-500 alpha tokens (midpoint gray × opacity).",
+    "primary":    { "$type": "color", "$value": "{neutral-gray-500.200}" },
+    "secondary":  { "$type": "color", "$value": "{neutral-gray-500.100}" },
+    "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.75}" },
+    "quaternary": { "$type": "color", "$value": "{neutral-gray-500.50}" },
+    "none":       { "$type": "color", "$value": "{neutral-gray-500.0}" },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "{neutral-gray-500.200}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.100}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.75}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.50}" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "{neutral-gray-500.300}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-gray-500.200}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-gray-500.75}" }
+      }
+    }
+  },
+
+  "label": {
+    "$description": "Labels — text + icons. Dark base × opacity ladder for light theme.",
+    "neutral": {
+      "primary":    { "$type": "color", "$value": "{neutral-dark.1000}" },
+      "secondary":  { "$type": "color", "$value": "{neutral-dark.700}" },
+      "tertiary":   { "$type": "color", "$value": "{neutral-dark.400}" },
+      "quaternary": { "$type": "color", "$value": "{neutral-dark.200}" }
+    },
+    "neutral-inverted": {
+      "primary":    { "$type": "color", "$value": "{neutral-light.1000}" },
+      "secondary":  { "$type": "color", "$value": "{neutral-light.700}" },
+      "tertiary":   { "$type": "color", "$value": "{neutral-light.400}" },
+      "quaternary": { "$type": "color", "$value": "{neutral-light.200}" }
+    },
+    "brand": {
+      "primary":    { "$type": "color", "$value": "{brand.1000}" },
+      "secondary":  { "$type": "color", "$value": "{brand.800}" },
+      "tertiary":   { "$type": "color", "$value": "{brand.600}" },
+      "quaternary": { "$type": "color", "$value": "{brand.300}" }
+    },
+    "danger": {
+      "primary":    { "$type": "color", "$value": "{danger.1000}" },
+      "secondary":  { "$type": "color", "$value": "{danger.800}" },
+      "tertiary":   { "$type": "color", "$value": "{danger.600}" },
+      "quaternary": { "$type": "color", "$value": "{danger.300}" }
+    },
+    "warning": {
+      "primary":    { "$type": "color", "$value": "{warning.1000}" },
+      "secondary":  { "$type": "color", "$value": "{warning.800}" },
+      "tertiary":   { "$type": "color", "$value": "{warning.600}" },
+      "quaternary": { "$type": "color", "$value": "{warning.300}" }
+    },
+    "success": {
+      "primary":    { "$type": "color", "$value": "{success.1000}" },
+      "secondary":  { "$type": "color", "$value": "{success.800}" },
+      "tertiary":   { "$type": "color", "$value": "{success.600}" },
+      "quaternary": { "$type": "color", "$value": "{success.300}" }
+    },
+    "info": {
+      "primary":    { "$type": "color", "$value": "{info.1000}" },
+      "secondary":  { "$type": "color", "$value": "{info.800}" },
+      "tertiary":   { "$type": "color", "$value": "{info.600}" },
+      "quaternary": { "$type": "color", "$value": "{info.300}" }
+    },
+    "static": {
+      "light": {
+        "primary":    { "$type": "color", "$value": "{neutral-light.1000}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-light.700}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-light.400}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-light.200}" }
+      },
+      "dark": {
+        "primary":    { "$type": "color", "$value": "{neutral-dark.1000}" },
+        "secondary":  { "$type": "color", "$value": "{neutral-dark.700}" },
+        "tertiary":   { "$type": "color", "$value": "{neutral-dark.400}" },
+        "quaternary": { "$type": "color", "$value": "{neutral-dark.200}" }
+      }
+    }
+  },
+
+  "border": {
+    "$description": "Borders — 4 levels per accent. References generated alpha tokens.",
+    "neutral": {
+      "strong":   { "$type": "color", "$value": "{neutral-dark.1000}" },
+      "base":     { "$type": "color", "$value": "{neutral-gray-500.100}" },
+      "soft":     { "$type": "color", "$value": "{neutral-gray-500.50}" },
+      "ghost":    { "$type": "color", "$value": "{neutral-gray-500.0}" },
+      "inverted": { "$type": "color", "$value": "{neutral-light.1000}" }
+    },
+    "brand": {
+      "strong": { "$type": "color", "$value": "{brand.1000}" },
+      "base":   { "$type": "color", "$value": "{brand.200}" },
+      "soft":   { "$type": "color", "$value": "{brand.100}" }
+    },
+    "danger": {
+      "strong": { "$type": "color", "$value": "{danger.1000}" },
+      "base":   { "$type": "color", "$value": "{danger.200}" },
+      "soft":   { "$type": "color", "$value": "{danger.100}" }
+    },
+    "warning": {
+      "strong": { "$type": "color", "$value": "{warning.1000}" },
+      "base":   { "$type": "color", "$value": "{warning.200}" },
+      "soft":   { "$type": "color", "$value": "{warning.100}" }
+    },
+    "success": {
+      "strong": { "$type": "color", "$value": "{success.1000}" },
+      "base":   { "$type": "color", "$value": "{success.200}" },
+      "soft":   { "$type": "color", "$value": "{success.100}" }
+    },
+    "info": {
+      "strong": { "$type": "color", "$value": "{info.1000}" },
+      "base":   { "$type": "color", "$value": "{info.200}" },
+      "soft":   { "$type": "color", "$value": "{info.100}" }
+    },
+    "static": {
+      "light": {
+        "strong": { "$type": "color", "$value": "{neutral-light.1000}" },
+        "base":   { "$type": "color", "$value": "{neutral-gray-500.100}" },
+        "soft":   { "$type": "color", "$value": "{neutral-gray-500.100}" }
+      },
+      "dark": {
+        "strong": { "$type": "color", "$value": "{neutral-dark.1000}" },
+        "base":   { "$type": "color", "$value": "{neutral-gray-500.50}" },
+        "soft":   { "$type": "color", "$value": "{neutral-gray-500.50}" }
+      }
+    }
+  },
+
+  "fx": {
+    "$description": "Effects — all references, no hardcoded values",
+    "focus-ring": {
+      "brand":   { "$type": "color", "$value": "{brand.1000}" },
+      "danger":  { "$type": "color", "$value": "{danger.1000}" },
+      "neutral": { "$type": "color", "$value": "{neutral-dark.1000}" },
+      "warning": { "$type": "color", "$value": "{warning.1000}" },
+      "info":    { "$type": "color", "$value": "{info.1000}" }
+    },
+    "shadow": {
+      "major":    { "$type": "color", "$value": "{neutral-dark.100}" },
+      "penumbra": { "$type": "color", "$value": "{neutral-dark.50}" },
+      "ambient":  { "$type": "color", "$value": "{neutral-dark.25}" },
+      "minor":    { "$type": "color", "$value": "{neutral-dark.10}" }
+    },
+    "glow": {
+      "brand":    { "$type": "color", "$value": "{brand.500}" },
+      "neutral":  { "$type": "color", "$value": "{neutral-light.500}" },
+      "danger":   { "$type": "color", "$value": "{danger.500}" },
+      "warning":  { "$type": "color", "$value": "{warning.500}" },
+      "info":     { "$type": "color", "$value": "{info.500}" },
+      "inverted": { "$type": "color", "$value": "{neutral.gray.400}" }
+    },
+    "skeleton": {
+      "base":      { "$type": "color", "$value": "{neutral-gray-500.50}" },
+      "highlight": { "$type": "color", "$value": "{neutral-gray-500.25}" }
+    }
+  },
+
+  "misc": {
+    "control": {
+      "bg": { "$type": "color", "$value": "{bg.neutral.primary}" }
+    },
+    "badge": {
+      "label-contrast": { "$type": "color", "$value": "{label.static.dark.primary}" },
+      "label-default":  { "$type": "color", "$value": "{label.static.light.primary}" }
+    }
+  }
+}

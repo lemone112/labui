@@ -35,10 +35,10 @@ for (const theme of themes) {
 
   const sd = new StyleDictionary({
     source: [
-      'tokens/primitive/**/*.tokens.json',
-      'tokens/generated/**/*.tokens.json',
-      `tokens/semantic/${theme.name}.tokens.json`,
-      `tokens/material/${theme.name}.tokens.json`,
+      'primitive/**/*.tokens.json',
+      'generated/**/*.tokens.json',
+      `semantic/${theme.name}.tokens.json`,
+      `material/${theme.name}.tokens.json`,
     ],
     platforms: {
       css: {
@@ -91,7 +91,7 @@ async function generateBrandHueLayer() {
   --danger-hue: 29;
   --warning-hue: 69;
   --success-hue: 147;
-  --info-hue: var(--brand-hue);
+  --info-hue: 260;
 
   /* ═══ CONFIGURABLE NEUTRAL ═══ */
   --neutral-hue: 257;
@@ -103,6 +103,10 @@ async function generateBrandHueLayer() {
   --warning: oklch(0.786 0.172 var(--warning-hue));
   --success: oklch(0.730 0.194 var(--success-hue));
   --info: oklch(0.640 0.193 var(--info-hue));
+
+  /* ═══ NEUTRAL CONFIGURABLE ═══ */
+  --neutral-hue: 257;
+  --neutral-chroma: 0.007;
 }
 
 /* ═══ Display P3 enhanced accents ═══ */

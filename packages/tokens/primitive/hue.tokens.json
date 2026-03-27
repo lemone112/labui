@@ -37,9 +37,9 @@
     "info": {
       "$type": "color",
       "$value": "oklch(0.640 0.193 260)",
-      "$description": "Informational (#3E87FF). Derived from brand hue at runtime.",
+      "$description": "Informational (#3E87FF). Independent sentiment — blue zone.",
       "$extensions": {
-        "lab-ui": { "hex": "#3E87FF", "hue": "brand", "role": "sentiment", "configurable": false }
+        "lab-ui": { "hex": "#3E87FF", "hue": 260, "role": "sentiment", "configurable": false }
       }
     },
     "yellow": {

@@ -37,11 +37,11 @@ const OPACITY_STOPS = {
 export async function generateAlphaTokens() {
   // Read base hues
   const hueFile = JSON.parse(
-    await readFile('tokens/primitive/hue.tokens.json', 'utf-8')
+    await readFile('primitive/hue.tokens.json', 'utf-8')
   );
 
   const neutralFile = JSON.parse(
-    await readFile('tokens/primitive/neutral.tokens.json', 'utf-8')
+    await readFile('primitive/neutral.tokens.json', 'utf-8')
   );
 
   const generated = {};
@@ -106,9 +106,9 @@ export async function generateAlphaTokens() {
     ...generated,
   };
 
-  await mkdir('tokens/generated', { recursive: true });
+  await mkdir('generated', { recursive: true });
   await writeFile(
-    'tokens/generated/alpha.tokens.json',
+    'generated/alpha.tokens.json',
     JSON.stringify(output, null, 2)
   );
 

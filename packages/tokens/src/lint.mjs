@@ -16,8 +16,8 @@ let errors = 0;
 // ─── Check theme completeness ───────────────────────────────────
 
 async function checkThemeCompleteness() {
-  const lightRaw = await readFile('tokens/semantic/light.tokens.json', 'utf-8');
-  const darkRaw = await readFile('tokens/semantic/dark.tokens.json', 'utf-8');
+  const lightRaw = await readFile('semantic/light.tokens.json', 'utf-8');
+  const darkRaw = await readFile('semantic/dark.tokens.json', 'utf-8');
 
   const lightKeys = extractKeys(JSON.parse(lightRaw));
   const darkKeys = extractKeys(JSON.parse(darkRaw));
@@ -42,8 +42,8 @@ async function checkThemeCompleteness() {
 // ─── Check material completeness ────────────────────────────────
 
 async function checkMaterialCompleteness() {
-  const lightRaw = await readFile('tokens/material/light.tokens.json', 'utf-8');
-  const darkRaw = await readFile('tokens/material/dark.tokens.json', 'utf-8');
+  const lightRaw = await readFile('material/light.tokens.json', 'utf-8');
+  const darkRaw = await readFile('material/dark.tokens.json', 'utf-8');
 
   const lightKeys = extractKeys(JSON.parse(lightRaw));
   const darkKeys = extractKeys(JSON.parse(darkRaw));
@@ -124,7 +124,9 @@ console.log('Linting Lab UI tokens...\n');
 
 await checkThemeCompleteness();
 await checkMaterialCompleteness();
-await validateOklch('tokens');
+await validateOklch('primitive');
+await validateOklch('semantic');
+await validateOklch('material');
 
 console.log(`\n${errors ? `✗ ${errors} error(s) found` : '✓ All checks passed'}`);
 process.exit(errors ? 1 : 0);
