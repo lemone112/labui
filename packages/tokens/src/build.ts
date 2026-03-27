@@ -21,11 +21,10 @@ interface ThemeConfig {
 
 console.log('→ Generating neutral scale...');
 await generateNeutralTokens({
-  hue: 283,
-  chroma: 0.012,
-  steps: 13,
-  maxLightness: 1.0,
-  minLightness: 0.15,
+  hue: 283,       // cool-purple tint (configurable)
+  chroma: 0.012,  // subtle colorfulness (configurable)
+  // steps are FIXED at 19 — semantic tokens reference specific stops by name
+  // (0, 10, 25, 50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900, 925, 950, 975, 990, 1000)
 });
 
 // ─── Phase 1: Generate alpha variants ───────────────────────────
