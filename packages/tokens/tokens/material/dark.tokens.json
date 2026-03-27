@@ -1,0 +1,43 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Dark theme materials. Glassmorphism with OVERLAY blend mode (not color-dodge). Different tint colors. Values from Figma Dark-mode export.",
+
+  "material": {
+    "subtle": {
+      "$description": "Lightest glass — dark variant",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.250 0 0 / 0.55)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.680 0 0)" },
+      "blend":     { "$type": "string", "$value": "overlay" },
+      "blur":      { "$type": "dimension", "$value": { "value": 6, "unit": "px" } }
+    },
+    "soft": {
+      "$description": "Soft frosted — dark variant",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.250 0 0 / 0.70)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.700 0 0)" },
+      "blend":     { "$type": "string", "$value": "overlay" },
+      "blur":      { "$type": "dimension", "$value": { "value": 12, "unit": "px" } }
+    },
+    "muted": {
+      "$description": "Standard glass — dark variant",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.250 0 0 / 0.82)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.630 0 0)" },
+      "blend":     { "$type": "string", "$value": "overlay" },
+      "blur":      { "$type": "dimension", "$value": { "value": 24, "unit": "px" } }
+    },
+    "base": {
+      "$description": "Dense glass — dark variant",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.250 0 0 / 0.90)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.560 0 0)" },
+      "blend":     { "$type": "string", "$value": "overlay" },
+      "blur":      { "$type": "dimension", "$value": { "value": 24, "unit": "px" } }
+    },
+    "elevated": {
+      "$description": "Strongest glass — dark variant. Note: fill-01 uses LIGHTER base (mid-gray)",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.590 0 0 / 0.80)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.210 0 0)" },
+      "blend":     { "$type": "string", "$value": "overlay" },
+      "blur":      { "$type": "dimension", "$value": { "value": 64, "unit": "px" } }
+    },
+    "saturate":    { "$type": "number", "$value": 1.8 }
+  }
+}

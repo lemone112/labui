@@ -1,0 +1,43 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Light theme materials. Glassmorphism with color-dodge blend mode. Values from Figma Light-mode export.",
+
+  "material": {
+    "subtle": {
+      "$description": "Lightest glass — barely visible",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.800 0 0 / 0.44)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.150 0 0)" },
+      "blend":     { "$type": "string", "$value": "color-dodge" },
+      "blur":      { "$type": "dimension", "$value": { "value": 6, "unit": "px" } }
+    },
+    "soft": {
+      "$description": "Soft frosted surface",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.730 0 0 / 0.70)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.300 0 0)" },
+      "blend":     { "$type": "string", "$value": "color-dodge" },
+      "blur":      { "$type": "dimension", "$value": { "value": 12, "unit": "px" } }
+    },
+    "muted": {
+      "$description": "Standard glass surface",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.770 0 0 / 0.82)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.310 0 0)" },
+      "blend":     { "$type": "string", "$value": "color-dodge" },
+      "blur":      { "$type": "dimension", "$value": { "value": 24, "unit": "px" } }
+    },
+    "base": {
+      "$description": "Dense glass — most content readable",
+      "fill-01":   { "$type": "color", "$value": "oklch(0.680 0 0 / 0.97)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.450 0 0)" },
+      "blend":     { "$type": "string", "$value": "color-dodge" },
+      "blur":      { "$type": "dimension", "$value": { "value": 24, "unit": "px" } }
+    },
+    "elevated": {
+      "$description": "Strongest glass — floating panels",
+      "fill-01":   { "$type": "color", "$value": "oklch(1.000 0 0 / 0.80)" },
+      "fill-02":   { "$type": "color", "$value": "oklch(0.250 0 0)" },
+      "blend":     { "$type": "string", "$value": "color-dodge" },
+      "blur":      { "$type": "dimension", "$value": { "value": 64, "unit": "px" } }
+    },
+    "saturate":    { "$type": "number", "$value": 1.8 }
+  }
+}
