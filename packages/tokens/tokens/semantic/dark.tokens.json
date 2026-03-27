@@ -3,18 +3,18 @@
   "$description": "Dark theme semantic tokens. Same 4 layers as light, inverted. Different opacity values per layer.",
 
   "bg": {
-    "$description": "Backgrounds — dark mode uses darker gray steps",
+    "$description": "Backgrounds — dark mode: progressive steps 0/1/2 (not alternating like light)",
     "neutral": {
-      "primary":   { "$type": "color", "$value": "{neutral.gray.25}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.50}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.75}" },
-      "inverted":  { "$type": "color", "$value": "{neutral.gray.1000}" }
+      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.50}" },
+      "inverted":  { "$type": "color", "$value": "{neutral.gray.975}" }
     },
     "grouped": {
-      "$description": "Apple HIG grouped backgrounds — dark variant",
-      "primary":   { "$type": "color", "$value": "{neutral.gray.25}" },
-      "secondary": { "$type": "color", "$value": "{neutral.gray.50}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.gray.75}" }
+      "$description": "Apple HIG grouped backgrounds — dark: also progressive 0/1/2",
+      "primary":   { "$type": "color", "$value": "{neutral.gray.0}" },
+      "secondary": { "$type": "color", "$value": "{neutral.gray.25}" },
+      "tertiary":  { "$type": "color", "$value": "{neutral.gray.50}" }
     },
     "overlay": {
       "$description": "Scrim/dimming — dark mode uses dark base (not light)",
@@ -24,7 +24,7 @@
       "strong": { "$type": "color", "$value": "{neutral.dark.800}" }
     },
     "static": {
-      "$description": "Theme-independent — INVERTED vs light theme",
+      "$description": "Fixed-tone backgrounds. Light = light-toned surface, Dark = dark-toned surface. Values SWAP between themes.",
       "light": { "$type": "color", "$value": "{neutral.gray.1000}" },
       "dark":  { "$type": "color", "$value": "{neutral.gray.25}" }
     }
