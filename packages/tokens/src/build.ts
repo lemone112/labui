@@ -24,6 +24,7 @@ import { generateAccentTokens } from './generate-accents.js';
 import { generateAlphaTokens } from './generate-alpha.js';
 import { generateNeutralTokens } from './generate-neutral-scale.js';
 import { generateTailwindTheme } from './generate-tailwind.js';
+import { generateTypographyTokens } from './generate-typography.js';
 import { generateOnSolidLabel, correctLabelColor } from './generate-labels.js';
 import { oklchToCss, type OklchColor } from './color-utils.js';
 
@@ -168,6 +169,9 @@ await generateNeutralTokens({
   hue: 283,       // cool-purple tint (configurable)
   chroma: 0.012,  // subtle colorfulness (configurable)
 });
+
+console.log('-> Phase 0c: Generating typography scale...');
+await generateTypographyTokens();
 
 console.log('-> Phase 2: Generating alpha variants...');
 await generateAlphaTokens();

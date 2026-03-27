@@ -6,7 +6,7 @@
  * Output: dist/tailwind/theme.css
  */
 
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -14,6 +14,30 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const tokensRoot = join(__dirname, '..');
 
 export async function generateTailwindTheme(): Promise<void> {
+  // Read generated typography tokens for dynamic emission
+  const typoJson = JSON.parse(
+    await readFile(join(tokensRoot, 'primitive/typography.tokens.json'), 'utf-8'),
+  ) as Record<string, any>;
+  const typo = typoJson.typography;
+
+  // Build --text-* and --leading-* and --tracking-* lines from tokens
+  const textLines: string[] = [];
+  const leadingLines: string[] = [];
+  const trackingLines: string[] = [];
+
+  for (const [name, token] of Object.entries(typo.size) as [string, any][]) {
+    textLines.push(`  --text-${name}: ${token.$value};`);
+  }
+  for (const [name, token] of Object.entries(typo.lineHeight) as [string, any][]) {
+    leadingLines.push(`  --leading-${name}: ${token.$value};`);
+  }
+  for (const [name, token] of Object.entries(typo.letterSpacing) as [string, any][]) {
+    trackingLines.push(`  --tracking-${name}: ${token.$value};`);
+  }
+
+  const fontSans = typo.family.sans.$value;
+  const fontMono = typo.family.mono.$value;
+
   const css = `/* Lab UI — Tailwind v4 Theme
  * Auto-generated. Do not edit.
  *
@@ -40,6 +64,25 @@ export async function generateTailwindTheme(): Promise<void> {
 
   /* Radius base — Tailwind generates rounded-* via multipliers */
   --radius: 0.5rem;
+
+  /* Font families */
+  --font-sans: ${fontSans};
+  --font-mono: ${fontMono};
+
+  /* Type scale — generated from typography.config.ts */
+${textLines.join('\n')}
+
+  /* Line heights */
+${leadingLines.join('\n')}
+
+  /* Letter spacing */
+${trackingLines.join('\n')}
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   /* Shadows — semantic elevation */
   --shadow-inset: inset 0 1px 2px 0 rgba(0,0,0,0.05);
@@ -129,13 +172,6 @@ export async function generateTailwindTheme(): Promise<void> {
   --color-focus-warning: var(--fx-focus-ring-warning);
   --color-focus-success: var(--fx-focus-ring-success);
   --color-focus-info: var(--fx-focus-ring-info);
-
-  /* Shadows */
-  --shadow-xs: 0 0 1px 0 var(--fx-shadow-major), 0 1px 1px 0 var(--fx-shadow-minor);
-  --shadow-sm: 0 1px 2px 0 var(--fx-shadow-major), 0 2px 2px 0 var(--fx-shadow-penumbra), 0 4px 2px 0 var(--fx-shadow-ambient), 0 12px 8px 0 var(--fx-shadow-minor);
-  --shadow-md: 0 1px 2px 0 var(--fx-shadow-major), 0 4px 4px 0 var(--fx-shadow-penumbra), 0 12px 8px 0 var(--fx-shadow-ambient), 0 24px 12px 0 var(--fx-shadow-minor);
-  --shadow-lg: 0 4px 8px 0 var(--fx-shadow-major), 0 12px 12px 0 var(--fx-shadow-penumbra), 0 24px 16px 0 var(--fx-shadow-ambient), 0 48px 24px 0 var(--fx-shadow-minor);
-  --shadow-xl: 0 16px 36px 0 var(--fx-shadow-major), 0 24px 48px 0 var(--fx-shadow-penumbra), 0 36px 64px 0 var(--fx-shadow-ambient), 0 48px 96px 0 var(--fx-shadow-minor);
 
   /* Skeleton */
   --color-skeleton: var(--fx-skeleton-base);

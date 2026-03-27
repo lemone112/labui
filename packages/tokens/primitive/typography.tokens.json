@@ -1,0 +1,184 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "typography": {
+    "$description": "Type scale. UI ratio: 1.25, Display ratio: 1.5. Base: 16px. Generated.",
+    "family": {
+      "sans": {
+        "$type": "fontFamily",
+        "$value": "Geist, ui-sans-serif, system-ui, sans-serif"
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": "Geist Mono, ui-monospace, monospace"
+      }
+    },
+    "size": {
+      "micro": {
+        "$type": "dimension",
+        "$value": "0.5rem"
+      },
+      "caption": {
+        "$type": "dimension",
+        "$value": "0.625rem"
+      },
+      "label": {
+        "$type": "dimension",
+        "$value": "0.75rem"
+      },
+      "body-sm": {
+        "$type": "dimension",
+        "$value": "0.875rem"
+      },
+      "body": {
+        "$type": "dimension",
+        "$value": "1rem"
+      },
+      "body-lg": {
+        "$type": "dimension",
+        "$value": "1.25rem"
+      },
+      "subheading": {
+        "$type": "dimension",
+        "$value": "1.5rem"
+      },
+      "heading": {
+        "$type": "dimension",
+        "$value": "2rem"
+      },
+      "display-sm": {
+        "$type": "dimension",
+        "$value": "3rem"
+      },
+      "display": {
+        "$type": "dimension",
+        "$value": "4rem"
+      },
+      "hero": {
+        "$type": "dimension",
+        "$value": "5rem"
+      },
+      "mega": {
+        "$type": "dimension",
+        "$value": "7rem"
+      }
+    },
+    "lineHeight": {
+      "micro": {
+        "$type": "number",
+        "$value": 1.75
+      },
+      "caption": {
+        "$type": "number",
+        "$value": 1.75
+      },
+      "label": {
+        "$type": "number",
+        "$value": 1.65
+      },
+      "body-sm": {
+        "$type": "number",
+        "$value": 1.55
+      },
+      "body": {
+        "$type": "number",
+        "$value": 1.5
+      },
+      "body-lg": {
+        "$type": "number",
+        "$value": 1.4
+      },
+      "subheading": {
+        "$type": "number",
+        "$value": 1.35
+      },
+      "heading": {
+        "$type": "number",
+        "$value": 1.25
+      },
+      "display-sm": {
+        "$type": "number",
+        "$value": 1.15
+      },
+      "display": {
+        "$type": "number",
+        "$value": 1.15
+      },
+      "hero": {
+        "$type": "number",
+        "$value": 1.1
+      },
+      "mega": {
+        "$type": "number",
+        "$value": 1.05
+      }
+    },
+    "letterSpacing": {
+      "micro": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "caption": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "label": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "body-sm": {
+        "$type": "dimension",
+        "$value": "0em"
+      },
+      "body": {
+        "$type": "dimension",
+        "$value": "-0.001em"
+      },
+      "body-lg": {
+        "$type": "dimension",
+        "$value": "-0.002em"
+      },
+      "subheading": {
+        "$type": "dimension",
+        "$value": "-0.003em"
+      },
+      "heading": {
+        "$type": "dimension",
+        "$value": "-0.005em"
+      },
+      "display-sm": {
+        "$type": "dimension",
+        "$value": "-0.006em"
+      },
+      "display": {
+        "$type": "dimension",
+        "$value": "-0.006em"
+      },
+      "hero": {
+        "$type": "dimension",
+        "$value": "-0.007em"
+      },
+      "mega": {
+        "$type": "dimension",
+        "$value": "-0.007em"
+      }
+    },
+    "weight": {
+      "regular": {
+        "$type": "number",
+        "$value": 400
+      },
+      "medium": {
+        "$type": "number",
+        "$value": 500
+      },
+      "semibold": {
+        "$type": "number",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "number",
+        "$value": 700
+      }
+    }
+  }
+}
