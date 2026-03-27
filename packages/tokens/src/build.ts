@@ -13,7 +13,7 @@
  *   9. Output: DTCG JSON -> Style Dictionary v5 -> CSS + Tailwind
  *
  * 4 themes: light, dark, light-ic, dark-ic
- * CSS prefix: --lab-
+ * CSS output: clean variable names (no namespace prefix)
  */
 
 import StyleDictionary from 'style-dictionary';
@@ -194,7 +194,6 @@ for (const theme of themes) {
     ],
     platforms: {
       css: {
-        prefix: 'lab',
         transformGroup: 'css',
         buildPath: `${tokensRootGlob}/dist/css/`,
         files: [
