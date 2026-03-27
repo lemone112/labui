@@ -1,0 +1,144 @@
+/**
+ * Alpha Variant Generator
+ *
+ * Generates hue × opacity matrix at build time:
+ * - 13 accent hues × 19 opacity stops = 247 alpha color tokens
+ * - Neutral/Light (white × 19 opacity) = 19 tokens
+ * - Neutral/Dark (near-black × 19 opacity) = 19 tokens
+ * - Neutral/Gray-500 (midpoint × 19 opacity) = 19 tokens (for fills/borders)
+ *
+ * Total generated: ~300 tokens from base colors + 19 stops
+ */
+
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+
+interface DTCGColorToken {
+  $type: 'color';
+  $value: string;
+  $description?: string;
+  $extensions?: Record<string, unknown>;
+}
+
+interface DTCGTokenGroup {
+  [key: string]: DTCGColorToken | DTCGTokenGroup | string;
+}
+
+interface OpacityScale {
+  [stop: string]: number;
+}
+
+// 19-stop opacity scale (matching Figma — proven visual, symmetric)
+const OPACITY_STOPS: OpacityScale = {
+  '0':    0,
+  '10':   0.01,
+  '25':   0.03,
+  '50':   0.05,
+  '75':   0.08,
+  '100':  0.10,
+  '200':  0.20,
+  '300':  0.30,
+  '400':  0.40,
+  '500':  0.50,
+  '600':  0.60,
+  '700':  0.70,
+  '800':  0.80,
+  '900':  0.90,
+  '925':  0.93,
+  '950':  0.95,
+  '975':  0.98,
+  '990':  0.99,
+  '1000': 1.00,
+};
+
+const OKLCH_REGEX = /oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/;
+
+function parseOklch(value: string): [string, string, string] | null {
+  const match = value.match(OKLCH_REGEX);
+  if (!match) return null;
+  return [match[1], match[2], match[3]];
+}
+
+function generateAlphaScale(
+  L: string,
+  C: string,
+  H: string,
+): Record<string, DTCGColorToken> {
+  const scale: Record<string, DTCGColorToken> = {};
+
+  for (const [stop, alpha] of Object.entries(OPACITY_STOPS)) {
+    scale[stop] = {
+      $type: 'color',
+      $value: alpha === 1
+        ? `oklch(${L} ${C} ${H})`
+        : `oklch(${L} ${C} ${H} / ${alpha})`,
+    };
+  }
+
+  return scale;
+}
+
+export async function generateAlphaTokens(): Promise<void> {
+  const hueFile = JSON.parse(
+    await readFile('primitive/hue.tokens.json', 'utf-8'),
+  ) as DTCGTokenGroup;
+
+  const neutralFile = JSON.parse(
+    await readFile('primitive/neutral.tokens.json', 'utf-8'),
+  ) as DTCGTokenGroup;
+
+  const generated: Record<string, Record<string, DTCGColorToken>> = {};
+
+  // ─── Accent hues × 19 opacity stops ───
+
+  const hues = hueFile.hue as DTCGTokenGroup;
+  for (const [name, token] of Object.entries(hues)) {
+    if (name.startsWith('$')) continue;
+    const colorToken = token as DTCGColorToken;
+    if (!colorToken.$value) continue;
+
+    const parsed = parseOklch(colorToken.$value);
+    if (!parsed) continue;
+
+    generated[name] = generateAlphaScale(...parsed);
+  }
+
+  // ─── Neutral/Light (white × opacity) ───
+
+  generated['neutral-light'] = generateAlphaScale('1.000', '0', '0');
+
+  // ─── Neutral/Dark (near-black × opacity) ───
+
+  const neutral = neutralFile.neutral as DTCGTokenGroup;
+  const gray = neutral.gray as DTCGTokenGroup;
+  const darkBase = (gray['1000'] as DTCGColorToken).$value;
+  const darkParsed = parseOklch(darkBase) ?? ['0.086', '0.006', '285'];
+
+  generated['neutral-dark'] = generateAlphaScale(...darkParsed);
+
+  // ─── Neutral/Gray-500 midpoint × opacity (for fills/borders) ───
+
+  const midBase = (gray['500'] as DTCGColorToken).$value;
+  const midParsed = parseOklch(midBase) ?? ['0.642', '0.007', '286'];
+
+  generated['neutral-gray-500'] = generateAlphaScale(...midParsed);
+
+  // ─── Write generated tokens ───
+
+  const output: DTCGTokenGroup = {
+    $schema: 'https://tr.designtokens.org/format/',
+    $description: 'GENERATED — Do not edit. Alpha variants computed from base hues × 19 opacity stops.',
+    ...generated,
+  };
+
+  await mkdir('generated', { recursive: true });
+  await writeFile(
+    'generated/alpha.tokens.json',
+    JSON.stringify(output, null, 2),
+  );
+
+  const count = Object.values(generated).reduce(
+    (sum, group) => sum + Object.keys(group).length,
+    0,
+  );
+  console.log(`  ✓ Generated ${count} alpha variant tokens`);
+}

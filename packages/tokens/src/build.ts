@@ -4,19 +4,17 @@
  * Source: W3C DTCG 2025.10 JSON (.tokens.json)
  * Tool:   Style Dictionary v4 (ESM)
  * Output: CSS custom properties + Tailwind v4 @theme
- *
- * Features:
- * - OKLCH color space throughout
- * - Alpha variants GENERATED from base hue × 19 opacity stops
- * - Neutral Light/Dark scales GENERATED from white/near-black × opacity
- * - Brand hue configurable at runtime via --brand-hue
- * - Materials with per-theme blend modes (color-dodge / overlay)
- * - Tailwind v4 @theme inline integration
  */
 
 import StyleDictionary from 'style-dictionary';
-import { generateAlphaTokens } from './generate-alpha.mjs';
-import { generateTailwindTheme } from './generate-tailwind.mjs';
+import { writeFile, mkdir } from 'node:fs/promises';
+import { generateAlphaTokens } from './generate-alpha.js';
+import { generateTailwindTheme } from './generate-tailwind.js';
+
+interface ThemeConfig {
+  name: string;
+  selector: string;
+}
 
 // ─── Phase 1: Generate computed tokens ──────────────────────────
 
@@ -25,7 +23,7 @@ await generateAlphaTokens();
 
 // ─── Phase 2: Build per-theme CSS ───────────────────────────────
 
-const themes = [
+const themes: ThemeConfig[] = [
   { name: 'light', selector: ':root, [data-theme="light"]' },
   { name: 'dark',  selector: '[data-theme="dark"]' },
 ];
@@ -75,38 +73,34 @@ console.log('✓ Lab UI tokens built successfully');
 
 // ─── Brand hue runtime CSS ──────────────────────────────────────
 
-async function generateBrandHueLayer() {
+async function generateBrandHueLayer(): Promise<void> {
   const css = `/* Lab UI — Brand Hue Runtime Layer
  * Override --brand-hue to change the entire accent system.
- * Sentiment hues (danger, warning, success) are FIXED.
+ * Sentiments (danger, warning, success, info) have independent fixed hues.
  */
 
 :root {
-  /* ═══ THE SINGLE SLIDER ═══ */
+  /* ═══ BRAND — configurable ═══ */
   --brand-hue: 257;
   --brand-chroma: 0.218;
   --brand-lightness: 0.603;
 
-  /* ═══ FIXED SENTIMENT HUES (verified via Color.js) ═══ */
+  /* ═══ SENTIMENTS — independent fixed hues ═══ */
   --danger-hue: 29;
   --warning-hue: 69;
   --success-hue: 147;
   --info-hue: 260;
 
-  /* ═══ CONFIGURABLE NEUTRAL ═══ */
+  /* ═══ NEUTRAL — configurable tint ═══ */
   --neutral-hue: 257;
   --neutral-chroma: 0.007;
 
-  /* ═══ COMPUTED BRAND ACCENT ═══ */
+  /* ═══ COMPUTED ACCENTS ═══ */
   --brand: oklch(var(--brand-lightness) var(--brand-chroma) var(--brand-hue));
   --danger: oklch(0.654 0.232 var(--danger-hue));
   --warning: oklch(0.786 0.172 var(--warning-hue));
   --success: oklch(0.730 0.194 var(--success-hue));
   --info: oklch(0.640 0.193 var(--info-hue));
-
-  /* ═══ NEUTRAL CONFIGURABLE ═══ */
-  --neutral-hue: 257;
-  --neutral-chroma: 0.007;
 }
 
 /* ═══ Display P3 enhanced accents ═══ */
@@ -117,7 +111,6 @@ async function generateBrandHueLayer() {
 }
 `;
 
-  const { writeFile, mkdir } = await import('node:fs/promises');
   await mkdir('dist/css', { recursive: true });
   await writeFile('dist/css/brand.css', css);
 }

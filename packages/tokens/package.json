@@ -16,13 +16,15 @@
     "README.md"
   ],
   "scripts": {
-    "build": "node src/build.mjs",
-    "lint": "node src/lint.mjs",
-    "clean": "rm -rf dist"
+    "build": "tsx src/build.ts",
+    "lint": "tsx src/lint.ts",
+    "clean": "rm -rf dist generated"
   },
   "devDependencies": {
     "style-dictionary": "^4.3.0",
-    "@tokens-studio/sd-transforms": "^1.5.0"
+    "@tokens-studio/sd-transforms": "^1.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
   },
   "keywords": ["design-tokens", "oklch", "tailwindcss", "css-variables"],
   "license": "MIT"
