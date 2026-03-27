@@ -91,12 +91,19 @@ export async function generateAlphaTokens(): Promise<void> {
   const generated: Record<string, Record<string, DTCGColorToken>> = {};
 
   // ─── Accent hues × opacity stops ───
+  // v3: each accent has per-theme variants (light/dark/light-ic/dark-ic).
+  // Use the 'light' variant as base for alpha generation.
 
   const hues = hueFile.hue as DTCGTokenGroup;
   for (const [name, token] of Object.entries(hues)) {
     if (name.startsWith('$')) continue;
-    const colorToken = token as DTCGColorToken;
-    if (!colorToken.$value) continue;
+
+    // Try flat token first (backward compat), then nested 'light' variant
+    const group = token as DTCGTokenGroup;
+    const colorToken = (group.$value
+      ? group
+      : group.light) as DTCGColorToken | undefined;
+    if (!colorToken?.$value) continue;
 
     const parsed = parseOklch(colorToken.$value);
     if (!parsed) continue;
@@ -109,17 +116,19 @@ export async function generateAlphaTokens(): Promise<void> {
   generated['neutral-light'] = generateAlphaScale('1.000', '0', '0', opacityStops);
 
   // ─── Neutral/Dark (near-black × opacity) ───
+  // v3 scale: step 12 = darkest (was 1000 in old naming)
 
   const neutral = neutralFile.neutral as DTCGTokenGroup;
-  const darkBase = (neutral['1000'] as DTCGColorToken).$value;
-  const darkParsed = parseOklch(darkBase) ?? ['0.086', '0.006', '285'];
+  const darkBase = (neutral['12'] as DTCGColorToken)?.$value;
+  const darkParsed = parseOklch(darkBase ?? '') ?? ['0.086', '0.006', '285'];
 
   generated['neutral-dark'] = generateAlphaScale(...darkParsed, opacityStops);
 
-  // ─── Neutral midpoint (500) × opacity — used by fills and borders ───
+  // ─── Neutral midpoint (step 6) × opacity — used by fills and borders ───
+  // v3 scale: step 6 = midpoint (was 500 in old naming)
 
-  const midBase = (neutral['500'] as DTCGColorToken).$value;
-  const midParsed = parseOklch(midBase) ?? ['0.642', '0.007', '286'];
+  const midBase = (neutral['6'] as DTCGColorToken)?.$value;
+  const midParsed = parseOklch(midBase ?? '') ?? ['0.642', '0.007', '286'];
 
   generated['neutral-mid'] = generateAlphaScale(...midParsed, opacityStops);
 

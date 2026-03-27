@@ -1,82 +1,508 @@
 {
-  "$schema": "https://tr.designtokens.org/format/",
   "hue": {
-    "$description": "Base accent hues. Verified via Color.js (sRGB → OKLab → OKLCH). Brand configurable via --brand-hue.",
     "brand": {
-      "$type": "color",
-      "$value": "oklch(0.603 0.218 257)",
-      "$description": "Primary brand color (#007AFF). Hue configurable at runtime.",
-      "$extensions": {
-        "lab-ui": { "hex": "#007AFF", "hue": 257, "role": "brand", "configurable": true }
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.218 257)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6027647392623868,
+            "C": 0.2177122410457496,
+            "H": 257.42386989555746
+          },
+          "hex": "#007aff"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.128 259)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623869,
+            "C": 0.12750870370947154,
+            "H": 258.67919811029077
+          },
+          "hex": "#7cb0ff"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.453 0.173 259)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4527647392623868,
+            "C": 0.17285440959069862,
+            "H": 258.67919811029077
+          },
+          "hex": "#004fb3"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.073 259)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623868,
+            "C": 0.0729190041388165,
+            "H": 259.2188160082616
+          },
+          "hex": "#b2d0ff"
+        }
       }
     },
     "danger": {
-      "$type": "color",
-      "$value": "oklch(0.654 0.232 29)",
-      "$description": "Danger/error (#FF3B30). Fixed hue — red is always danger.",
-      "$extensions": {
-        "lab-ui": { "hex": "#FF3B30", "hue": 29, "role": "sentiment", "configurable": false }
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.630 0.230 29)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6300000000000001,
+            "C": 0.22969640110331355,
+            "H": 29
+          },
+          "hex": "#f53327"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.630 0.230 29)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6300000000000001,
+            "C": 0.22969640110331355,
+            "H": 29
+          },
+          "hex": "#f53327"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.520 0.213 29)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.52,
+            "C": 0.21321871776525503,
+            "H": 29
+          },
+          "hex": "#c60002"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.720 0.175 29)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.72,
+            "C": 0.17463948792240588,
+            "H": 29
+          },
+          "hex": "#ff7362"
+        }
       }
     },
     "warning": {
-      "$type": "color",
-      "$value": "oklch(0.786 0.172 69)",
-      "$description": "Warning/caution (#FFA100). Fixed hue — orange is always warning.",
-      "$extensions": {
-        "lab-ui": { "hex": "#FFA100", "hue": 69, "role": "sentiment", "configurable": false }
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.780 0.170 69)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7800000000000002,
+            "C": 0.1697756008154927,
+            "H": 69.00000000000011
+          },
+          "hex": "#fca002"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.750 0.176 60)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.75,
+            "C": 0.17588482737844643,
+            "H": 60
+          },
+          "hex": "#fc8e00"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.620 0.154 55)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.62,
+            "C": 0.15351346763394785,
+            "H": 55
+          },
+          "hex": "#ca6800"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.780 0.157 60)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.78,
+            "C": 0.15699645517748811,
+            "H": 60
+          },
+          "hex": "#ff9c3f"
+        }
       }
     },
     "success": {
-      "$type": "color",
-      "$value": "oklch(0.730 0.194 147)",
-      "$description": "Success/positive (#34C759). Fixed hue — green is always success.",
-      "$extensions": {
-        "lab-ui": { "hex": "#34C759", "hue": 147, "role": "sentiment", "configurable": false }
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.730 0.190 147)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7300000000000002,
+            "C": 0.1897492009114333,
+            "H": 147.0000000000001
+          },
+          "hex": "#3dc65a"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.720 0.190 150)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.72,
+            "C": 0.18974920091143316,
+            "H": 150
+          },
+          "hex": "#21c45f"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.580 0.170 147)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.58,
+            "C": 0.16977560081549298,
+            "H": 147.00000000000006
+          },
+          "hex": "#099336"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.740 0.180 150)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7400000000000001,
+            "C": 0.17976240086346315,
+            "H": 150.00000000000006
+          },
+          "hex": "#3cc96a"
+        }
       }
     },
     "info": {
-      "$type": "color",
-      "$value": "oklch(0.640 0.193 260)",
-      "$description": "Informational (#3E87FF). Independent sentiment — blue zone.",
-      "$extensions": {
-        "lab-ui": { "hex": "#3E87FF", "hue": 260, "role": "sentiment", "configurable": false }
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.640 0.190 260)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6400000000000002,
+            "C": 0.18974920091143316,
+            "H": 259.99999999999994
+          },
+          "hex": "#4087fd"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.700 0.159 257)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7,
+            "C": 0.1586806368335748,
+            "H": 257
+          },
+          "hex": "#599fff"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.470 0.220 263)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4700000000000001,
+            "C": 0.21970960105534357,
+            "H": 263
+          },
+          "hex": "#0b49d3"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.760 0.126 253)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.76,
+            "C": 0.12594184084155388,
+            "H": 253
+          },
+          "hex": "#75b5ff"
+        }
       }
     },
-    "yellow": {
-      "$type": "color",
-      "$value": "oklch(0.873 0.179 92)",
-      "$description": "Decorative yellow (#FFD000)",
-      "$extensions": { "lab-ui": { "hex": "#FFD000" } }
+    "decorative-1": {
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.218 310)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.602764739262387,
+            "C": 0.21771224104574924,
+            "H": 309.9478698955574
+          },
+          "hex": "#a84edf"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.172 310)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623869,
+            "C": 0.17170293479728763,
+            "H": 310.0425213048513
+          },
+          "hex": "#d08dff"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.453 0.218 310)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4527647392623869,
+            "C": 0.2177122410457495,
+            "H": 310.0425213048513
+          },
+          "hex": "#7a12ad"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.098 310)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623868,
+            "C": 0.09793951783861182,
+            "H": 310.08320834902315
+          },
+          "hex": "#e2bdff"
+        }
+      }
     },
-    "teal": {
-      "$type": "color",
-      "$value": "oklch(0.789 0.122 231)",
-      "$description": "Decorative teal (#5AC8FA)",
-      "$extensions": { "lab-ui": { "hex": "#5AC8FA" } }
+    "decorative-2": {
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.114 225)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6027647392623868,
+            "C": 0.114166928803071,
+            "H": 224.96386989555754
+          },
+          "hex": "#008eb4"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.145 227)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623869,
+            "C": 0.14519674804980195,
+            "H": 226.90214685345097
+          },
+          "hex": "#00c0f5"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.423 0.082 227)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4227647392623868,
+            "C": 0.08154482021988639,
+            "H": 226.90214685345097
+          },
+          "hex": "#005670"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.094 228)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623868,
+            "C": 0.09393290339590035,
+            "H": 227.7353384645596
+          },
+          "hex": "#8adbff"
+        }
+      }
     },
-    "mint": {
-      "$type": "color",
-      "$value": "oklch(0.748 0.130 189)",
-      "$description": "Decorative mint (#00C7BE)",
-      "$extensions": { "lab-ui": { "hex": "#00C7BE" } }
+    "decorative-3": {
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.103 193)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6027647392623868,
+            "C": 0.10335898004916885,
+            "H": 192.50386989555773
+          },
+          "hex": "#009491"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.128 196)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623869,
+            "C": 0.1282016935007674,
+            "H": 196.45926967950453
+          },
+          "hex": "#00c7ca"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.393 0.067 196)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.39276473926238675,
+            "C": 0.06689089179464613,
+            "H": 196.45926967950453
+          },
+          "hex": "#005152"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.145 198)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623869,
+            "C": 0.14503475678912892,
+            "H": 198.15954574435912
+          },
+          "hex": "#00ebf1"
+        }
+      }
     },
-    "indigo": {
-      "$type": "color",
-      "$value": "oklch(0.529 0.191 278)",
-      "$description": "Decorative indigo (#5856D6)",
-      "$extensions": { "lab-ui": { "hex": "#5856D6" } }
+    "decorative-4": {
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.218 330)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6027647392623868,
+            "C": 0.21771224104574952,
+            "H": 330.0118698955575
+          },
+          "hex": "#c43fbd"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.218 330)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623871,
+            "C": 0.21771224104574963,
+            "H": 329.9634652996605
+          },
+          "hex": "#f872ef"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.453 0.206 330)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4527647392623868,
+            "C": 0.20641480885896954,
+            "H": 329.9634652996606
+          },
+          "hex": "#8f008a"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.131 330)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623868,
+            "C": 0.13084250949236084,
+            "H": 329.9426580032233
+          },
+          "hex": "#ffaff7"
+        }
+      }
     },
-    "purple": {
-      "$type": "color",
-      "$value": "oklch(0.615 0.213 312)",
-      "$description": "Decorative purple (#AF52DE)",
-      "$extensions": { "lab-ui": { "hex": "#AF52DE" } }
+    "decorative-5": {
+      "light": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.130 108)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.6027647392623868,
+            "C": 0.12960466859802278,
+            "H": 107.51986989555735
+          },
+          "hex": "#8a8600"
+        }
+      },
+      "dark": {
+        "$type": "color",
+        "$value": "oklch(0.753 0.165 111)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.7527647392623869,
+            "C": 0.16495347739424066,
+            "H": 110.56079196962057
+          },
+          "hex": "#b5b700"
+        }
+      },
+      "light-ic": {
+        "$type": "color",
+        "$value": "oklch(0.453 0.099 111)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.4527647392623868,
+            "C": 0.09921442156816385,
+            "H": 110.56079196962057
+          },
+          "hex": "#595a00"
+        }
+      },
+      "dark-ic": {
+        "$type": "color",
+        "$value": "oklch(0.853 0.189 112)",
+        "$extensions": {
+          "oklch": {
+            "L": 0.8527647392623868,
+            "C": 0.1885809911902009,
+            "H": 111.86796881647228
+          },
+          "hex": "#d3d900"
+        }
+      }
     },
-    "pink": {
-      "$type": "color",
-      "$value": "oklch(0.650 0.238 18)",
-      "$description": "Decorative pink (#FF2D55)",
-      "$extensions": { "lab-ui": { "hex": "#FF2D55" } }
+    "$extensions": {
+      "neutralHue": 257.42386989555746,
+      "neutralChroma": 0.012
     }
   }
 }

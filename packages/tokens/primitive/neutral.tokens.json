@@ -1,25 +1,123 @@
 {
   "$schema": "https://tr.designtokens.org/format/",
   "neutral": {
-    "$description": "19-step neutral scale from lightest (0) to darkest (1000). Not 'gray' — 0 is white, 1000 is near-black. Cool-blue hue bias (H ~265-286). Light/Dark alpha scales GENERATED at build time.",
-    "0":    { "$type": "color", "$value": "oklch(1.000 0.000 0)",   "$extensions": { "lab-ui": { "hex": "#FFFFFF" } } },
-    "10":   { "$type": "color", "$value": "oklch(0.988 0.002 248)", "$extensions": { "lab-ui": { "hex": "#FAFBFC" } } },
-    "25":   { "$type": "color", "$value": "oklch(0.979 0.003 265)", "$extensions": { "lab-ui": { "hex": "#F7F8FA" } } },
-    "50":   { "$type": "color", "$value": "oklch(0.964 0.006 265)", "$extensions": { "lab-ui": { "hex": "#F1F3F7" } } },
-    "75":   { "$type": "color", "$value": "oklch(0.943 0.006 265)", "$extensions": { "lab-ui": { "hex": "#EAECF0" } } },
-    "100":  { "$type": "color", "$value": "oklch(0.928 0.005 275)", "$extensions": { "lab-ui": { "hex": "#E6E7EB" } } },
-    "200":  { "$type": "color", "$value": "oklch(0.864 0.006 275)", "$extensions": { "lab-ui": { "hex": "#D1D2D6" } } },
-    "300":  { "$type": "color", "$value": "oklch(0.833 0.006 275)", "$extensions": { "lab-ui": { "hex": "#C7C8CC" } } },
-    "400":  { "$type": "color", "$value": "oklch(0.752 0.006 286)", "$extensions": { "lab-ui": { "hex": "#AEAEB2" } } },
-    "500":  { "$type": "color", "$value": "oklch(0.642 0.007 286)", "$extensions": { "lab-ui": { "hex": "#8C8C91" } } },
-    "600":  { "$type": "color", "$value": "oklch(0.501 0.005 286)", "$extensions": { "lab-ui": { "hex": "#636366" } } },
-    "700":  { "$type": "color", "$value": "oklch(0.402 0.003 286)", "$extensions": { "lab-ui": { "hex": "#48484A" } } },
-    "800":  { "$type": "color", "$value": "oklch(0.349 0.003 286)", "$extensions": { "lab-ui": { "hex": "#3A3A3C" } } },
-    "900":  { "$type": "color", "$value": "oklch(0.294 0.004 286)", "$extensions": { "lab-ui": { "hex": "#2C2C2E" } } },
-    "925":  { "$type": "color", "$value": "oklch(0.261 0.004 286)", "$extensions": { "lab-ui": { "hex": "#242426" } } },
-    "950":  { "$type": "color", "$value": "oklch(0.227 0.004 286)", "$extensions": { "lab-ui": { "hex": "#1C1C1E" } } },
-    "975":  { "$type": "color", "$value": "oklch(0.174 0.004 286)", "$extensions": { "lab-ui": { "hex": "#101012" } } },
-    "990":  { "$type": "color", "$value": "oklch(0.135 0.005 286)", "$extensions": { "lab-ui": { "hex": "#08080A" } } },
-    "1000": { "$type": "color", "$value": "oklch(0.086 0.006 285)", "$extensions": { "lab-ui": { "hex": "#020203" } } }
+    "0": {
+      "$type": "color",
+      "$value": "oklch(1.000 0.000 0)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#ffffff"
+        }
+      }
+    },
+    "1": {
+      "$type": "color",
+      "$value": "oklch(0.970 0.004 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#f5f5f7"
+        }
+      }
+    },
+    "2": {
+      "$type": "color",
+      "$value": "oklch(0.925 0.007 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#e5e6eb"
+        }
+      }
+    },
+    "3": {
+      "$type": "color",
+      "$value": "oklch(0.860 0.009 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#d0d0d7"
+        }
+      }
+    },
+    "4": {
+      "$type": "color",
+      "$value": "oklch(0.775 0.011 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#b4b5bd"
+        }
+      }
+    },
+    "5": {
+      "$type": "color",
+      "$value": "oklch(0.680 0.012 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#97979f"
+        }
+      }
+    },
+    "6": {
+      "$type": "color",
+      "$value": "oklch(0.575 0.012 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#787880"
+        }
+      }
+    },
+    "7": {
+      "$type": "color",
+      "$value": "oklch(0.475 0.012 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#5b5b63"
+        }
+      }
+    },
+    "8": {
+      "$type": "color",
+      "$value": "oklch(0.380 0.011 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#414248"
+        }
+      }
+    },
+    "9": {
+      "$type": "color",
+      "$value": "oklch(0.300 0.009 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#2d2d32"
+        }
+      }
+    },
+    "10": {
+      "$type": "color",
+      "$value": "oklch(0.230 0.007 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#1c1d20"
+        }
+      }
+    },
+    "11": {
+      "$type": "color",
+      "$value": "oklch(0.170 0.004 283)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#0f0f11"
+        }
+      }
+    },
+    "12": {
+      "$type": "color",
+      "$value": "oklch(0.100 0.000 0)",
+      "$extensions": {
+        "lab-ui": {
+          "hex": "#030303"
+        }
+      }
+    },
+    "$description": "13-step neutral scale. Hue=283, chroma=0.012. GENERATED -- do not edit manually."
   }
 }

@@ -1,56 +1,95 @@
 /**
- * Lab UI Token Build Pipeline
+ * Lab UI v3 Token Build Pipeline
  *
- * Source: W3C DTCG 2025.10 JSON (.tokens.json)
- * Tool:   Style Dictionary v4 (ESM)
- * Output: CSS custom properties + Tailwind v4 @theme
+ * 9-step pipeline:
+ *   1. HEX -> OKLCH
+ *   2. Neutrals: brand H + chroma -> 13 steps
+ *   3. Sentiments: Figma base -> chroma harmonize with brand -> gamut clamp
+ *   4. Decoratives: rotate brand H -> gamut clamp -> collision check
+ *   5. Brand variants: dark/IC with hue shift + gamut clamp
+ *   6. Alpha matrix: all accents x 9 opacity stops
+ *   7. Label correction: for each accent x context x theme
+ *   8. Semantic assembly: BG / Fill / Label / Border / FX
+ *   9. Output: DTCG JSON -> Style Dictionary v5 -> CSS + Tailwind
+ *
+ * 4 themes: light, dark, light-ic, dark-ic
+ * CSS prefix: --lab-
  */
 
 import StyleDictionary from 'style-dictionary';
 import { writeFile, mkdir } from 'node:fs/promises';
+import { generateAccentTokens } from './generate-accents.js';
 import { generateAlphaTokens } from './generate-alpha.js';
-import { generateTailwindTheme } from './generate-tailwind.js';
 import { generateNeutralTokens } from './generate-neutral-scale.js';
+import { generateTailwindTheme } from './generate-tailwind.js';
+
+// ─── Types ──────────────────────────────────────────────────────────────────
 
 interface ThemeConfig {
   name: string;
   selector: string;
 }
 
-// ─── Phase 0: Generate neutral scale from parameters ────────────
+// ─── Theme Configuration ────────────────────────────────────────────────────
 
-console.log('→ Generating neutral scale...');
+const themes: ThemeConfig[] = [
+  { name: 'light',    selector: ':root, [data-theme="light"]' },
+  { name: 'dark',     selector: '[data-theme="dark"]' },
+  { name: 'light-ic', selector: '[data-theme="light-ic"]' },
+  { name: 'dark-ic',  selector: '[data-theme="dark-ic"]' },
+];
+
+/**
+ * Map theme name to the base theme for material tokens.
+ * IC themes reuse their base theme's material layer since
+ * material tokens only exist for light/dark.
+ */
+function materialBase(themeName: string): string {
+  if (themeName === 'light-ic') return 'light';
+  if (themeName === 'dark-ic') return 'dark';
+  return themeName;
+}
+
+// ─── Phase 0: Generate accents (brand + sentiments + decoratives) ───────────
+
+console.log('-> Phase 0: Generating accent tokens...');
+await generateAccentTokens({ brand: '#007AFF' });
+
+// ─── Phase 1: Generate neutral scale ────────────────────────────────────────
+
+console.log('-> Phase 1: Generating neutral scale...');
 await generateNeutralTokens({
   hue: 283,       // cool-purple tint (configurable)
   chroma: 0.012,  // subtle colorfulness (configurable)
-  // steps are FIXED at 19 — semantic tokens reference specific stops by name
-  // (0, 10, 25, 50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900, 925, 950, 975, 990, 1000)
 });
 
-// ─── Phase 1: Generate alpha variants ───────────────────────────
+// ─── Phase 2: Generate alpha variants ───────────────────────────────────────
 
-console.log('→ Generating alpha variants...');
+console.log('-> Phase 2: Generating alpha variants...');
 await generateAlphaTokens();
 
-// ─── Phase 2: Build per-theme CSS ───────────────────────────────
-
-const themes: ThemeConfig[] = [
-  { name: 'light', selector: ':root, [data-theme="light"]' },
-  { name: 'dark',  selector: '[data-theme="dark"]' },
-];
+// ─── Phase 3-8: Build CSS per theme via Style Dictionary v5 ─────────────────
 
 for (const theme of themes) {
-  console.log(`→ Building ${theme.name} theme...`);
+  console.log(`-> Building ${theme.name} theme...`);
 
   const sd = new StyleDictionary({
+    log: {
+      warnings: 'warn',
+      verbosity: 'verbose',
+      errors: {
+        brokenReferences: 'console',
+      },
+    },
     source: [
       'primitive/**/*.tokens.json',
       'generated/**/*.tokens.json',
       `semantic/${theme.name}.tokens.json`,
-      `material/${theme.name}.tokens.json`,
+      `material/${materialBase(theme.name)}.tokens.json`,
     ],
     platforms: {
       css: {
+        prefix: 'lab',
         transformGroup: 'css',
         buildPath: 'dist/css/',
         files: [
@@ -70,74 +109,29 @@ for (const theme of themes) {
   await sd.buildAllPlatforms();
 }
 
-// ─── Phase 3: Brand hue runtime layer ───────────────────────────
+// ─── Phase 9a: Generate Tailwind v4 theme ───────────────────────────────────
 
-console.log('→ Generating brand hue runtime layer...');
-await generateBrandHueLayer();
-
-// ─── Phase 4: Generate Tailwind v4 theme ────────────────────────
-
-console.log('→ Generating Tailwind v4 theme...');
+console.log('-> Phase 9a: Generating Tailwind v4 theme...');
 await generateTailwindTheme();
 
-// ─── Phase 5: Generate index.css entry point ────────────────────
+// ─── Phase 9b: Generate index.css entry point ───────────────────────────────
 
-console.log('→ Generating index.css...');
+console.log('-> Phase 9b: Generating index.css...');
 await generateIndex();
 
-console.log('✓ Lab UI tokens built successfully');
+console.log('OK Lab UI tokens built successfully');
+
+// ─── Index Generator ────────────────────────────────────────────────────────
 
 async function generateIndex(): Promise<void> {
-  const css = `/* Lab UI Tokens — Entry Point
- * Imports brand config + light theme (default) + dark theme override.
+  const css = `/* Lab UI Tokens -- Entry Point
+ * Imports all 4 theme layers: light (default) + dark + IC variants.
  */
-@import "./css/brand.css";
 @import "./css/light.css";
 @import "./css/dark.css";
+@import "./css/light-ic.css";
+@import "./css/dark-ic.css";
 `;
+  await mkdir('dist', { recursive: true });
   await writeFile('dist/index.css', css);
-}
-
-// ─── Brand hue runtime CSS ──────────────────────────────────────
-
-async function generateBrandHueLayer(): Promise<void> {
-  const css = `/* Lab UI — Brand Hue Runtime Layer
- * Override --brand-hue to change the entire accent system.
- * Sentiments (danger, warning, success, info) have independent fixed hues.
- */
-
-:root {
-  /* ═══ BRAND — configurable ═══ */
-  --brand-hue: 257;
-  --brand-chroma: 0.218;
-  --brand-lightness: 0.603;
-
-  /* ═══ SENTIMENTS — independent fixed hues ═══ */
-  --danger-hue: 29;
-  --warning-hue: 69;
-  --success-hue: 147;
-  --info-hue: 260;
-
-  /* ═══ NEUTRAL — configurable tint ═══ */
-  --neutral-hue: 257;
-  --neutral-chroma: 0.007;
-
-  /* ═══ COMPUTED ACCENTS ═══ */
-  --brand: oklch(var(--brand-lightness) var(--brand-chroma) var(--brand-hue));
-  --danger: oklch(0.654 0.232 var(--danger-hue));
-  --warning: oklch(0.786 0.172 var(--warning-hue));
-  --success: oklch(0.730 0.194 var(--success-hue));
-  --info: oklch(0.640 0.193 var(--info-hue));
-}
-
-/* ═══ Display P3 enhanced accents ═══ */
-@supports (color: color(display-p3 1 1 1)) {
-  :root {
-    --brand: oklch(var(--brand-lightness) calc(var(--brand-chroma) * 1.15) var(--brand-hue));
-  }
-}
-`;
-
-  await mkdir('dist/css', { recursive: true });
-  await writeFile('dist/css/brand.css', css);
 }

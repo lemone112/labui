@@ -8,7 +8,8 @@
     ".": "./dist/index.css",
     "./css/light": "./dist/css/light.css",
     "./css/dark": "./dist/css/dark.css",
-    "./css/brand": "./dist/css/brand.css",
+    "./css/light-ic": "./dist/css/light-ic.css",
+    "./css/dark-ic": "./dist/css/dark-ic.css",
     "./css/*": "./dist/css/*.css",
     "./tailwind": "./dist/tailwind/theme.css"
   },
