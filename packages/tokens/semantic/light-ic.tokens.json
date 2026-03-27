@@ -41,11 +41,11 @@
     "warning":    { "$type": "color", "$value": "{warning.20}", "$description": "Accent tint fill -- elevated for IC" },
     "success":    { "$type": "color", "$value": "{success.20}", "$description": "Accent tint fill -- elevated for IC" },
     "info":       { "$type": "color", "$value": "{info.20}", "$description": "Accent tint fill -- elevated for IC" },
-    "brand-solid":   { "$type": "color", "$value": "{hue.brand}", "$description": "Solid accent fill" },
-    "danger-solid":  { "$type": "color", "$value": "{hue.danger}", "$description": "Solid accent fill" },
-    "warning-solid": { "$type": "color", "$value": "{hue.warning}", "$description": "Solid accent fill" },
-    "success-solid": { "$type": "color", "$value": "{hue.success}", "$description": "Solid accent fill" },
-    "info-solid":    { "$type": "color", "$value": "{hue.info}", "$description": "Solid accent fill" },
+    "brand-solid":   { "$type": "color", "$value": "{hue.brand.light-ic}", "$description": "Solid accent fill" },
+    "danger-solid":  { "$type": "color", "$value": "{hue.danger.light-ic}", "$description": "Solid accent fill" },
+    "warning-solid": { "$type": "color", "$value": "{hue.warning.light-ic}", "$description": "Solid accent fill" },
+    "success-solid": { "$type": "color", "$value": "{hue.success.light-ic}", "$description": "Solid accent fill" },
+    "info-solid":    { "$type": "color", "$value": "{hue.info.light-ic}", "$description": "Solid accent fill" },
     "static": {
       "light": {
         "primary":    { "$type": "color", "$value": "{neutral-mid.32}" },

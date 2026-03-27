@@ -121,10 +121,12 @@ async function validateReferences(): Promise<void> {
   const validPatterns = [
     /^neutral\.\d{1,2}$/, // neutral.0 .. neutral.12
     /^neutral-dark\.\d{1,2}$/, // neutral-dark.0 .. neutral-dark.12
+    /^neutral-light\.\d{1,2}$/, // neutral-light.0 .. neutral-light.12
+    /^neutral-mid\.\d{1,2}$/, // neutral-mid.0 .. neutral-mid.12
     /^(brand|danger|warning|success|info)\.\d{1,2}$/, // accent alpha stops
-    /^hue\.\w+$/, // hue references
-    /^opacity\.\w+$/, // opacity references
-    /^\w+(\.\w+)+$/, // general dotted path (at least one dot)
+    /^hue\.[\w-]+(\.[\w-]+)?$/, // hue references (flat or nested variant)
+    /^opacity\.[\w-]+$/, // opacity references
+    /^[\w-]+(\.[\w-]+)+$/, // general dotted path (at least one dot, supports hyphens)
   ];
 
   let refCount = 0;
@@ -132,15 +134,21 @@ async function validateReferences(): Promise<void> {
 
   for (const file of semanticFiles) {
     const raw = await readFile(file, 'utf-8');
-    const refs = [...raw.matchAll(refRegex)].map((m) => m[1]);
+    const json = JSON.parse(raw) as DTCGToken;
+    const tokens = flattenTokens(json);
 
-    for (const ref of refs) {
-      refCount++;
-      const isValid = validPatterns.some((pattern) => pattern.test(ref));
-      if (!isValid) {
-        console.error(`\u2717 Invalid reference format in ${file}: {${ref}}`);
-        errors++;
-        invalidCount++;
+    for (const [path, value] of tokens) {
+      if (typeof value !== 'string') continue;
+      const refs = [...value.matchAll(refRegex)].map((m) => m[1]);
+
+      for (const ref of refs) {
+        refCount++;
+        const isValid = validPatterns.some((pattern) => pattern.test(ref));
+        if (!isValid) {
+          console.error(`\u2717 Invalid reference format in ${file}: ${path} -> {${ref}}`);
+          errors++;
+          invalidCount++;
+        }
       }
     }
   }
