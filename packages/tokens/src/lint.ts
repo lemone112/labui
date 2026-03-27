@@ -3,9 +3,9 @@
  *
  * Validates:
  * 1. DTCG JSON schema compliance
- * 2. Token completeness across themes (light ↔ dark have same keys)
+ * 2. Token completeness across all 4 themes (light <-> dark <-> light-ic <-> dark-ic)
  * 3. OKLCH value format
- * 4. Reference integrity
+ * 4. Reference integrity (13-step neutral, 9-stop alpha, accent refs)
  */
 
 import { readFile, readdir } from 'node:fs/promises';
@@ -17,35 +17,47 @@ interface DTCGToken {
   [key: string]: unknown;
 }
 
+type ThemeName = 'light' | 'dark' | 'light-ic' | 'dark-ic';
+
+const THEME_FILES: Record<ThemeName, string> = {
+  light: 'semantic/light.tokens.json',
+  dark: 'semantic/dark.tokens.json',
+  'light-ic': 'semantic/light-ic.tokens.json',
+  'dark-ic': 'semantic/dark-ic.tokens.json',
+};
+
 let errors = 0;
 
-// ─── Theme completeness ─────────────────────────────────────────
+// --- Theme completeness (all 4 themes) --------------------------------
 
 async function checkThemeCompleteness(): Promise<void> {
-  const lightRaw = await readFile('semantic/light.tokens.json', 'utf-8');
-  const darkRaw = await readFile('semantic/dark.tokens.json', 'utf-8');
+  const themeKeys: Record<ThemeName, string[]> = {} as Record<ThemeName, string[]>;
 
-  const lightKeys = extractKeys(JSON.parse(lightRaw) as DTCGToken);
-  const darkKeys = extractKeys(JSON.parse(darkRaw) as DTCGToken);
-
-  const missingInDark = lightKeys.filter((k) => !darkKeys.includes(k));
-  const missingInLight = darkKeys.filter((k) => !lightKeys.includes(k));
-
-  if (missingInDark.length) {
-    console.error('✗ Missing in dark theme:', missingInDark);
-    errors += missingInDark.length;
-  }
-  if (missingInLight.length) {
-    console.error('✗ Missing in light theme:', missingInLight);
-    errors += missingInLight.length;
+  for (const [name, path] of Object.entries(THEME_FILES) as [ThemeName, string][]) {
+    const raw = await readFile(path, 'utf-8');
+    themeKeys[name] = extractKeys(JSON.parse(raw) as DTCGToken);
   }
 
-  if (!missingInDark.length && !missingInLight.length) {
-    console.log('✓ Theme completeness: light ↔ dark match');
+  // Build a superset of all keys
+  const allKeys = [...new Set(Object.values(themeKeys).flat())].sort();
+  const names = Object.keys(themeKeys) as ThemeName[];
+
+  let themeMismatch = false;
+  for (const key of allKeys) {
+    const missing = names.filter((n) => !themeKeys[n].includes(key));
+    if (missing.length) {
+      console.error(`\u2717 Token "${key}" missing in: ${missing.join(', ')}`);
+      errors += missing.length;
+      themeMismatch = true;
+    }
+  }
+
+  if (!themeMismatch) {
+    console.log('\u2713 Theme completeness: light \u2194 dark \u2194 light-ic \u2194 dark-ic match');
   }
 }
 
-// ─── Material completeness ──────────────────────────────────────
+// --- Material completeness --------------------------------------------
 
 async function checkMaterialCompleteness(): Promise<void> {
   const lightRaw = await readFile('material/light.tokens.json', 'utf-8');
@@ -55,16 +67,23 @@ async function checkMaterialCompleteness(): Promise<void> {
   const darkKeys = extractKeys(JSON.parse(darkRaw) as DTCGToken);
 
   const missingInDark = lightKeys.filter((k) => !darkKeys.includes(k));
+  const missingInLight = darkKeys.filter((k) => !lightKeys.includes(k));
 
   if (missingInDark.length) {
-    console.error('✗ Missing material in dark theme:', missingInDark);
+    console.error('\u2717 Missing material in dark theme:', missingInDark);
     errors += missingInDark.length;
-  } else {
-    console.log('✓ Material completeness: light ↔ dark match');
+  }
+  if (missingInLight.length) {
+    console.error('\u2717 Missing material in light theme:', missingInLight);
+    errors += missingInLight.length;
+  }
+
+  if (!missingInDark.length && !missingInLight.length) {
+    console.log('\u2713 Material completeness: light \u2194 dark match');
   }
 }
 
-// ─── OKLCH format validation ────────────────────────────────────
+// --- OKLCH format validation ------------------------------------------
 
 async function validateOklch(dir: string): Promise<void> {
   const files = await findJsonFiles(dir);
@@ -78,7 +97,7 @@ async function validateOklch(dir: string): Promise<void> {
     for (const [path, value] of tokens) {
       if (typeof value === 'string' && value.startsWith('oklch(')) {
         if (!oklchRegex.test(value)) {
-          console.error(`✗ Invalid OKLCH in ${file}: ${path} = ${value}`);
+          console.error(`\u2717 Invalid OKLCH in ${file}: ${path} = ${value}`);
           errors++;
         }
       }
@@ -86,29 +105,52 @@ async function validateOklch(dir: string): Promise<void> {
   }
 }
 
-// ─── Reference validation ───────────────────────────────────────
+// --- Reference validation (v3 token names) ----------------------------
 
 async function validateReferences(): Promise<void> {
   const semanticFiles = await findJsonFiles('semantic');
   const refRegex = /\{([^}]+)\}/g;
+
+  // Valid reference patterns for v3:
+  // - 13-step neutral: {neutral.0} .. {neutral.12}
+  // - neutral-dark variants: {neutral-dark.0} .. {neutral-dark.12}
+  // - 9-stop alpha accent: {brand.12}, {danger.52}, etc.
+  // - hue refs: {hue.brand}, {hue.danger}, etc.
+  // - opacity refs: {opacity.thin}, {opacity.soft}, etc.
+  // - General dotted path: group.subgroup.token
+  const validPatterns = [
+    /^neutral\.\d{1,2}$/, // neutral.0 .. neutral.12
+    /^neutral-dark\.\d{1,2}$/, // neutral-dark.0 .. neutral-dark.12
+    /^(brand|danger|warning|success|info)\.\d{1,2}$/, // accent alpha stops
+    /^hue\.\w+$/, // hue references
+    /^opacity\.\w+$/, // opacity references
+    /^\w+(\.\w+)+$/, // general dotted path (at least one dot)
+  ];
+
+  let refCount = 0;
+  let invalidCount = 0;
 
   for (const file of semanticFiles) {
     const raw = await readFile(file, 'utf-8');
     const refs = [...raw.matchAll(refRegex)].map((m) => m[1]);
 
     for (const ref of refs) {
-      // References should follow pattern: group.subgroup.token or group.token
-      if (!ref.includes('.')) {
-        console.error(`✗ Invalid reference format in ${file}: {${ref}} (no dot separator)`);
+      refCount++;
+      const isValid = validPatterns.some((pattern) => pattern.test(ref));
+      if (!isValid) {
+        console.error(`\u2717 Invalid reference format in ${file}: {${ref}}`);
         errors++;
+        invalidCount++;
       }
     }
   }
 
-  console.log(`✓ Reference format check (${semanticFiles.length} files)`);
+  if (invalidCount === 0) {
+    console.log(`\u2713 Reference format check (${refCount} refs in ${semanticFiles.length} files)`);
+  }
 }
 
-// ─── Helpers ────────────────────────────────────────────────────
+// --- Helpers ----------------------------------------------------------
 
 function extractKeys(obj: DTCGToken, prefix = ''): string[] {
   const keys: string[] = [];
@@ -147,7 +189,7 @@ async function findJsonFiles(dir: string): Promise<string[]> {
     .map((e) => join(e.parentPath ?? e.path, e.name));
 }
 
-// ─── Run ────────────────────────────────────────────────────────
+// --- Run --------------------------------------------------------------
 
 console.log('Linting Lab UI tokens...\n');
 
@@ -158,5 +200,5 @@ await validateOklch('semantic');
 await validateOklch('material');
 await validateReferences();
 
-console.log(`\n${errors ? `✗ ${errors} error(s) found` : '✓ All checks passed'}`);
+console.log(`\n${errors ? `\u2717 ${errors} error(s) found` : '\u2713 All checks passed'}`);
 process.exit(errors ? 1 : 0);
