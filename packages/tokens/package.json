@@ -19,14 +19,18 @@
   "scripts": {
     "build": "tsx src/build.ts",
     "lint": "tsx src/lint.ts",
-    "clean": "rm -rf dist generated"
+    "clean": "rm -rf dist generated",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "@tokens-studio/sd-transforms": "^1.5.0",
+    "@texel/color": "^1.0.0",
+    "@tokens-studio/sd-transforms": "^2.0.0",
     "@types/node": "^22.0.0",
-    "style-dictionary": "^4.3.0",
+    "style-dictionary": "^5.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
   },
   "keywords": ["design-tokens", "oklch", "tailwindcss", "css-variables"],
   "license": "MIT"
