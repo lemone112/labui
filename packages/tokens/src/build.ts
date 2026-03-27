@@ -10,13 +10,25 @@ import StyleDictionary from 'style-dictionary';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { generateAlphaTokens } from './generate-alpha.js';
 import { generateTailwindTheme } from './generate-tailwind.js';
+import { generateNeutralTokens } from './generate-neutral-scale.js';
 
 interface ThemeConfig {
   name: string;
   selector: string;
 }
 
-// ─── Phase 1: Generate computed tokens ──────────────────────────
+// ─── Phase 0: Generate neutral scale from parameters ────────────
+
+console.log('→ Generating neutral scale...');
+await generateNeutralTokens({
+  hue: 283,
+  chroma: 0.012,
+  steps: 13,
+  maxLightness: 1.0,
+  minLightness: 0.15,
+});
+
+// ─── Phase 1: Generate alpha variants ───────────────────────────
 
 console.log('→ Generating alpha variants...');
 await generateAlphaTokens();
