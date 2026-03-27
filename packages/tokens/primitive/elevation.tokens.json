@@ -1,0 +1,38 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "elevation": {
+    "$description": "4 semantic shadow levels. Glassmorphism is primary depth cue, shadows secondary.",
+    "inset": {
+      "$type": "shadow",
+      "$value": { "offsetX": "0", "offsetY": "1px", "blur": "2px", "spread": "0", "color": "rgba(0,0,0,0.05)", "inset": true },
+      "$description": "Inputs, wells"
+    },
+    "surface": {
+      "$type": "shadow",
+      "$value": [
+        { "offsetX": "0", "offsetY": "1px", "blur": "2px", "spread": "0", "color": "rgba(0,0,0,0.06)" },
+        { "offsetX": "0", "offsetY": "2px", "blur": "4px", "spread": "0", "color": "rgba(0,0,0,0.04)" },
+        { "offsetX": "0", "offsetY": "0", "blur": "1px", "spread": "0", "color": "rgba(0,0,0,0.04)" }
+      ],
+      "$description": "Cards, sections"
+    },
+    "raised": {
+      "$type": "shadow",
+      "$value": [
+        { "offsetX": "0", "offsetY": "4px", "blur": "8px", "spread": "0", "color": "rgba(0,0,0,0.08)" },
+        { "offsetX": "0", "offsetY": "2px", "blur": "4px", "spread": "0", "color": "rgba(0,0,0,0.04)" },
+        { "offsetX": "0", "offsetY": "0", "blur": "1px", "spread": "0", "color": "rgba(0,0,0,0.04)" }
+      ],
+      "$description": "Dropdowns, tooltips, popovers"
+    },
+    "overlay": {
+      "$type": "shadow",
+      "$value": [
+        { "offsetX": "0", "offsetY": "16px", "blur": "36px", "spread": "0", "color": "rgba(0,0,0,0.12)" },
+        { "offsetX": "0", "offsetY": "6px", "blur": "12px", "spread": "0", "color": "rgba(0,0,0,0.06)" },
+        { "offsetX": "0", "offsetY": "0", "blur": "1px", "spread": "0", "color": "rgba(0,0,0,0.04)" }
+      ],
+      "$description": "Modals, sheets, dialogs"
+    }
+  }
+}

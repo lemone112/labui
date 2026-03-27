@@ -1,0 +1,13 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "blur": {
+    "$description": "Backdrop blur scale for glassmorphism materials.",
+    "1": { "$type": "dimension", "$value": "6px" },
+    "2": { "$type": "dimension", "$value": "12px" },
+    "3": { "$type": "dimension", "$value": "24px" },
+    "4": { "$type": "dimension", "$value": "36px" },
+    "5": { "$type": "dimension", "$value": "48px" },
+    "6": { "$type": "dimension", "$value": "64px" },
+    "7": { "$type": "dimension", "$value": "96px" }
+  }
+}

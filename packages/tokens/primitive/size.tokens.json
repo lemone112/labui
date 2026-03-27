@@ -1,0 +1,14 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "size": {
+    "$description": "Element dimensions. Subset of spacing scale.",
+    "4":  { "$type": "dimension", "$value": "1rem" },
+    "5":  { "$type": "dimension", "$value": "1.25rem" },
+    "6":  { "$type": "dimension", "$value": "1.5rem" },
+    "8":  { "$type": "dimension", "$value": "2rem" },
+    "10": { "$type": "dimension", "$value": "2.5rem" },
+    "12": { "$type": "dimension", "$value": "3rem" },
+    "16": { "$type": "dimension", "$value": "4rem" },
+    "20": { "$type": "dimension", "$value": "5rem" }
+  }
+}

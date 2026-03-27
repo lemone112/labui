@@ -24,7 +24,29 @@ export async function generateTailwindTheme(): Promise<void> {
 
 @import "../css/light.css";
 
+/* ─── Density ─────────────────────────────────────────────────────────────── */
+:root {
+  --density: 1;
+}
+@media (max-width: 768px) {
+  :root { --density: 0.875; }
+}
+[data-density="compact"] { --density: 0.875; }
+[data-density="comfortable"] { --density: 1.125; }
+
 @theme inline {
+  /* Spacing base — Tailwind multiplies this */
+  --spacing: calc(0.25rem * var(--density, 1));
+
+  /* Radius base — Tailwind generates rounded-* via multipliers */
+  --radius: 0.5rem;
+
+  /* Shadows — semantic elevation */
+  --shadow-inset: inset 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-surface: 0 1px 2px 0 rgba(0,0,0,0.06), 0 2px 4px 0 rgba(0,0,0,0.04), 0 0 1px 0 rgba(0,0,0,0.04);
+  --shadow-raised: 0 4px 8px 0 rgba(0,0,0,0.08), 0 2px 4px 0 rgba(0,0,0,0.04), 0 0 1px 0 rgba(0,0,0,0.04);
+  --shadow-overlay: 0 16px 36px 0 rgba(0,0,0,0.12), 0 6px 12px 0 rgba(0,0,0,0.06), 0 0 1px 0 rgba(0,0,0,0.04);
+
   /* Backgrounds */
   --color-bg-primary: var(--bg-neutral-primary);
   --color-bg-secondary: var(--bg-neutral-secondary);
