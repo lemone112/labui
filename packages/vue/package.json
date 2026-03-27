@@ -1,0 +1,6 @@
+{
+  "name": "@lab-ui/vue",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Lab UI Vue 3 components (registry)"
+}

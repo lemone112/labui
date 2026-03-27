@@ -35,12 +35,26 @@ DTCG JSON → Style Dictionary v4 → CSS custom properties
 ## Quick Start
 
 ```bash
-pnpm add @lab-ui/tokens
+# 1. Clone and build
+git clone <repo-url> && cd labui
+pnpm install && pnpm build
 ```
+
+### With Tailwind CSS v4
 
 ```css
 @import "@lab-ui/tokens/tailwind";
 @import "tailwindcss";
+```
+
+### Without Tailwind (plain CSS variables)
+
+```css
+@import "@lab-ui/tokens";
+/* or pick individual layers: */
+@import "@lab-ui/tokens/css/light";
+@import "@lab-ui/tokens/css/dark";
+@import "@lab-ui/tokens/css/brand";
 ```
 
 ## Monorepo

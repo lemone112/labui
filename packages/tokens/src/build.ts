@@ -70,15 +70,15 @@ for (const theme of themes) {
   await sd.buildAllPlatforms();
 }
 
-// ─── Phase 3: Generate Tailwind v4 theme ────────────────────────
-
-console.log('→ Generating Tailwind v4 theme...');
-await generateTailwindTheme();
-
-// ─── Phase 4: Brand hue runtime layer ───────────────────────────
+// ─── Phase 3: Brand hue runtime layer ───────────────────────────
 
 console.log('→ Generating brand hue runtime layer...');
 await generateBrandHueLayer();
+
+// ─── Phase 4: Generate Tailwind v4 theme ────────────────────────
+
+console.log('→ Generating Tailwind v4 theme...');
+await generateTailwindTheme();
 
 // ─── Phase 5: Generate index.css entry point ────────────────────
 

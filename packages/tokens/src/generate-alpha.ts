@@ -27,28 +27,27 @@ interface OpacityScale {
   [stop: string]: number;
 }
 
-// 19-stop opacity scale (matching Figma — proven visual, symmetric)
-const OPACITY_STOPS: OpacityScale = {
-  '0':    0,
-  '10':   0.01,
-  '25':   0.03,
-  '50':   0.05,
-  '75':   0.08,
-  '100':  0.10,
-  '200':  0.20,
-  '300':  0.30,
-  '400':  0.40,
-  '500':  0.50,
-  '600':  0.60,
-  '700':  0.70,
-  '800':  0.80,
-  '900':  0.90,
-  '925':  0.93,
-  '950':  0.95,
-  '975':  0.98,
-  '990':  0.99,
-  '1000': 1.00,
-};
+interface OpacityTokenFile {
+  opacity: Record<string, { $type: string; $value: number; $description?: string } | string>;
+}
+
+/**
+ * Read opacity stops from the single source of truth: primitive/opacity.tokens.json
+ */
+async function loadOpacityStops(): Promise<OpacityScale> {
+  const raw = JSON.parse(
+    await readFile('primitive/opacity.tokens.json', 'utf-8'),
+  ) as OpacityTokenFile;
+
+  const stops: OpacityScale = {};
+  for (const [key, token] of Object.entries(raw.opacity)) {
+    if (key.startsWith('$')) continue;
+    if (typeof token === 'object' && '$value' in token) {
+      stops[key] = token.$value;
+    }
+  }
+  return stops;
+}
 
 const OKLCH_REGEX = /oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/;
 
@@ -62,10 +61,11 @@ function generateAlphaScale(
   L: string,
   C: string,
   H: string,
+  opacityStops: OpacityScale,
 ): Record<string, DTCGColorToken> {
   const scale: Record<string, DTCGColorToken> = {};
 
-  for (const [stop, alpha] of Object.entries(OPACITY_STOPS)) {
+  for (const [stop, alpha] of Object.entries(opacityStops)) {
     scale[stop] = {
       $type: 'color',
       $value: alpha === 1
@@ -78,6 +78,8 @@ function generateAlphaScale(
 }
 
 export async function generateAlphaTokens(): Promise<void> {
+  const opacityStops = await loadOpacityStops();
+
   const hueFile = JSON.parse(
     await readFile('primitive/hue.tokens.json', 'utf-8'),
   ) as DTCGTokenGroup;
@@ -88,7 +90,7 @@ export async function generateAlphaTokens(): Promise<void> {
 
   const generated: Record<string, Record<string, DTCGColorToken>> = {};
 
-  // ─── Accent hues × 19 opacity stops ───
+  // ─── Accent hues × opacity stops ───
 
   const hues = hueFile.hue as DTCGTokenGroup;
   for (const [name, token] of Object.entries(hues)) {
@@ -99,12 +101,12 @@ export async function generateAlphaTokens(): Promise<void> {
     const parsed = parseOklch(colorToken.$value);
     if (!parsed) continue;
 
-    generated[name] = generateAlphaScale(...parsed);
+    generated[name] = generateAlphaScale(...parsed, opacityStops);
   }
 
   // ─── Neutral/Light (white × opacity) ───
 
-  generated['neutral-light'] = generateAlphaScale('1.000', '0', '0');
+  generated['neutral-light'] = generateAlphaScale('1.000', '0', '0', opacityStops);
 
   // ─── Neutral/Dark (near-black × opacity) ───
 
@@ -112,14 +114,14 @@ export async function generateAlphaTokens(): Promise<void> {
   const darkBase = (neutral['1000'] as DTCGColorToken).$value;
   const darkParsed = parseOklch(darkBase) ?? ['0.086', '0.006', '285'];
 
-  generated['neutral-dark'] = generateAlphaScale(...darkParsed);
+  generated['neutral-dark'] = generateAlphaScale(...darkParsed, opacityStops);
 
   // ─── Neutral midpoint (500) × opacity — used by fills and borders ───
 
   const midBase = (neutral['500'] as DTCGColorToken).$value;
   const midParsed = parseOklch(midBase) ?? ['0.642', '0.007', '286'];
 
-  generated['neutral-mid'] = generateAlphaScale(...midParsed);
+  generated['neutral-mid'] = generateAlphaScale(...midParsed, opacityStops);
 
   // ─── Write generated tokens ───
 

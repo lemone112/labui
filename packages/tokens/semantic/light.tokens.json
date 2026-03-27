@@ -151,12 +151,12 @@
       "light": {
         "strong": { "$type": "color", "$value": "{neutral-light.1000}" },
         "base":   { "$type": "color", "$value": "{neutral-mid.100}" },
-        "soft":   { "$type": "color", "$value": "{neutral-mid.100}" }
+        "soft":   { "$type": "color", "$value": "{neutral-mid.75}" }
       },
       "dark": {
         "strong": { "$type": "color", "$value": "{neutral-dark.1000}" },
         "base":   { "$type": "color", "$value": "{neutral-mid.50}" },
-        "soft":   { "$type": "color", "$value": "{neutral-mid.50}" }
+        "soft":   { "$type": "color", "$value": "{neutral-mid.25}" }
       }
     }
   },
@@ -182,6 +182,7 @@
       "neutral":  { "$type": "color", "$value": "{neutral-light.500}" },
       "danger":   { "$type": "color", "$value": "{danger.500}" },
       "warning":  { "$type": "color", "$value": "{warning.500}" },
+      "success":  { "$type": "color", "$value": "{success.500}" },
       "info":     { "$type": "color", "$value": "{info.500}" },
       "inverted": { "$type": "color", "$value": "{neutral.400}" }
     },

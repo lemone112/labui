@@ -90,11 +90,6 @@ const STEP_NAMES_19 = [
   '600', '700', '800', '900', '925', '950', '975', '990', '1000',
 ];
 
-const STEP_NAMES_13 = [
-  '0', '25', '75', '200', '400', '500', '600', '700', '800',
-  '900', '950', '975', '1000',
-];
-
 // ─── Core Algorithm ─────────────────────────────────────────────
 
 /**
@@ -118,12 +113,7 @@ export function generateNeutralScale(options: NeutralScaleOptions): NeutralScale
   const Lmid = (maxLightness + minLightness) / 2;
   const halfRange = (maxLightness - minLightness) / 2;
 
-  // Pick step names based on scale size
-  const names = steps === 19
-    ? STEP_NAMES_19
-    : steps === 13
-      ? STEP_NAMES_13
-      : generateStepNames(steps);
+  const names = STEP_NAMES_19;
 
   const result: NeutralScaleStep[] = [];
 
@@ -160,21 +150,6 @@ export function generateNeutralScale(options: NeutralScaleOptions): NeutralScale
   }
 
   return result;
-}
-
-// ─── Convenience wrapper (matches the spec signature) ───────────
-
-export function generateNeutralScaleSimple(
-  hue: number,
-  chroma: number,
-  steps: number,
-): Array<{ step: number; oklch: string; hex: string }> {
-  const scale = generateNeutralScale({ hue, chroma, steps });
-  return scale.map((s) => ({
-    step: s.index,
-    oklch: s.oklch,
-    hex: s.hex,
-  }));
 }
 
 // ─── Color Space Conversion ─────────────────────────────────────
@@ -249,12 +224,6 @@ export async function generateNeutralTokens(
     neutral: {
       $description: `19-step neutral scale. Hue=${options.hue}, chroma=${options.chroma}. GENERATED — do not edit manually.`,
       ...neutral,
-      light: {
-        $description: 'White × opacity scale. GENERATED at build time by generate-alpha.ts.',
-      },
-      dark: {
-        $description: 'Near-black × opacity scale. GENERATED at build time by generate-alpha.ts.',
-      },
     },
   };
 
@@ -271,13 +240,6 @@ export async function generateNeutralTokens(
 function round(n: number, decimals: number): number {
   const factor = Math.pow(10, decimals);
   return Math.round(n * factor) / factor;
-}
-
-/** Generate evenly-spaced step names for arbitrary step counts */
-function generateStepNames(steps: number): string[] {
-  return Array.from({ length: steps }, (_, i) =>
-    String(Math.round((i / (steps - 1)) * 1000)),
-  );
 }
 
 // ─── Validation ─────────────────────────────────────────────────
