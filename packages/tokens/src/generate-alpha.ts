@@ -11,6 +11,11 @@
  */
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const tokensRoot = join(__dirname, '..');
 
 interface DTCGColorToken {
   $type: 'color';
@@ -36,7 +41,7 @@ interface OpacityTokenFile {
  */
 async function loadOpacityStops(): Promise<OpacityScale> {
   const raw = JSON.parse(
-    await readFile('primitive/opacity.tokens.json', 'utf-8'),
+    await readFile(join(tokensRoot, 'primitive/opacity.tokens.json'), 'utf-8'),
   ) as OpacityTokenFile;
 
   const stops: OpacityScale = {};
@@ -81,11 +86,11 @@ export async function generateAlphaTokens(): Promise<void> {
   const opacityStops = await loadOpacityStops();
 
   const hueFile = JSON.parse(
-    await readFile('primitive/hue.tokens.json', 'utf-8'),
+    await readFile(join(tokensRoot, 'primitive/hue.tokens.json'), 'utf-8'),
   ) as DTCGTokenGroup;
 
   const neutralFile = JSON.parse(
-    await readFile('primitive/neutral.tokens.json', 'utf-8'),
+    await readFile(join(tokensRoot, 'primitive/neutral.tokens.json'), 'utf-8'),
   ) as DTCGTokenGroup;
 
   const generated: Record<string, Record<string, DTCGColorToken>> = {};
@@ -136,13 +141,12 @@ export async function generateAlphaTokens(): Promise<void> {
 
   const output: DTCGTokenGroup = {
     $schema: 'https://tr.designtokens.org/format/',
-    $description: 'GENERATED — Do not edit. Alpha variants computed from base hues × 9 opacity stops.',
     ...generated,
   };
 
-  await mkdir('generated', { recursive: true });
+  await mkdir(join(tokensRoot, 'generated'), { recursive: true });
   await writeFile(
-    'generated/alpha.tokens.json',
+    join(tokensRoot, 'generated/alpha.tokens.json'),
     JSON.stringify(output, null, 2),
   );
 

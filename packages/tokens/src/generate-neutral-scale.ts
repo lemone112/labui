@@ -15,6 +15,11 @@
  */
 
 import { oklchToHex, oklchToCss, hexToOklch } from './color-utils.js';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const tokensRoot = join(__dirname, '..');
 
 // ---- Types -----------------------------------------------------------------
 
@@ -23,10 +28,6 @@ export interface NeutralScaleOptions {
   hue: number;
   /** Peak chroma at midpoint (step 6). 0 = pure gray, 0.012 = subtle tint */
   chroma: number;
-  /** Maximum lightness (default 1.0 = white) */
-  maxLightness?: number;
-  /** Minimum lightness (default 0.1 = near-black) */
-  minLightness?: number;
 }
 
 export interface NeutralScaleStep {
@@ -134,7 +135,7 @@ export async function generateNeutralTokens(
   };
 
   await writeFile(
-    'primitive/neutral.tokens.json',
+    join(tokensRoot, 'primitive/neutral.tokens.json'),
     JSON.stringify(output, null, 2),
   );
 

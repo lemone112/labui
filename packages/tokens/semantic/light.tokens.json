@@ -1,227 +1,626 @@
 {
   "$schema": "https://tr.designtokens.org/format/",
   "$description": "Light theme semantic tokens. 4 layers: BG > Fill > Label > Border + FX. All values reference primitives or generated alpha tokens -- no hardcoded OKLCH. v3: 9-stop opacity, 13-step neutrals.",
-
   "bg": {
     "$description": "Backgrounds -- solid colors from neutral gray scale",
     "neutral": {
-      "primary":   { "$type": "color", "$value": "{neutral.0}" },
-      "secondary": { "$type": "color", "$value": "{neutral.1}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.0}" },
-      "inverted":  { "$type": "color", "$value": "{neutral.12}" }
+      "primary": {
+        "$type": "color",
+        "$value": "{neutral.0}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{neutral.1}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{neutral.0}"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "{neutral.12}"
+      }
     },
     "grouped": {
       "$description": "Apple HIG grouped backgrounds -- alternating 1/0/1",
-      "primary":   { "$type": "color", "$value": "{neutral.1}" },
-      "secondary": { "$type": "color", "$value": "{neutral.0}" },
-      "tertiary":  { "$type": "color", "$value": "{neutral.1}" }
+      "primary": {
+        "$type": "color",
+        "$value": "{neutral.1}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{neutral.0}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{neutral.1}"
+      }
     },
     "overlay": {
       "$description": "Scrim/dimming -- references generated neutral-dark alpha tokens",
-      "ghost":  { "$type": "color", "$value": "{neutral-dark.2}" },
-      "soft":   { "$type": "color", "$value": "{neutral-dark.20}" },
-      "base":   { "$type": "color", "$value": "{neutral-dark.52}" },
-      "strong": { "$type": "color", "$value": "{neutral-dark.80}" }
+      "ghost": {
+        "$type": "color",
+        "$value": "{neutral-dark.2}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{neutral-dark.20}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{neutral-dark.52}"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{neutral-dark.80}"
+      }
     },
     "static": {
       "$description": "Theme-independent backgrounds",
-      "light": { "$type": "color", "$value": "{neutral.0}" },
-      "dark":  { "$type": "color", "$value": "{neutral.12}" }
-    }
-  },
-
-  "fill": {
-    "$description": "Fills -- transparent component surfaces. References generated neutral-mid alpha tokens.",
-    "primary":    { "$type": "color", "$value": "{neutral-mid.20}" },
-    "secondary":  { "$type": "color", "$value": "{neutral-mid.12}" },
-    "tertiary":   { "$type": "color", "$value": "{neutral-mid.8}" },
-    "quaternary": { "$type": "color", "$value": "{neutral-mid.4}" },
-    "none":       { "$type": "color", "$value": "{neutral-mid.2}" },
-    "brand":      { "$type": "color", "$value": "{brand.12}", "$description": "Accent tint fill" },
-    "danger":     { "$type": "color", "$value": "{danger.12}", "$description": "Accent tint fill" },
-    "warning":    { "$type": "color", "$value": "{warning.12}", "$description": "Accent tint fill" },
-    "success":    { "$type": "color", "$value": "{success.12}", "$description": "Accent tint fill" },
-    "info":       { "$type": "color", "$value": "{info.12}", "$description": "Accent tint fill" },
-    "brand-solid":   { "$type": "color", "$value": "{hue.brand.light}", "$description": "Solid accent fill" },
-    "danger-solid":  { "$type": "color", "$value": "{hue.danger.light}", "$description": "Solid accent fill" },
-    "warning-solid": { "$type": "color", "$value": "{hue.warning.light}", "$description": "Solid accent fill" },
-    "success-solid": { "$type": "color", "$value": "{hue.success.light}", "$description": "Solid accent fill" },
-    "info-solid":    { "$type": "color", "$value": "{hue.info.light}", "$description": "Solid accent fill" },
-    "static": {
       "light": {
-        "primary":    { "$type": "color", "$value": "{neutral-mid.20}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-mid.12}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-mid.8}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-mid.4}" }
+        "$type": "color",
+        "$value": "{neutral.0}"
       },
       "dark": {
-        "primary":    { "$type": "color", "$value": "{neutral-mid.32}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-mid.20}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-mid.12}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-mid.8}" }
+        "$type": "color",
+        "$value": "{neutral.12}"
       }
     }
   },
-
+  "fill": {
+    "$description": "Fills -- transparent component surfaces. References generated neutral-mid alpha tokens.",
+    "primary": {
+      "$type": "color",
+      "$value": "{neutral-mid.20}"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{neutral-mid.12}"
+    },
+    "tertiary": {
+      "$type": "color",
+      "$value": "{neutral-mid.8}"
+    },
+    "quaternary": {
+      "$type": "color",
+      "$value": "{neutral-mid.4}"
+    },
+    "none": {
+      "$type": "color",
+      "$value": "{neutral-mid.2}"
+    },
+    "brand": {
+      "$type": "color",
+      "$value": "{brand.12}",
+      "$description": "Accent tint fill"
+    },
+    "danger": {
+      "$type": "color",
+      "$value": "{danger.12}",
+      "$description": "Accent tint fill"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{warning.12}",
+      "$description": "Accent tint fill"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "{success.12}",
+      "$description": "Accent tint fill"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "{info.12}",
+      "$description": "Accent tint fill"
+    },
+    "brand-solid": {
+      "$type": "color",
+      "$value": "{hue.brand.light}",
+      "$description": "Solid accent fill"
+    },
+    "danger-solid": {
+      "$type": "color",
+      "$value": "{hue.danger.light}",
+      "$description": "Solid accent fill"
+    },
+    "warning-solid": {
+      "$type": "color",
+      "$value": "{hue.warning.light}",
+      "$description": "Solid accent fill"
+    },
+    "success-solid": {
+      "$type": "color",
+      "$value": "{hue.success.light}",
+      "$description": "Solid accent fill"
+    },
+    "info-solid": {
+      "$type": "color",
+      "$value": "{hue.info.light}",
+      "$description": "Solid accent fill"
+    },
+    "static": {
+      "light": {
+        "primary": {
+          "$type": "color",
+          "$value": "{neutral-mid.20}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{neutral-mid.12}"
+        },
+        "tertiary": {
+          "$type": "color",
+          "$value": "{neutral-mid.8}"
+        },
+        "quaternary": {
+          "$type": "color",
+          "$value": "{neutral-mid.4}"
+        }
+      },
+      "dark": {
+        "primary": {
+          "$type": "color",
+          "$value": "{neutral-mid.32}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{neutral-mid.20}"
+        },
+        "tertiary": {
+          "$type": "color",
+          "$value": "{neutral-mid.12}"
+        },
+        "quaternary": {
+          "$type": "color",
+          "$value": "{neutral-mid.8}"
+        }
+      }
+    }
+  },
   "label": {
     "$description": "Labels -- text + icons. v3: primary uses raw neutral, others use alpha ladder.",
     "neutral": {
-      "primary":    { "$type": "color", "$value": "{neutral.12}" },
-      "secondary":  { "$type": "color", "$value": "{neutral-dark.72}" },
-      "tertiary":   { "$type": "color", "$value": "{neutral-dark.52}" },
-      "quaternary": { "$type": "color", "$value": "{neutral-dark.32}" }
+      "primary": {
+        "$type": "color",
+        "$value": "{neutral.12}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{neutral-dark.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{neutral-dark.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{neutral-dark.32}"
+      }
     },
     "neutral-inverted": {
-      "primary":    { "$type": "color", "$value": "{neutral.0}" },
-      "secondary":  { "$type": "color", "$value": "{neutral-light.72}" },
-      "tertiary":   { "$type": "color", "$value": "{neutral-light.52}" },
-      "quaternary": { "$type": "color", "$value": "{neutral-light.32}" }
+      "primary": {
+        "$type": "color",
+        "$value": "{neutral.0}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{neutral-light.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{neutral-light.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{neutral-light.32}"
+      }
     },
     "brand": {
-      "primary":    { "$type": "color", "$value": "{brand.80}" },
-      "secondary":  { "$type": "color", "$value": "{brand.72}" },
-      "tertiary":   { "$type": "color", "$value": "{brand.52}" },
-      "quaternary": { "$type": "color", "$value": "{brand.32}" },
-      "on-tint":    { "$type": "color", "$value": "{brand.80}", "$description": "L-corrected accent on tinted background (placeholder)" }
+      "primary": {
+        "$type": "color",
+        "$value": "{brand.80}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{brand.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{brand.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{brand.32}"
+      },
+      "on-tint": {
+        "$type": "color",
+        "$value": "oklch(0.603 0.214 257)",
+        "$description": "COMPUTED: L-corrected brand on tint bg (3:1 target, 4.0:1 achieved)"
+      }
     },
     "danger": {
-      "primary":    { "$type": "color", "$value": "{danger.80}" },
-      "secondary":  { "$type": "color", "$value": "{danger.72}" },
-      "tertiary":   { "$type": "color", "$value": "{danger.52}" },
-      "quaternary": { "$type": "color", "$value": "{danger.32}" },
-      "on-tint":    { "$type": "color", "$value": "{danger.80}", "$description": "L-corrected accent on tinted background (placeholder)" }
+      "primary": {
+        "$type": "color",
+        "$value": "{danger.80}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{danger.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{danger.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{danger.32}"
+      },
+      "on-tint": {
+        "$type": "color",
+        "$value": "oklch(0.630 0.230 29)",
+        "$description": "COMPUTED: L-corrected danger on tint bg (3:1 target, 3.9:1 achieved)"
+      }
     },
     "warning": {
-      "primary":    { "$type": "color", "$value": "{warning.80}" },
-      "secondary":  { "$type": "color", "$value": "{warning.72}" },
-      "tertiary":   { "$type": "color", "$value": "{warning.52}" },
-      "quaternary": { "$type": "color", "$value": "{warning.32}" },
-      "on-tint":    { "$type": "color", "$value": "{warning.80}", "$description": "L-corrected accent on tinted background (placeholder)" }
+      "primary": {
+        "$type": "color",
+        "$value": "{warning.80}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{warning.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{warning.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{warning.32}"
+      },
+      "on-tint": {
+        "$type": "color",
+        "$value": "oklch(0.678 0.149 67)",
+        "$description": "COMPUTED: L-corrected warning on tint bg (3:1 target, 3.0:1 achieved)"
+      }
     },
     "success": {
-      "primary":    { "$type": "color", "$value": "{success.80}" },
-      "secondary":  { "$type": "color", "$value": "{success.72}" },
-      "tertiary":   { "$type": "color", "$value": "{success.52}" },
-      "quaternary": { "$type": "color", "$value": "{success.32}" },
-      "on-tint":    { "$type": "color", "$value": "{success.80}", "$description": "L-corrected accent on tinted background (placeholder)" }
+      "primary": {
+        "$type": "color",
+        "$value": "{success.80}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{success.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{success.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{success.32}"
+      },
+      "on-tint": {
+        "$type": "color",
+        "$value": "oklch(0.650 0.185 148)",
+        "$description": "COMPUTED: L-corrected success on tint bg (3:1 target, 3.0:1 achieved)"
+      }
     },
     "info": {
-      "primary":    { "$type": "color", "$value": "{info.80}" },
-      "secondary":  { "$type": "color", "$value": "{info.72}" },
-      "tertiary":   { "$type": "color", "$value": "{info.52}" },
-      "quaternary": { "$type": "color", "$value": "{info.32}" },
-      "on-tint":    { "$type": "color", "$value": "{info.80}", "$description": "L-corrected accent on tinted background (placeholder)" }
+      "primary": {
+        "$type": "color",
+        "$value": "{info.80}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{info.72}"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{info.52}"
+      },
+      "quaternary": {
+        "$type": "color",
+        "$value": "{info.32}"
+      },
+      "on-tint": {
+        "$type": "color",
+        "$value": "oklch(0.640 0.190 260)",
+        "$description": "COMPUTED: L-corrected info on tint bg (3:1 target, 3.4:1 achieved)"
+      }
     },
     "on": {
       "$description": "Text on solid accent backgrounds -- white/dark for contrast",
-      "brand":   { "$type": "color", "$value": "{neutral.0}" },
-      "danger":  { "$type": "color", "$value": "{neutral.0}" },
-      "warning": { "$type": "color", "$value": "{neutral.0}" },
-      "success": { "$type": "color", "$value": "{neutral.0}" },
-      "info":    { "$type": "color", "$value": "{neutral.0}" }
+      "brand": {
+        "$type": "color",
+        "$value": "oklch(0.100 0.000 0)"
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "oklch(0.100 0.000 0)"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "oklch(0.100 0.000 0)"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "oklch(0.100 0.000 0)"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "oklch(0.100 0.000 0)"
+      }
     },
     "static": {
       "light": {
-        "primary":    { "$type": "color", "$value": "{neutral.0}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-light.72}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-light.52}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-light.32}" }
+        "primary": {
+          "$type": "color",
+          "$value": "{neutral.0}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{neutral-light.72}"
+        },
+        "tertiary": {
+          "$type": "color",
+          "$value": "{neutral-light.52}"
+        },
+        "quaternary": {
+          "$type": "color",
+          "$value": "{neutral-light.32}"
+        }
       },
       "dark": {
-        "primary":    { "$type": "color", "$value": "{neutral.12}" },
-        "secondary":  { "$type": "color", "$value": "{neutral-dark.72}" },
-        "tertiary":   { "$type": "color", "$value": "{neutral-dark.52}" },
-        "quaternary": { "$type": "color", "$value": "{neutral-dark.32}" }
+        "primary": {
+          "$type": "color",
+          "$value": "{neutral.12}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{neutral-dark.72}"
+        },
+        "tertiary": {
+          "$type": "color",
+          "$value": "{neutral-dark.52}"
+        },
+        "quaternary": {
+          "$type": "color",
+          "$value": "{neutral-dark.32}"
+        }
       }
     }
   },
-
   "border": {
     "$description": "Borders -- 4 levels per accent. References generated alpha tokens.",
     "neutral": {
-      "strong":   { "$type": "color", "$value": "{neutral.12}" },
-      "base":     { "$type": "color", "$value": "{neutral-mid.12}" },
-      "soft":     { "$type": "color", "$value": "{neutral-mid.8}" },
-      "ghost":    { "$type": "color", "$value": "{neutral-mid.2}" },
-      "inverted": { "$type": "color", "$value": "{neutral.0}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{neutral.12}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{neutral-mid.12}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{neutral-mid.8}"
+      },
+      "ghost": {
+        "$type": "color",
+        "$value": "{neutral-mid.2}"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "{neutral.0}"
+      }
     },
     "brand": {
-      "strong": { "$type": "color", "$value": "{brand.80}" },
-      "base":   { "$type": "color", "$value": "{brand.20}" },
-      "soft":   { "$type": "color", "$value": "{brand.12}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{brand.80}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{brand.20}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{brand.12}"
+      }
     },
     "danger": {
-      "strong": { "$type": "color", "$value": "{danger.80}" },
-      "base":   { "$type": "color", "$value": "{danger.20}" },
-      "soft":   { "$type": "color", "$value": "{danger.12}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{danger.80}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{danger.20}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{danger.12}"
+      }
     },
     "warning": {
-      "strong": { "$type": "color", "$value": "{warning.80}" },
-      "base":   { "$type": "color", "$value": "{warning.20}" },
-      "soft":   { "$type": "color", "$value": "{warning.12}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{warning.80}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{warning.20}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{warning.12}"
+      }
     },
     "success": {
-      "strong": { "$type": "color", "$value": "{success.80}" },
-      "base":   { "$type": "color", "$value": "{success.20}" },
-      "soft":   { "$type": "color", "$value": "{success.12}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{success.80}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{success.20}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{success.12}"
+      }
     },
     "info": {
-      "strong": { "$type": "color", "$value": "{info.80}" },
-      "base":   { "$type": "color", "$value": "{info.20}" },
-      "soft":   { "$type": "color", "$value": "{info.12}" }
+      "strong": {
+        "$type": "color",
+        "$value": "{info.80}"
+      },
+      "base": {
+        "$type": "color",
+        "$value": "{info.20}"
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "{info.12}"
+      }
     },
     "static": {
       "light": {
-        "strong": { "$type": "color", "$value": "{neutral.0}" },
-        "base":   { "$type": "color", "$value": "{neutral-mid.12}" },
-        "soft":   { "$type": "color", "$value": "{neutral-mid.8}" }
+        "strong": {
+          "$type": "color",
+          "$value": "{neutral.0}"
+        },
+        "base": {
+          "$type": "color",
+          "$value": "{neutral-mid.12}"
+        },
+        "soft": {
+          "$type": "color",
+          "$value": "{neutral-mid.8}"
+        }
       },
       "dark": {
-        "strong": { "$type": "color", "$value": "{neutral.12}" },
-        "base":   { "$type": "color", "$value": "{neutral-mid.8}" },
-        "soft":   { "$type": "color", "$value": "{neutral-mid.4}" }
+        "strong": {
+          "$type": "color",
+          "$value": "{neutral.12}"
+        },
+        "base": {
+          "$type": "color",
+          "$value": "{neutral-mid.8}"
+        },
+        "soft": {
+          "$type": "color",
+          "$value": "{neutral-mid.4}"
+        }
       }
     }
   },
-
   "fx": {
     "$description": "Effects -- all references, no hardcoded values",
     "focus-ring": {
-      "brand":   { "$type": "color", "$value": "{brand.80}" },
-      "danger":  { "$type": "color", "$value": "{danger.80}" },
-      "neutral": { "$type": "color", "$value": "{neutral.12}" },
-      "warning": { "$type": "color", "$value": "{warning.80}" },
-      "success": { "$type": "color", "$value": "{success.80}" },
-      "info":    { "$type": "color", "$value": "{info.80}" }
+      "brand": {
+        "$type": "color",
+        "$value": "{brand.80}"
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{danger.80}"
+      },
+      "neutral": {
+        "$type": "color",
+        "$value": "{neutral.12}"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{warning.80}"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{success.80}"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "{info.80}"
+      }
     },
     "shadow": {
-      "major":    { "$type": "color", "$value": "{neutral-dark.12}" },
-      "penumbra": { "$type": "color", "$value": "{neutral-dark.8}" },
-      "ambient":  { "$type": "color", "$value": "{neutral-dark.4}" },
-      "minor":    { "$type": "color", "$value": "{neutral-dark.2}" }
+      "major": {
+        "$type": "color",
+        "$value": "{neutral-dark.12}"
+      },
+      "penumbra": {
+        "$type": "color",
+        "$value": "{neutral-dark.8}"
+      },
+      "ambient": {
+        "$type": "color",
+        "$value": "{neutral-dark.4}"
+      },
+      "minor": {
+        "$type": "color",
+        "$value": "{neutral-dark.2}"
+      }
     },
     "glow": {
-      "brand":    { "$type": "color", "$value": "{brand.52}" },
-      "neutral":  { "$type": "color", "$value": "{neutral-light.52}" },
-      "danger":   { "$type": "color", "$value": "{danger.52}" },
-      "warning":  { "$type": "color", "$value": "{warning.52}" },
-      "success":  { "$type": "color", "$value": "{success.52}" },
-      "info":     { "$type": "color", "$value": "{info.52}" },
-      "inverted": { "$type": "color", "$value": "{neutral.4}" }
+      "brand": {
+        "$type": "color",
+        "$value": "{brand.52}"
+      },
+      "neutral": {
+        "$type": "color",
+        "$value": "{neutral-light.52}"
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{danger.52}"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "{warning.52}"
+      },
+      "success": {
+        "$type": "color",
+        "$value": "{success.52}"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "{info.52}"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "{neutral.4}"
+      }
     },
     "skeleton": {
-      "base":      { "$type": "color", "$value": "{neutral-mid.8}" },
-      "highlight": { "$type": "color", "$value": "{neutral-mid.4}" }
+      "base": {
+        "$type": "color",
+        "$value": "{neutral-mid.8}"
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": "{neutral-mid.4}"
+      }
     }
   },
-
   "misc": {
     "control": {
-      "bg": { "$type": "color", "$value": "{bg.neutral.primary}" }
+      "bg": {
+        "$type": "color",
+        "$value": "{bg.neutral.primary}"
+      }
     },
     "badge": {
-      "label-contrast": { "$type": "color", "$value": "{label.static.dark.primary}" },
-      "label-default":  { "$type": "color", "$value": "{label.static.light.primary}" }
+      "label-contrast": {
+        "$type": "color",
+        "$value": "{label.static.dark.primary}"
+      },
+      "label-default": {
+        "$type": "color",
+        "$value": "{label.static.light.primary}"
+      }
     }
   }
 }

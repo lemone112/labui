@@ -7,6 +7,11 @@
  */
 
 import { writeFile, mkdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const tokensRoot = join(__dirname, '..');
 
 export async function generateTailwindTheme(): Promise<void> {
   const css = `/* Lab UI — Tailwind v4 Theme
@@ -122,7 +127,7 @@ export async function generateTailwindTheme(): Promise<void> {
 @import "../css/dark-ic.css";
 `;
 
-  await mkdir('dist/tailwind', { recursive: true });
-  await writeFile('dist/tailwind/theme.css', css);
+  await mkdir(join(tokensRoot, 'dist/tailwind'), { recursive: true });
+  await writeFile(join(tokensRoot, 'dist/tailwind/theme.css'), css);
   console.log('  \u2713 Tailwind v4 theme generated');
 }
