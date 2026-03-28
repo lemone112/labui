@@ -2,9 +2,8 @@
  * generate-labels.ts — WCAG-compliant Label Color Generator for Lab UI v3
  *
  * Generates accessible text (label) colors from accent colors using
- * L-correction with hue shift. The core algorithm performs binary search
- * on OKLCH lightness to find the closest color to the accent that still
- * meets a WCAG contrast threshold against the given background.
+ * a fixed tone-pair approach. Sets a target lightness based on background
+ * brightness, gamut-clamps the candidate, and verifies contrast.
  *
  * @module generate-labels
  */
@@ -14,7 +13,6 @@ import {
   gamutClampSrgb,
   contrastRatio,
 } from "./color-utils.js";
-import { applyHueShift } from "./hue-shift.js";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -49,36 +47,38 @@ export interface LabelLadder {
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-/** Maximum binary search iterations to prevent infinite loops. */
-const MAX_ITERATIONS = 15;
+/** High-contrast threshold — targets above this use deeper L offsets. */
+const HIGH_CONTRAST_THRESHOLD = 4.5;
 
-/** Epsilon for floating-point hue comparison. */
-const HUE_SHIFT_EPSILON = 0.01;
+/** Maximum L-shift steps toward black/white before fallback. */
+const MAX_SHIFT_STEPS = 3;
+
+/** L-shift increment per step. */
+const L_SHIFT_STEP = 0.05;
 
 // ─── Core algorithm ─────────────────────────────────────────────────────────
 
 /**
  * Correct an accent color's lightness to meet a WCAG contrast target
- * against a given background. Uses binary search on L with hue shift
- * compensation and proportional chroma reduction.
+ * against a given background using a fixed tone-pair approach.
  *
  * Algorithm:
- * 1. Determine search direction based on background lightness.
- * 2. Binary search on L (max 15 iterations).
- * 3. At each step, apply hue shift and reduce chroma proportionally.
- * 4. Gamut-clamp the candidate to sRGB.
- * 5. If threshold is met, narrow toward the accent (preserve color).
- *    Otherwise narrow away (increase contrast).
- * 6. Fallback to near-black/white if convergence fails.
+ * 1. Check if accent already meets contrast — return as-is.
+ * 2. Set target L based on background brightness:
+ *    - Light bg: darken to L=0.45 (or 0.35 for high contrast).
+ *    - Dark bg:  lighten to L=0.75 (or 0.85 for high contrast).
+ * 3. Gamut-clamp the candidate, preserving hue and chroma.
+ * 4. Verify contrast. If it fails, shift L by 0.05 toward
+ *    black/white (max 3 steps).
+ * 5. Fallback to near-black/near-white if all steps fail.
  */
 export function correctLabelColor(ctx: LabelContext): LabelResult {
   const { accent, background, contrastTarget } = ctx;
   const bgL = background.L;
-  const originalL = accent.L;
-  const originalH = accent.H;
 
   // Determine direction: light bg → darken, dark bg → lighten
   const lightenLabel = bgL <= 0.5;
+  const highContrast = contrastTarget >= HIGH_CONTRAST_THRESHOLD;
 
   // Check if accent already meets contrast
   const accentClamped = gamutClampSrgb(accent);
@@ -91,73 +91,44 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     };
   }
 
-  // Binary search bounds
-  let low: number;
-  let high: number;
-
+  // Fixed target L based on background brightness
+  let targetL: number;
   if (lightenLabel) {
-    // Dark background → search upward from accent L toward 1
-    low = originalL;
-    high = 1;
+    // Dark background → lighten the label
+    targetL = highContrast ? 0.85 : 0.75;
   } else {
-    // Light background → search downward from accent L toward 0
-    low = 0;
-    high = originalL;
+    // Light background → darken the label
+    targetL = highContrast ? 0.35 : 0.45;
   }
 
-  let bestColor: OklchColor = accentClamped;
-  let bestContrast = accentContrast;
-  let hueShifted = false;
+  // Build candidate preserving accent hue and chroma
+  const candidate = gamutClampSrgb({ L: targetL, C: accent.C, H: accent.H });
+  const cr = contrastRatio(candidate, background);
 
-  for (let i = 0; i < MAX_ITERATIONS; i++) {
-    const midL = (low + high) / 2;
-
-    // Apply hue shift for lightness change
-    const newH = applyHueShift(originalH, originalL, midL);
-
-    // Track whether hue actually shifted
-    if (Math.abs(newH - originalH) > HUE_SHIFT_EPSILON) {
-      hueShifted = true;
-    }
-
-    // Proportional chroma reduction as L moves away from original
-    const chromaScale = 1 - Math.abs(midL - originalL) * 0.3;
-    const newC = accent.C * Math.max(0, chromaScale);
-
-    // Gamut clamp the candidate
-    const candidate = gamutClampSrgb({ L: midL, C: newC, H: newH });
-
-    const cr = contrastRatio(candidate, background);
-
-    if (cr >= contrastTarget) {
-      // Meets threshold — record and narrow toward accent (preserve color)
-      bestColor = candidate;
-      bestContrast = cr;
-
-      if (lightenLabel) {
-        // We want to find the lowest L that still meets contrast (closest to accent)
-        high = midL;
-      } else {
-        // We want the highest L that still meets contrast (closest to accent)
-        low = midL;
-      }
-    } else {
-      // Doesn't meet threshold — narrow away from accent (increase contrast)
-      if (lightenLabel) {
-        low = midL;
-      } else {
-        high = midL;
-      }
-    }
-  }
-
-  // If binary search found a valid color, return it
-  if (bestContrast >= contrastTarget) {
+  if (cr >= contrastTarget) {
     return {
-      color: bestColor,
-      contrastAchieved: bestContrast,
-      hueShifted,
+      color: candidate,
+      contrastAchieved: cr,
+      hueShifted: false,
     };
+  }
+
+  // Shift L toward black/white in small steps
+  for (let step = 1; step <= MAX_SHIFT_STEPS; step++) {
+    const shiftedL = lightenLabel
+      ? targetL + step * L_SHIFT_STEP
+      : targetL - step * L_SHIFT_STEP;
+
+    const shifted = gamutClampSrgb({ L: shiftedL, C: accent.C, H: accent.H });
+    const shiftedCr = contrastRatio(shifted, background);
+
+    if (shiftedCr >= contrastTarget) {
+      return {
+        color: shifted,
+        contrastAchieved: shiftedCr,
+        hueShifted: false,
+      };
+    }
   }
 
   // Fallback: near-black for light bg, near-white for dark bg

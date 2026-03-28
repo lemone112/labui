@@ -55,29 +55,26 @@ describe("correctLabelColor", () => {
     expect(verified).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("applies hue shift when L changes significantly", () => {
-    // Yellow on light bg needs significant darkening → should trigger hue shift
+  it("preserves accent hue when correcting lightness", () => {
+    // The simplified algorithm keeps the original hue, no hue shift
     const ctx: LabelContext = {
       accent: yellow,
       background: lightBg,
       contrastTarget: 4.5,
     };
     const result = correctLabelColor(ctx);
-    expect(result.hueShifted).toBe(true);
+    expect(result.hueShifted).toBe(false);
+    expect(result.contrastAchieved).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("shifts yellow accent (H≈90) toward orange when darkened", () => {
+  it("meets lower contrast target for yellow on light bg", () => {
     const ctx: LabelContext = {
       accent: yellow,
       background: lightBg,
       contrastTarget: 3.0,
     };
     const result = correctLabelColor(ctx);
-    // Yellow (H=90) shifted toward orange means H should decrease
-    // (zone at 90 has direction -1)
-    if (result.hueShifted) {
-      expect(result.color.H).toBeLessThan(90);
-    }
+    expect(result.contrastAchieved).toBeGreaterThanOrEqual(3.0);
   });
 
   it("falls back to near-black/white when accent cannot meet threshold", () => {
@@ -105,18 +102,18 @@ describe("correctLabelColor", () => {
     expect(result.contrastAchieved).toBeGreaterThanOrEqual(3.0);
   });
 
-  it("converges within 15 iterations (no infinite loop)", () => {
-    // This test simply ensures the function returns in reasonable time
-    const start = performance.now();
+  it("produces a valid label color meeting high contrast target", () => {
     const ctx: LabelContext = {
       accent: midBlue,
       background: lightBg,
       contrastTarget: 7.0,
     };
-    correctLabelColor(ctx);
-    const elapsed = performance.now() - start;
-    // Should complete well within 100ms
-    expect(elapsed).toBeLessThan(100);
+    const result = correctLabelColor(ctx);
+    // Must return a valid color in gamut
+    expect(result.color.L).toBeGreaterThanOrEqual(0);
+    expect(result.color.L).toBeLessThanOrEqual(1);
+    // Must meet contrast target (or use fallback that does)
+    expect(result.contrastAchieved).toBeGreaterThanOrEqual(7.0);
   });
 });
 
