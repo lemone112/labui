@@ -10,10 +10,10 @@
 1. **Tailwind is the sole styling layer.** No parallel CSS variable namespace.
 2. **No prefix.** No `--lab-` or any namespace prefix. Clean variable names.
 3. **DTCG JSON is source of truth.** All tokens defined in DTCG format, consumed by Style Dictionary.
-4. **Minimal custom CSS variables.** Only where Tailwind doesn't cover (--density, --radius base).
+4. **Minimal custom CSS variables.** Only where Tailwind doesn't cover (density, radius base).
 5. **Role-based radius.** Components get radius by role (control, card, dialog), not by nesting depth.
 6. **Top-down nesting.** When needed: `inner = max(0, outer - padding)`. Applied locally in CSS, not as tokens.
-7. **Single density multiplier.** `--density` scales spacing + size. Does NOT scale radius, blur, shadows, typography.
+7. **Single density multiplier.** `density` scales spacing + size. Does NOT scale radius, blur, shadows, typography.
 
 ---
 
@@ -52,22 +52,22 @@ All values in rem. Base unit: 0.25rem (4px at 16px root).
 Single CSS variable scales all spacing:
 
 ```css
-:root { --lab-density: 1; }
-@media (max-width: 768px) { :root { --lab-density: 0.875; } }
-[data-density="compact"]     { --lab-density: 0.875; }
-[data-density="comfortable"] { --lab-density: 1.125; }
+:root { --density: 1; }
+@media (max-width: 768px) { :root { --density: 0.875; } }
+[data-density="compact"]     { --density: 0.875; }
+[data-density="comfortable"] { --density: 1.125; }
 ```
 
-Formula: `computed = rem_value * density`. Tailwind consumes via `--spacing: calc(0.25rem * var(--lab-density))`.
+Formula: `computed = rem_value * density`. Tailwind consumes via `--spacing: calc(0.25rem * var(--density))`.
 
 space-px is density-immune (always 1px).
 
 ### Semantic spacing aliases (optional, for cross-platform)
 
-```
---lab-gap-tight:   space-1  (4px)
---lab-gap-default: space-2  (8px)
---lab-gap-loose:   space-4  (16px)
+```css
+--gap-tight:   space-1  (4px)
+--gap-default: space-2  (8px)
+--gap-loose:   space-4  (16px)
 ```
 
 ---
@@ -94,30 +94,30 @@ Radius does NOT scale with density (it's shape, not size).
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| --lab-radius-surface | 24px | Cards, modals, sheets |
-| --lab-radius-container | 16px | Sections, content areas |
-| --lab-radius-control | 12px | Buttons, inputs, selects |
-| --lab-radius-element | 8px | Tags, badges, chips |
-| --lab-radius-indicator | 4px | Checkboxes, dots |
-| --lab-radius-pill | 9999px | Pill buttons, avatars |
-| --lab-radius-none | 0 | Tables, code blocks |
+| --radius-surface | 24px | Cards, modals, sheets |
+| --radius-container | 16px | Sections, content areas |
+| --radius-control | 12px | Buttons, inputs, selects |
+| --radius-element | 8px | Tags, badges, chips |
+| --radius-indicator | 4px | Checkboxes, dots |
+| --radius-pill | 9999px | Pill buttons, avatars |
+| --radius-none | 0 | Tables, code blocks |
 
 ### Nesting formula
 
-CSS: `outer = inner + padding` via calc().
+CSS: `inner = max(0, outer - padding)` via calc().
 Figma: Pre-computed lookup table from build pipeline.
 
 ```css
-.outer { border-radius: calc(var(--lab-radius-control) + var(--padding)); }
-.inner { border-radius: var(--lab-radius-control); }
+.outer { border-radius: var(--radius-control); }
+.inner { border-radius: max(0, calc(var(--radius-control) - var(--padding))); }
 ```
 
-Floor: radius below 4px snaps to 0.
+Floor: radius below 4px snaps to 0 via max(0, ...) or clamp(0, ..., max).
 
 ### Nesting ladder (generated at build time)
 
 Default preset (outer=32px, padding=4px uniform):
-```
+```text
 Layer 1: 32px, Layer 2: 28px, Layer 3: 24px,
 Layer 4: 20px, Layer 5: 16px, Layer 6: 12px
 ```
@@ -130,10 +130,10 @@ Layer 4: 20px, Layer 5: 16px, Layer 6: 12px
 
 | Token | Usage | Light | Dark |
 |-------|-------|-------|------|
-| --lab-elevation-inset | Inputs, wells | Subtle inner shadow | Transparent |
-| --lab-elevation-surface | Cards, sections | 3-layer soft shadow | Luminance border |
-| --lab-elevation-raised | Dropdown, tooltip | 3-layer medium shadow | Luminance border |
-| --lab-elevation-overlay | Modals, sheets | 3-layer deep shadow | Luminance border |
+| --elevation-inset | Inputs, wells | Subtle inner shadow | Transparent |
+| --elevation-surface | Cards, sections | 3-layer soft shadow | Luminance border |
+| --elevation-raised | Dropdown, tooltip | 3-layer medium shadow | Luminance border |
+| --elevation-overlay | Modals, sheets | 3-layer deep shadow | Luminance border |
 
 Shadow colors derived from neutral.12 (theme-aware).
 Dark mode: shadows replaced by `rgba(255,255,255, 0.06)` border.
@@ -174,10 +174,10 @@ Shift and Spread are internal to elevation composites (not public tokens).
 
 ## 5. Output Pipeline
 
-```
+```text
 DTCG JSON (source of truth)
   -> Style Dictionary v5
-    -> CSS custom properties (rem, with --lab- prefix)
+    -> CSS custom properties (rem, no prefix)
     -> Tailwind @theme (--spacing integration)
     -> Figma variables (pre-computed px per density mode)
     -> React Native constants (dp)

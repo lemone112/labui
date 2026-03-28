@@ -17,13 +17,13 @@ Complete rewrite of Lab UI color system. Moves from static Figma-derived tokens 
 4. **9 opacity stops** (down from 19) — mapped to Figma reference
 5. **4 themes**: light, dark, light-ic, dark-ic
 6. **Hue shift zones**: labeled experimental, configurable (not hardcoded)
-7. **15 binary search iterations** (not 50 — sufficient for sRGB precision)
-8. **CSS naming**: `--lab-{layer}-{role}-{variant}` prefix
+7. **Fixed tone-pair approach** for label generation with refinement steps (max 3) instead of binary search
+8. **CSS naming**: no-prefix variables (clean variable names without namespace prefix)
 9. **Regression tests FIRST** before any changes
 
 ## Full Spec
 
-See `~/Desktop/lab-ui-color-architecture-v3.md` for complete technical specification.
+The complete technical specification has been integrated into this document. The key technical details are outlined in the sections above and implemented in the token generation pipeline under `packages/tokens/src/`.
 
 ## Reality Check Corrections
 

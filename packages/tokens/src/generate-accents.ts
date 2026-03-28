@@ -108,6 +108,8 @@ function hueDistance(h1: number, h2: number): number {
 /**
  * Adjust lightness to meet a minimum contrast ratio against a background.
  * Moves L in the specified direction until contrast is met or L is clamped.
+ * Always clamps to sRGB before testing contrast to ensure the returned color
+ * will actually meet the contrast requirement when later gamut-clamped.
  */
 function ensureContrast(
   color: OklchColor,
@@ -120,8 +122,9 @@ function ensureContrast(
   const limit = direction === "lighter" ? 1 : 0;
 
   for (let i = 0; i < 100; i++) {
-    if (contrastRatio(current, bg) >= minRatio) {
-      return current;
+    const clamped = gamutClampSrgb(current);
+    if (contrastRatio(clamped, bg) >= minRatio) {
+      return clamped;
     }
     const newL = current.L + step;
     if ((direction === "lighter" && newL > limit) || (direction === "darker" && newL < limit)) {
@@ -129,7 +132,7 @@ function ensureContrast(
     }
     current = { ...current, L: Math.max(0, Math.min(1, newL)) };
   }
-  return current;
+  return gamutClampSrgb(current);
 }
 
 /**

@@ -280,8 +280,8 @@
       },
       "on-tint": {
         "$type": "color",
-        "$value": "oklch(0.580 0.145 54)",
-        "$description": "COMPUTED: L-corrected warning on tint bg (4.5:1 target, 4.5:1 achieved)"
+        "$value": "oklch(0.350 0.087 55)",
+        "$description": "COMPUTED: L-corrected warning on tint bg (4.5:1 target, 11.6:1 achieved)"
       }
     },
     "success": {
@@ -303,8 +303,8 @@
       },
       "on-tint": {
         "$type": "color",
-        "$value": "oklch(0.551 0.162 147)",
-        "$description": "COMPUTED: L-corrected success on tint bg (4.5:1 target, 4.5:1 achieved)"
+        "$value": "oklch(0.350 0.104 147)",
+        "$description": "COMPUTED: L-corrected success on tint bg (4.5:1 target, 10.8:1 achieved)"
       }
     },
     "info": {

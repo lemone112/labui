@@ -76,8 +76,6 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
   const { accent, background, contrastTarget } = ctx;
   const bgL = background.L;
 
-  // Determine direction: light bg → darken, dark bg → lighten
-  const lightenLabel = bgL <= 0.5;
   const highContrast = contrastTarget >= HIGH_CONTRAST_THRESHOLD;
 
   // Check if accent already meets contrast
@@ -91,33 +89,49 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     };
   }
 
-  // Fixed target L based on background brightness
-  let targetL: number;
-  if (lightenLabel) {
-    // Dark background → lighten the label
-    targetL = highContrast ? 0.85 : 0.75;
-  } else {
-    // Light background → darken the label
-    targetL = highContrast ? 0.35 : 0.45;
-  }
+  // Try both light and dark candidates to pick the better one
+  const darkTargetL = highContrast ? 0.35 : 0.45;
+  const lightTargetL = highContrast ? 0.85 : 0.75;
 
-  // Build candidate preserving accent hue and chroma
-  const candidate = gamutClampSrgb({ L: targetL, C: accent.C, H: accent.H });
-  const cr = contrastRatio(candidate, background);
+  const darkCandidate = gamutClampSrgb({ L: darkTargetL, C: accent.C, H: accent.H });
+  const lightCandidate = gamutClampSrgb({ L: lightTargetL, C: accent.C, H: accent.H });
 
-  if (cr >= contrastTarget) {
+  const darkCr = contrastRatio(darkCandidate, background);
+  const lightCr = contrastRatio(lightCandidate, background);
+
+  // Pick the candidate that meets the target (prefer expected polarity if both meet)
+  const preferLight = bgL <= 0.5; // dark bg prefers light text
+
+  if (darkCr >= contrastTarget && lightCr >= contrastTarget) {
+    // Both meet target - prefer expected polarity
+    const chosen = preferLight ? lightCandidate : darkCandidate;
+    const chosenCr = preferLight ? lightCr : darkCr;
     return {
-      color: candidate,
-      contrastAchieved: cr,
+      color: chosen,
+      contrastAchieved: chosenCr,
+      hueShifted: false,
+    };
+  } else if (darkCr >= contrastTarget) {
+    return {
+      color: darkCandidate,
+      contrastAchieved: darkCr,
+      hueShifted: false,
+    };
+  } else if (lightCr >= contrastTarget) {
+    return {
+      color: lightCandidate,
+      contrastAchieved: lightCr,
       hueShifted: false,
     };
   }
 
-  // Shift L toward black/white in small steps
+  // Neither meets target - try refinement steps for the better candidate
+  const betterIsLight = lightCr > darkCr;
+  const baseL = betterIsLight ? lightTargetL : darkTargetL;
+  const shiftDirection = betterIsLight ? 1 : -1; // lighten or darken
+
   for (let step = 1; step <= MAX_SHIFT_STEPS; step++) {
-    const shiftedL = lightenLabel
-      ? targetL + step * L_SHIFT_STEP
-      : targetL - step * L_SHIFT_STEP;
+    const shiftedL = baseL + step * L_SHIFT_STEP * shiftDirection;
 
     const shifted = gamutClampSrgb({ L: shiftedL, C: accent.C, H: accent.H });
     const shiftedCr = contrastRatio(shifted, background);
@@ -131,19 +145,26 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     }
   }
 
-  // Fallback: near-black for light bg, near-white for dark bg
-  const fallback: OklchColor = lightenLabel
-    ? { L: 0.95, C: 0, H: 0 }
-    : { L: 0.1, C: 0, H: 0 };
+  // Fallback: try both near-black and near-white, pick better
+  const darkFallback = gamutClampSrgb({ L: 0.1, C: 0, H: 0 });
+  const lightFallback = gamutClampSrgb({ L: 0.95, C: 0, H: 0 });
 
-  const fallbackClamped = gamutClampSrgb(fallback);
-  const fallbackContrast = contrastRatio(fallbackClamped, background);
+  const darkFallbackCr = contrastRatio(darkFallback, background);
+  const lightFallbackCr = contrastRatio(lightFallback, background);
 
-  return {
-    color: fallbackClamped,
-    contrastAchieved: fallbackContrast,
-    hueShifted: false,
-  };
+  if (darkFallbackCr >= lightFallbackCr) {
+    return {
+      color: darkFallback,
+      contrastAchieved: darkFallbackCr,
+      hueShifted: false,
+    };
+  } else {
+    return {
+      color: lightFallback,
+      contrastAchieved: lightFallbackCr,
+      hueShifted: false,
+    };
+  }
 }
 
 // ─── Label ladder ───────────────────────────────────────────────────────────
