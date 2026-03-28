@@ -1,0 +1,22 @@
+{
+  "tokenSetOrder": [
+    "global",
+    "Color Scheme/Light-mode",
+    "Color Scheme/Light-mode/IC",
+    "Color Scheme/Dark-mode",
+    "Color Scheme/Dark-mode/IC",
+    "Dimention/Desktop",
+    "Dimention/Mobile",
+    "Cross-platform/Glassy",
+    "Cross-platform/Ambient",
+    "Cross-platform/Solid",
+    "Typography/Desktop",
+    "Typography/Mobile",
+    "Unit/100%",
+    "Unit/133,3%",
+    "Unit/116.6%",
+    "Unit/75%",
+    "Unit/undefined",
+    "Z-index/Level"
+  ]
+}

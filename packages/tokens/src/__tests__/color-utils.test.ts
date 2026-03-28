@@ -147,6 +147,15 @@ describe("contrastRatio", () => {
     const ratio2 = contrastRatio(blue, white);
     expect(ratio1).toBeCloseTo(ratio2, 5);
   });
+
+  it("matches known WCAG reference contrast ratio for #767676 on #ffffff", () => {
+    const gray = hexToOklch("#767676");
+    const white = hexToOklch("#ffffff");
+    const ratio = contrastRatio(gray, white);
+    // Known WCAG reference: 4.54:1
+    expect(ratio).toBeGreaterThanOrEqual(4.48);
+    expect(ratio).toBeLessThanOrEqual(4.60);
+  });
 });
 
 // ─── meetsContrast ──────────────────────────────────────────────────────────

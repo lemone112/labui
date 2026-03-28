@@ -1,0 +1,14 @@
+{
+  "Glass": {
+    "value": "false",
+    "type": "boolean"
+  },
+  "Backdrop": {
+    "value": "false",
+    "type": "boolean"
+  },
+  "Solid": {
+    "value": "true",
+    "type": "boolean"
+  }
+}

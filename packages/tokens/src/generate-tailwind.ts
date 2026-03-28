@@ -20,6 +20,12 @@ export async function generateTailwindTheme(): Promise<void> {
   ) as Record<string, any>;
   const typo = typoJson.typography;
 
+  // Read elevation tokens for dynamic shadow emission
+  const elevJson = JSON.parse(
+    await readFile(join(tokensRoot, 'primitive/elevation.tokens.json'), 'utf-8'),
+  ) as Record<string, any>;
+  const elev = elevJson.elevation;
+
   // Build --text-* and --leading-* and --tracking-* lines from tokens
   const textLines: string[] = [];
   const leadingLines: string[] = [];
@@ -33,6 +39,28 @@ export async function generateTailwindTheme(): Promise<void> {
   }
   for (const [name, token] of Object.entries(typo.letterSpacing) as [string, any][]) {
     trackingLines.push(`  --tracking-${name}: ${token.$value};`);
+  }
+
+  // Build --font-weight-* lines from tokens
+  const weightLines: string[] = [];
+  for (const [name, token] of Object.entries(typo.weight) as [string, any][]) {
+    weightLines.push(`  --font-weight-${name}: ${token.$value};`);
+  }
+
+  // Build --shadow-* lines from elevation tokens
+  function shadowLayerToCss(layer: any): string {
+    const insetPrefix = layer.inset ? 'inset ' : '';
+    return `${insetPrefix}${layer.offsetX} ${layer.offsetY} ${layer.blur} ${layer.spread} ${layer.color}`;
+  }
+
+  const shadowLines: string[] = [];
+  for (const [name, token] of Object.entries(elev) as [string, any][]) {
+    if (name.startsWith('$')) continue;
+    const val = token.$value;
+    const cssValue = Array.isArray(val)
+      ? val.map(shadowLayerToCss).join(', ')
+      : shadowLayerToCss(val);
+    shadowLines.push(`  --shadow-${name}: ${cssValue};`);
   }
 
   const fontSans = typo.family.sans.$value;
@@ -78,17 +106,36 @@ ${leadingLines.join('\n')}
   /* Letter spacing */
 ${trackingLines.join('\n')}
 
-  /* Font weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  /* Font weights — from typography.tokens.json */
+${weightLines.join('\n')}
 
-  /* Shadows — semantic elevation */
-  --shadow-inset: inset 0 1px 2px 0 rgba(0,0,0,0.05);
-  --shadow-surface: 0 1px 2px 0 rgba(0,0,0,0.06), 0 2px 4px 0 rgba(0,0,0,0.04), 0 0 1px 0 rgba(0,0,0,0.04);
-  --shadow-raised: 0 4px 8px 0 rgba(0,0,0,0.08), 0 2px 4px 0 rgba(0,0,0,0.04), 0 0 1px 0 rgba(0,0,0,0.04);
-  --shadow-overlay: 0 16px 36px 0 rgba(0,0,0,0.12), 0 6px 12px 0 rgba(0,0,0,0.06), 0 0 1px 0 rgba(0,0,0,0.04);
+  /* Shadows — from elevation.tokens.json */
+${shadowLines.join('\n')}
+
+  /* ─── color-mix() derived tokens (replaces pre-computed alpha matrix) ─── */
+
+  /* Fills (previously from alpha matrix) */
+  --color-fill-primary: color-mix(in oklab, var(--color-foreground) 8%, transparent);
+  --color-fill-secondary: color-mix(in oklab, var(--color-foreground) 4%, transparent);
+  --color-fill-brand: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  --color-fill-brand-hover: color-mix(in oklab, var(--color-accent) 20%, transparent);
+  --color-fill-danger: color-mix(in oklab, var(--color-danger) 12%, transparent);
+  --color-fill-warning: color-mix(in oklab, var(--color-warning) 12%, transparent);
+  --color-fill-success: color-mix(in oklab, var(--color-success) 12%, transparent);
+
+  /* Overlays/scrim */
+  --color-overlay-soft: color-mix(in oklab, var(--color-foreground) 20%, transparent);
+  --color-overlay-base: color-mix(in oklab, var(--color-foreground) 52%, transparent);
+  --color-overlay-strong: color-mix(in oklab, var(--color-foreground) 80%, transparent);
+
+  /* Borders */
+  --color-border-base: color-mix(in oklab, var(--color-foreground) 12%, transparent);
+  --color-border-soft: color-mix(in oklab, var(--color-foreground) 8%, transparent);
+  --color-border-brand: color-mix(in oklab, var(--color-accent) 20%, transparent);
+
+  /* Hover states */
+  --color-accent-hover: color-mix(in oklab, var(--color-accent) 90%, var(--color-accent-foreground) 10%);
+  --color-accent-soft: color-mix(in oklab, var(--color-accent) 15%, transparent);
 
   /* Backgrounds */
   --color-bg-primary: var(--bg-neutral-primary);
@@ -99,27 +146,22 @@ ${trackingLines.join('\n')}
   --color-bg-grouped-secondary: var(--bg-grouped-secondary);
   --color-bg-grouped-tertiary: var(--bg-grouped-tertiary);
 
-  /* Overlays */
+  /* Overlays — ghost still from semantic (near-zero opacity) */
   --color-overlay-ghost: var(--bg-overlay-ghost);
-  --color-overlay-soft: var(--bg-overlay-soft);
-  --color-overlay-base: var(--bg-overlay-base);
-  --color-overlay-strong: var(--bg-overlay-strong);
 
-  /* Fills — neutral */
+  /* Fills — neutral (tertiary/quaternary still from semantic) */
   --color-fill: var(--fill-primary);
-  --color-fill-secondary: var(--fill-secondary);
   --color-fill-tertiary: var(--fill-tertiary);
   --color-fill-quaternary: var(--fill-quaternary);
 
   /* Fills — accent solid */
-  --color-fill-brand: var(--fill-brand-solid);
-  --color-fill-danger: var(--fill-danger-solid);
-  --color-fill-warning: var(--fill-warning-solid);
-  --color-fill-success: var(--fill-success-solid);
-  --color-fill-info: var(--fill-info-solid);
+  --color-fill-brand-solid: var(--fill-brand-solid);
+  --color-fill-danger-solid: var(--fill-danger-solid);
+  --color-fill-warning-solid: var(--fill-warning-solid);
+  --color-fill-success-solid: var(--fill-success-solid);
+  --color-fill-info-solid: var(--fill-info-solid);
 
-  /* Fills — accent tint */
-  --color-fill-brand-tint: var(--fill-brand);
+  /* Fills — accent tint (now via color-mix above) */
   --color-fill-danger-tint: var(--fill-danger);
   --color-fill-warning-tint: var(--fill-warning);
   --color-fill-success-tint: var(--fill-success);
@@ -146,6 +188,9 @@ ${trackingLines.join('\n')}
   --color-on-info: var(--label-on-info);
 
   /* Accents — raw */
+  --color-accent: var(--fill-brand-solid);
+  --color-foreground: var(--label-neutral-primary);
+  --color-accent-foreground: var(--label-on-brand);
   --color-brand: var(--fill-brand-solid);
   --color-danger: var(--fill-danger-solid);
   --color-warning: var(--fill-warning-solid);
@@ -155,11 +200,9 @@ ${trackingLines.join('\n')}
   /* Borders — neutral */
   --color-border-strong: var(--border-neutral-strong);
   --color-border: var(--border-neutral-base);
-  --color-border-soft: var(--border-neutral-soft);
   --color-border-ghost: var(--border-neutral-ghost);
 
-  /* Borders — accent */
-  --color-border-brand: var(--border-brand-base);
+  /* Borders — accent (danger/warning/success/info still from semantic) */
   --color-border-danger: var(--border-danger-base);
   --color-border-warning: var(--border-warning-base);
   --color-border-success: var(--border-success-base);

@@ -63,7 +63,6 @@ describe("correctLabelColor", () => {
       contrastTarget: 4.5,
     };
     const result = correctLabelColor(ctx);
-    expect(result.hueShifted).toBe(false);
     expect(result.contrastAchieved).toBeGreaterThanOrEqual(4.5);
   });
 

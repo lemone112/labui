@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { globSync } from 'node:fs';
@@ -65,13 +65,14 @@ describe('size tokens', () => {
 
 describe('no --lab- prefix in generated CSS', () => {
   it('theme.css does not contain --lab- prefix', async () => {
-    let css: string;
-    try {
-      css = await readFile(join(tokensRoot, 'dist/tailwind/theme.css'), 'utf-8');
-    } catch {
-      // File may not exist yet if build hasn't run; skip check
+    const themePath = join(tokensRoot, 'dist/tailwind/theme.css');
+    // Skip explicitly if build hasn't been run
+    const exists = await access(themePath).then(() => true).catch(() => false);
+    if (!exists) {
+      console.warn('SKIPPED: dist/ not found. Run `npm run build` first.');
       return;
     }
+    const css = await readFile(themePath, 'utf-8');
     expect(css).not.toMatch(/--lab-/);
   });
 });

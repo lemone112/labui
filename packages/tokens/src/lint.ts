@@ -9,7 +9,12 @@
  */
 
 import { readFile, readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+import path from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const tokensRoot = path.resolve(__dirname, '..');
 
 interface DTCGToken {
   $type?: string;
@@ -20,10 +25,10 @@ interface DTCGToken {
 type ThemeName = 'light' | 'dark' | 'light-ic' | 'dark-ic';
 
 const THEME_FILES: Record<ThemeName, string> = {
-  light: 'semantic/light.tokens.json',
-  dark: 'semantic/dark.tokens.json',
-  'light-ic': 'semantic/light-ic.tokens.json',
-  'dark-ic': 'semantic/dark-ic.tokens.json',
+  light: path.resolve(tokensRoot, 'semantic/light.tokens.json'),
+  dark: path.resolve(tokensRoot, 'semantic/dark.tokens.json'),
+  'light-ic': path.resolve(tokensRoot, 'semantic/light-ic.tokens.json'),
+  'dark-ic': path.resolve(tokensRoot, 'semantic/dark-ic.tokens.json'),
 };
 
 let errors = 0;
@@ -60,8 +65,8 @@ async function checkThemeCompleteness(): Promise<void> {
 // --- Material completeness --------------------------------------------
 
 async function checkMaterialCompleteness(): Promise<void> {
-  const lightRaw = await readFile('material/light.tokens.json', 'utf-8');
-  const darkRaw = await readFile('material/dark.tokens.json', 'utf-8');
+  const lightRaw = await readFile(path.resolve(tokensRoot, 'material/light.tokens.json'), 'utf-8');
+  const darkRaw = await readFile(path.resolve(tokensRoot, 'material/dark.tokens.json'), 'utf-8');
 
   const lightKeys = extractKeys(JSON.parse(lightRaw) as DTCGToken);
   const darkKeys = extractKeys(JSON.parse(darkRaw) as DTCGToken);
@@ -108,7 +113,7 @@ async function validateOklch(dir: string): Promise<void> {
 // --- Reference validation (v3 token names) ----------------------------
 
 async function validateReferences(): Promise<void> {
-  const semanticFiles = await findJsonFiles('semantic');
+  const semanticFiles = await findJsonFiles(path.resolve(tokensRoot, 'semantic'));
   const refRegex = /\{([^}]+)\}/g;
 
   // Valid reference patterns for v3:
@@ -119,14 +124,14 @@ async function validateReferences(): Promise<void> {
   // - opacity refs: {opacity.thin}, {opacity.soft}, etc.
   // - General dotted path: group.subgroup.token
   const validPatterns = [
-    /^neutral\.\d{1,2}$/, // neutral.0 .. neutral.12
-    /^neutral-dark\.\d{1,2}$/, // neutral-dark.0 .. neutral-dark.12
-    /^neutral-light\.\d{1,2}$/, // neutral-light.0 .. neutral-light.12
-    /^neutral-mid\.\d{1,2}$/, // neutral-mid.0 .. neutral-mid.12
-    /^(brand|danger|warning|success|info)\.\d{1,2}$/, // accent alpha stops
-    /^hue\.[\w-]+(\.[\w-]+)?$/, // hue references (flat or nested variant)
-    /^opacity\.[\w-]+$/, // opacity references
-    /^[\w-]+(\.[\w-]+)+$/, // general dotted path (at least one dot, supports hyphens)
+    /^neutral\.\d{1,2}$/,
+    /^(neutral-dark|neutral-light|neutral-mid)\.\d{1,2}$/,
+    /^(brand|danger|warning|success|info)\.\d{1,2}$/,
+    /^hue\.(brand|danger|warning|success|info)\.(light|dark|light-ic|dark-ic)$/,
+    /^opacity\.(2|4|8|12|20|32|52|72|80)$/,
+    // Semantic token references
+    /^(bg|fill|label|border|fx)\.[a-z][a-z-]+(\.[\w-]+)*$/,
+    /^(size|spacing|radius|typography|elevation|blur)\.[\w-]+$/,
   ];
 
   let refCount = 0;
@@ -203,9 +208,9 @@ console.log('Linting Lab UI tokens...\n');
 
 await checkThemeCompleteness();
 await checkMaterialCompleteness();
-await validateOklch('primitive');
-await validateOklch('semantic');
-await validateOklch('material');
+await validateOklch(path.resolve(tokensRoot, 'primitive'));
+await validateOklch(path.resolve(tokensRoot, 'semantic'));
+await validateOklch(path.resolve(tokensRoot, 'material'));
 await validateReferences();
 
 console.log(`\n${errors ? `\u2717 ${errors} error(s) found` : '\u2713 All checks passed'}`);

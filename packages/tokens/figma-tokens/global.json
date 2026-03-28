@@ -1,0 +1,471 @@
+{
+  "Interactive": {
+    "Default": {
+      "value": {
+        "color": "#0202031a",
+        "type": "innerShadow",
+        "x": 0,
+        "y": -1,
+        "blur": 1,
+        "spread": 0
+      },
+      "type": "boxShadow"
+    },
+    "Pressed": {
+      "Shadow": {
+        "value": {
+          "color": "#0202031a",
+          "type": "innerShadow",
+          "x": 0,
+          "y": 1,
+          "blur": 1,
+          "spread": 0
+        },
+        "type": "boxShadow"
+      }
+    }
+  },
+  "Shadow": {
+    "XS": {
+      "value": [
+        {
+          "color": "#02020303",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 4,
+          "blur": 2,
+          "spread": 0
+        },
+        {
+          "color": "#02020308",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 2,
+          "blur": 2,
+          "spread": 0
+        },
+        {
+          "color": "#0202030d",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 1,
+          "blur": 1,
+          "spread": 0
+        },
+        {
+          "color": "#0202031a",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 0,
+          "blur": 1,
+          "spread": 0
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "S": {
+      "value": [
+        {
+          "color": "#02020303",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 12,
+          "blur": 8,
+          "spread": 0
+        },
+        {
+          "color": "#02020308",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 4,
+          "blur": 4,
+          "spread": 0
+        },
+        {
+          "color": "#0202030d",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 2,
+          "blur": 2,
+          "spread": 0
+        },
+        {
+          "color": "#0202031a",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 1,
+          "blur": 2,
+          "spread": 0
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "M": {
+      "value": [
+        {
+          "color": "#02020303",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 24,
+          "blur": 12,
+          "spread": 0
+        },
+        {
+          "color": "#02020308",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 12,
+          "blur": 8,
+          "spread": 0
+        },
+        {
+          "color": "#0202030d",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 4,
+          "blur": 4,
+          "spread": 0
+        },
+        {
+          "color": "#0202031a",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 1,
+          "blur": 2,
+          "spread": 0
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "L": {
+      "value": [
+        {
+          "color": "#02020303",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 48,
+          "blur": 24,
+          "spread": 0
+        },
+        {
+          "color": "#02020308",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 24,
+          "blur": 16,
+          "spread": 0
+        },
+        {
+          "color": "#0202030d",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 12,
+          "blur": 12,
+          "spread": 0
+        },
+        {
+          "color": "#0202031a",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 4,
+          "blur": 8,
+          "spread": 0
+        }
+      ],
+      "type": "boxShadow"
+    },
+    "XL": {
+      "value": [
+        {
+          "color": "#02020303",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 48,
+          "blur": 96,
+          "spread": 0
+        },
+        {
+          "color": "#02020308",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 36,
+          "blur": 64,
+          "spread": 0
+        },
+        {
+          "color": "#0202030d",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 24,
+          "blur": 48,
+          "spread": 0
+        },
+        {
+          "color": "#0202031a",
+          "type": "dropShadow",
+          "x": 0,
+          "y": 16,
+          "blur": 36,
+          "spread": 0
+        }
+      ],
+      "type": "boxShadow"
+    }
+  },
+  "fontWeights": {
+    "geist-0": {
+      "value": "Medium",
+      "type": "fontWeights"
+    },
+    "geist-1": {
+      "value": "SemiBold",
+      "type": "fontWeights"
+    },
+    "geist-2": {
+      "value": "Regular",
+      "type": "fontWeights"
+    },
+    "geist-mono-3": {
+      "value": "Regular",
+      "type": "fontWeights"
+    }
+  },
+  "Display": {
+    "6XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-6xl}",
+        "fontSize": "{font-size.font-size-6xl}",
+        "letterSpacing": "{tracking.tracking-6xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-l}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Когда 5XL не хватает для структуризации контента.\n\nОчень массивный и скорее подходит для промо, в интерфейсах чересчур акцентный."
+    },
+    "5XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-5xl}",
+        "fontSize": "{font-size.font-size-5xl}",
+        "letterSpacing": "{tracking.tracking-5xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-l}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Очень массивный и скорее подходит для промо, в интерфейсах чересчур акцентный."
+    }
+  },
+  "Title": {
+    "4XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-4xl}",
+        "fontSize": "{font-size.font-size-4xl}",
+        "letterSpacing": "{tracking.tracking-4xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Для интерфейса.\n\nКогда 3XL не хватает для структуризации контента."
+    },
+    "3XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-3xl}",
+        "fontSize": "{font-size.font-size-3xl}",
+        "letterSpacing": "{tracking.tracking-3xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Для интерфейса.\n\nКогда 2XL не хватает для структуризации контента."
+    },
+    "2XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-2xl}",
+        "fontSize": "{font-size.font-size-2xl}",
+        "letterSpacing": "{tracking.tracking-2xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Для интерфейса.\n\nКогда XL не хватает для структуризации контента."
+    },
+    "XL": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-xl}",
+        "fontSize": "{font-size.font-size-xl}",
+        "letterSpacing": "{tracking.tracking-xl}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Для интерфейса.\n\nСделать заголовок для группы Headline + Text."
+    }
+  },
+  "Headline": {
+    "L-Common": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-l}",
+        "fontSize": "{font-size.font-size-l}",
+        "letterSpacing": "{tracking.tracking-l}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-s}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, сделать небольшой подзаголовок рядом с Text."
+    },
+    "L-Emphasized": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-1}",
+        "lineHeight": "{line-height.line-height-l}",
+        "fontSize": "{font-size.font-size-l}",
+        "letterSpacing": "{tracking.tracking-l}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-s}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, выделить важное в небольшом подзаголовке, связанным с Text."
+    }
+  },
+  "Text": {
+    "M-Common": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-2}",
+        "lineHeight": "{line-height.line-height-m}",
+        "fontSize": "{font-size.font-size-m}",
+        "letterSpacing": "{tracking.tracking-m}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-m}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Обычный текст, подходящий для большинства случаев."
+    },
+    "M-Mono": {
+      "value": {
+        "fontFamily": "{font-family.font-family-mono}",
+        "fontWeight": "{fontWeights.geist-mono-3}",
+        "lineHeight": "{line-height.line-height-m}",
+        "fontSize": "{font-size.font-size-m}",
+        "letterSpacing": "{tracking.tracking-m}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-m}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, вставить часть кода в макет.\n\nОбычный текст, но моноширинный."
+    },
+    "M-Emphasized": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-m}",
+        "fontSize": "{font-size.font-size-m}",
+        "letterSpacing": "{tracking.tracking-s}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-m}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, выделить важные слова в статье, где большой массив текста.\n\nОбычный текст, но немного толще, чтобы выделить что-то в массиве текста."
+    }
+  },
+  "Caption": {
+    "S": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-s}",
+        "fontSize": "{font-size.font-size-s}",
+        "letterSpacing": "{tracking.tracking-s}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, подписать пункт таблицы.\n\nИспользовать осторожно из-за пониженной читаемости, не делать больше двух-трех строк."
+    },
+    "XS": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-s}",
+        "fontSize": "{font-size.font-size-xs}",
+        "letterSpacing": "{tracking.tracking-s}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, подписать фотографию.\n\nИспользовать осторожно из-за низкой читаемости, не делать больше двух строк."
+    },
+    "XXS": {
+      "value": {
+        "fontFamily": "{font-family.font-family}",
+        "fontWeight": "{fontWeights.geist-0}",
+        "lineHeight": "{line-height.line-height-xs}",
+        "fontSize": "{font-size.font-size-xxs}",
+        "letterSpacing": "{tracking.tracking-xs}",
+        "paragraphSpacing": "{paragraph-spacing.paragraph-spacing-none}",
+        "paragraphIndent": "{paragraphIndent.0}",
+        "textCase": "{textCase.none}",
+        "textDecoration": "{textDecoration.none}"
+      },
+      "type": "typography",
+      "description": "Например, подписать иконку. \n\nЖелательно использовать с графикой, потому что читаемость очень низкая."
+    }
+  },
+  "textCase": {
+    "none": {
+      "value": "none",
+      "type": "textCase"
+    }
+  },
+  "textDecoration": {
+    "none": {
+      "value": "none",
+      "type": "textDecoration"
+    }
+  },
+  "paragraphIndent": {
+    "0": {
+      "value": "0px",
+      "type": "dimension"
+    }
+  }
+}

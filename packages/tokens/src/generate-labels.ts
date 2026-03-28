@@ -30,8 +30,6 @@ export interface LabelResult {
   color: OklchColor;
   /** The actual contrast ratio achieved against the background. */
   contrastAchieved: number;
-  /** Whether the hue was shifted during L-correction. */
-  hueShifted: boolean;
 }
 
 export interface LabelLadder {
@@ -85,7 +83,7 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     return {
       color: accentClamped,
       contrastAchieved: accentContrast,
-      hueShifted: false,
+
     };
   }
 
@@ -109,19 +107,19 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     return {
       color: chosen,
       contrastAchieved: chosenCr,
-      hueShifted: false,
+
     };
   } else if (darkCr >= contrastTarget) {
     return {
       color: darkCandidate,
       contrastAchieved: darkCr,
-      hueShifted: false,
+
     };
   } else if (lightCr >= contrastTarget) {
     return {
       color: lightCandidate,
       contrastAchieved: lightCr,
-      hueShifted: false,
+
     };
   }
 
@@ -140,7 +138,7 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
       return {
         color: shifted,
         contrastAchieved: shiftedCr,
-        hueShifted: false,
+  
       };
     }
   }
@@ -156,13 +154,13 @@ export function correctLabelColor(ctx: LabelContext): LabelResult {
     return {
       color: darkFallback,
       contrastAchieved: darkFallbackCr,
-      hueShifted: false,
+
     };
   } else {
     return {
       color: lightFallback,
       contrastAchieved: lightFallbackCr,
-      hueShifted: false,
+
     };
   }
 }

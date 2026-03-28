@@ -1,7 +1,8 @@
 /**
  * Lab UI v3 Token Build Pipeline
  *
- * 9-step pipeline:
+ * 10-step pipeline:
+ *   0. (NEW) Figma import: Token Studio JSON -> DTCG primitives (if figma-tokens/ exists)
  *   1. HEX -> OKLCH
  *   2. Neutrals: brand H + chroma -> 13 steps
  *   3. Sentiments: Figma base -> chroma harmonize with brand -> gamut clamp
@@ -10,7 +11,7 @@
  *   6. Alpha matrix: all accents x 9 opacity stops
  *   7. Label correction: for each accent x context x theme
  *   8. Semantic assembly: BG / Fill / Label / Border / FX
- *   9. Output: DTCG JSON -> Style Dictionary v5 -> CSS + Tailwind
+ *   9. Output: DTCG JSON -> Style Dictionary v5 -> CSS (with hex fallback) + Tailwind
  *
  * 4 themes: light, dark, light-ic, dark-ic
  * CSS output: clean variable names (no namespace prefix)
@@ -21,12 +22,13 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { generateAccentTokens } from './generate-accents.js';
-import { generateAlphaTokens } from './generate-alpha.js';
 import { generateNeutralTokens } from './generate-neutral-scale.js';
 import { generateTailwindTheme } from './generate-tailwind.js';
 import { generateTypographyTokens } from './generate-typography.js';
 import { generateOnSolidLabel, correctLabelColor } from './generate-labels.js';
-import { oklchToCss, type OklchColor } from './color-utils.js';
+import { oklchToCss, oklchToHex, type OklchColor } from './color-utils.js';
+import { config } from './tokens.config.js';
+import { figmaTokensExist, importFigmaTokens } from './import-figma.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const tokensRoot = join(__dirname, '..');
@@ -159,27 +161,86 @@ async function generateIndex(): Promise<void> {
   await writeFile(join(tokensRoot, 'dist/index.css'), css);
 }
 
+// ─── Custom CSS Format: oklch with hex fallback ─────────────────────────────
+
+/**
+ * Register a custom Style Dictionary format that emits hex fallback
+ * before the oklch value for every color token:
+ *
+ *   --fill-brand-solid: #007aff;
+ *   --fill-brand-solid: oklch(0.603 0.218 257);
+ *
+ * Non-color tokens are emitted normally.
+ */
+function registerOklchHexFallbackFormat(sd: StyleDictionary): void {
+  sd.registerFormat({
+    name: 'css/oklch-hex-fallback',
+    format: ({ dictionary, options }) => {
+      const selector = (options as Record<string, unknown>)?.selector ?? ':root';
+      const lines: string[] = [];
+
+      lines.push(`${selector} {`);
+
+      for (const token of dictionary.allTokens) {
+        const name = `--${token.name}`;
+        const value = token.value ?? token.$value;
+
+        if (typeof value === 'string' && value.startsWith('oklch(')) {
+          // Check if we have a hex extension stored during token generation
+          const hex = token.$extensions?.hex ?? token.extensions?.hex;
+          if (hex && typeof hex === 'string') {
+            lines.push(`  ${name}: ${hex};`);
+          } else {
+            // Try to derive hex from the oklch value
+            const parsed = parseOklchFromCss(value);
+            if (parsed) {
+              const derivedHex = oklchToHex(parsed);
+              lines.push(`  ${name}: ${derivedHex};`);
+            }
+          }
+          lines.push(`  ${name}: ${value};`);
+        } else {
+          lines.push(`  ${name}: ${value};`);
+        }
+      }
+
+      lines.push('}');
+      return lines.join('\n') + '\n';
+    },
+  });
+}
+
 // ─── Pipeline Execution ────────────────────────────────────────────────────
 
-console.log('-> Phase 0: Generating accent tokens...');
-await generateAccentTokens({ brand: '#007AFF' });
+// Phase 0: Figma import (if figma-tokens/ directory exists)
+const hasFigma = await figmaTokensExist();
+if (hasFigma) {
+  console.log('-> Phase 0: Importing tokens from Figma Token Studio...');
+  const generatedDir = join(tokensRoot, 'generated');
+  await mkdir(generatedDir, { recursive: true });
+  const { colorCount, dimensionCount } = await importFigmaTokens(generatedDir);
+  console.log(`  OK Figma import complete (${colorCount} colors, ${dimensionCount} dimensions)`);
+} else {
+  console.log('-> Phase 0: No figma-tokens/ directory found — using generators (backward compat)');
+}
 
-console.log('-> Phase 1: Generating neutral scale...');
+console.log('-> Phase 1: Generating accent tokens...');
+await generateAccentTokens({ brand: config.brandColor });
+
+console.log('-> Phase 2: Generating neutral scale...');
 await generateNeutralTokens({
-  hue: 283,       // cool-purple tint (configurable)
-  chroma: 0.012,  // subtle colorfulness (configurable)
+  hue: config.neutralHue,
+  chroma: config.neutralChroma,
 });
 
-console.log('-> Phase 2: Generating typography scale...');
+console.log('-> Phase 3: Generating typography scale...');
 await generateTypographyTokens();
 
-console.log('-> Phase 3: Generating alpha variants...');
-await generateAlphaTokens();
 
-console.log('-> Phase 4: Computing label tokens...');
+console.log('-> Phase 5: Computing label tokens...');
 await computeAndInjectLabels();
 
-let themePhase = 5;
+let themePhase = 6;
 for (const theme of themes) {
   console.log(`-> Phase ${themePhase++}: Building ${theme.name} theme...`);
 
@@ -215,10 +276,13 @@ for (const theme of themes) {
     },
   });
 
+  // Register the oklch hex fallback format for this SD instance
+  registerOklchHexFallbackFormat(sd);
+
   await sd.buildAllPlatforms();
 }
 
-console.log('-> Phase 9: Generating Tailwind v4 theme + index.css...');
+console.log('-> Phase 10: Generating Tailwind v4 theme + index.css...');
 await generateTailwindTheme();
 await generateIndex();
 

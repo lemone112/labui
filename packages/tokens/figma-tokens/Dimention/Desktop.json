@@ -1,0 +1,474 @@
+{
+  "Adaptives": {
+    "Mobile-nav": {
+      "value": "false",
+      "type": "boolean"
+    },
+    "Desktop-nav": {
+      "value": "true",
+      "type": "boolean"
+    },
+    "Width": {
+      "value": 1440,
+      "type": "number"
+    },
+    "Layout-padding": {
+      "Default": {
+        "value": 128,
+        "type": "number"
+      },
+      "w-Sidebar-left": {
+        "value": 0,
+        "type": "number"
+      },
+      "w-Sidebar-right": {
+        "value": 128,
+        "type": "number"
+      }
+    }
+  },
+  "Size": {
+    "XS": {
+      "value": "{px.5}",
+      "type": "number"
+    },
+    "M": {
+      "value": "{px.7}",
+      "type": "number"
+    },
+    "S": {
+      "value": "{px.6}",
+      "type": "number"
+    },
+    "L": {
+      "value": "{px.8}",
+      "type": "number"
+    },
+    "XL": {
+      "value": "{px.9}",
+      "type": "number"
+    },
+    "2XL": {
+      "value": "{px.11}",
+      "type": "number"
+    },
+    "3XL": {
+      "value": "{px.15}",
+      "type": "number"
+    },
+    "4XL": {
+      "value": "{px.19}",
+      "type": "number"
+    },
+    "5XL": {
+      "value": "{px.21}",
+      "type": "number"
+    },
+    "6XL": {
+      "value": "{px.23}",
+      "type": "number"
+    },
+    "XXS": {
+      "value": "{px.3}",
+      "type": "number"
+    }
+  },
+  "Spacing": {
+    "Margin": {
+      "negXS": {
+        "value": "{px.-2}",
+        "type": "number"
+      },
+      "negS": {
+        "value": "{px.-3}",
+        "type": "number"
+      },
+      "negM": {
+        "value": "{px.-5}",
+        "type": "number"
+      },
+      "negL": {
+        "value": "{px.-6}",
+        "type": "number"
+      },
+      "3XL": {
+        "value": "{px.12}",
+        "type": "number"
+      },
+      "6XL": {
+        "value": "{px.23}",
+        "type": "number"
+      },
+      "M": {
+        "value": "{px.5}",
+        "type": "number"
+      },
+      "XS": {
+        "value": "{px.2}",
+        "type": "number"
+      },
+      "2XL": {
+        "value": "{px.9}",
+        "type": "number"
+      },
+      "XL": {
+        "value": "{px.7}",
+        "type": "number"
+      },
+      "4XL": {
+        "value": "{px.15}",
+        "type": "number"
+      },
+      "L": {
+        "value": "{px.6}",
+        "type": "number"
+      },
+      "5XL": {
+        "value": "{px.19}",
+        "type": "number"
+      },
+      "S": {
+        "value": "{px.3}",
+        "type": "number"
+      },
+      "XXS": {
+        "value": "{px.1}",
+        "type": "number"
+      },
+      "7XL": {
+        "value": "{px.27}",
+        "type": "number"
+      },
+      "None": {
+        "value": "{px.0}",
+        "type": "number"
+      },
+      "negXXS": {
+        "value": "{px.-1}",
+        "type": "number"
+      }
+    },
+    "Padding": {
+      "None": {
+        "value": "{px.0}",
+        "type": "number"
+      },
+      "XXS": {
+        "value": "{px.1}",
+        "type": "number"
+      },
+      "XS": {
+        "value": "{px.2}",
+        "type": "number"
+      },
+      "S": {
+        "value": "{px.3}",
+        "type": "number"
+      },
+      "M": {
+        "value": "{px.5}",
+        "type": "number"
+      },
+      "L": {
+        "value": "{px.6}",
+        "type": "number"
+      },
+      "XL": {
+        "value": "{px.7}",
+        "type": "number"
+      },
+      "2XL": {
+        "value": "{px.9}",
+        "type": "number"
+      },
+      "3XL": {
+        "value": "{px.12}",
+        "type": "number"
+      },
+      "5XL": {
+        "value": "{px.19}",
+        "type": "number"
+      },
+      "6XL": {
+        "value": "{px.23}",
+        "type": "number"
+      },
+      "7XL": {
+        "value": "{px.27}",
+        "type": "number"
+      },
+      "4XL": {
+        "value": "{px.15}",
+        "type": "number"
+      }
+    }
+  },
+  "Radius": {
+    "None": {
+      "value": 0,
+      "type": "number"
+    },
+    "XXS": {
+      "value": 2,
+      "type": "number"
+    },
+    "S": {
+      "value": 6,
+      "type": "number"
+    },
+    "M": {
+      "value": 8,
+      "type": "number"
+    },
+    "XL": {
+      "value": 16,
+      "type": "number"
+    },
+    "5XL": {
+      "value": 32,
+      "type": "number"
+    },
+    "Full": {
+      "value": 9999,
+      "type": "number"
+    },
+    "L": {
+      "value": 12,
+      "type": "number"
+    },
+    "2XL": {
+      "value": 20,
+      "type": "number"
+    },
+    "3XL": {
+      "value": 24,
+      "type": "number"
+    },
+    "4XL": {
+      "value": 28,
+      "type": "number"
+    },
+    "XS": {
+      "value": 4,
+      "type": "number"
+    }
+  },
+  "FX": {
+    "Blur": {
+      "None": {
+        "value": "{px.0}",
+        "type": "number"
+      },
+      "XXS": {
+        "value": "{px.1}",
+        "type": "number"
+      },
+      "XS": {
+        "value": "{px.2}",
+        "type": "number"
+      },
+      "S": {
+        "value": "{px.3}",
+        "type": "number"
+      },
+      "M": {
+        "value": "{px.5}",
+        "type": "number"
+      },
+      "L": {
+        "value": "{px.6}",
+        "type": "number"
+      },
+      "XL": {
+        "value": "{px.7}",
+        "type": "number"
+      },
+      "2XL": {
+        "value": "{px.9}",
+        "type": "number"
+      },
+      "4XL": {
+        "value": "{px.15}",
+        "type": "number"
+      },
+      "3XL": {
+        "value": "{px.12}",
+        "type": "number"
+      },
+      "7XL": {
+        "value": "{px.27}",
+        "type": "number"
+      },
+      "6XL": {
+        "value": "{px.23}",
+        "type": "number"
+      },
+      "5XL": {
+        "value": "{px.19}",
+        "type": "number"
+      }
+    },
+    "Shift": {
+      "negL": {
+        "value": "{px.-6}",
+        "type": "number"
+      },
+      "negM": {
+        "value": "{px.-5}",
+        "type": "number"
+      },
+      "negS": {
+        "value": "{px.-3}",
+        "type": "number"
+      },
+      "negXS": {
+        "value": "{px.-2}",
+        "type": "number"
+      },
+      "negXXS": {
+        "value": "{px.-1}",
+        "type": "number"
+      },
+      "None": {
+        "value": "{px.0}",
+        "type": "number"
+      },
+      "XXS": {
+        "value": "{px.1}",
+        "type": "number"
+      },
+      "XS": {
+        "value": "{px.2}",
+        "type": "number"
+      },
+      "S": {
+        "value": "{px.3}",
+        "type": "number"
+      },
+      "M": {
+        "value": "{px.5}",
+        "type": "number"
+      },
+      "L": {
+        "value": "{px.6}",
+        "type": "number"
+      },
+      "XL": {
+        "value": "{px.7}",
+        "type": "number"
+      },
+      "2XL": {
+        "value": "{px.9}",
+        "type": "number"
+      },
+      "3XL": {
+        "value": "{px.12}",
+        "type": "number"
+      },
+      "4XL": {
+        "value": "{px.15}",
+        "type": "number"
+      }
+    },
+    "Spread": {
+      "None": {
+        "value": "{px.0}",
+        "type": "number"
+      },
+      "XXS": {
+        "value": "{px.1}",
+        "type": "number"
+      },
+      "XS": {
+        "value": "{px.2}",
+        "type": "number"
+      },
+      "S": {
+        "value": "{px.3}",
+        "type": "number"
+      },
+      "M": {
+        "value": "{px.5}",
+        "type": "number"
+      }
+    }
+  },
+  "Opacity": {
+    "10": {
+      "value": 1,
+      "type": "number"
+    },
+    "25": {
+      "value": 2.5,
+      "type": "number"
+    },
+    "50": {
+      "value": 5,
+      "type": "number"
+    },
+    "100": {
+      "value": 10,
+      "type": "number"
+    },
+    "150": {
+      "value": 15,
+      "type": "number"
+    },
+    "200": {
+      "value": 20,
+      "type": "number"
+    },
+    "250": {
+      "value": 25,
+      "type": "number"
+    },
+    "300": {
+      "value": 30,
+      "type": "number"
+    },
+    "400": {
+      "value": 40,
+      "type": "number"
+    },
+    "500": {
+      "value": 50,
+      "type": "number"
+    },
+    "600": {
+      "value": 60,
+      "type": "number"
+    },
+    "700": {
+      "value": 70,
+      "type": "number"
+    },
+    "750": {
+      "value": 75,
+      "type": "number"
+    },
+    "800": {
+      "value": 80,
+      "type": "number"
+    },
+    "850": {
+      "value": 85,
+      "type": "number"
+    },
+    "900": {
+      "value": 90,
+      "type": "number"
+    },
+    "950": {
+      "value": 95,
+      "type": "number"
+    },
+    "975": {
+      "value": 97.5,
+      "type": "number"
+    },
+    "990": {
+      "value": 99,
+      "type": "number"
+    }
+  }
+}

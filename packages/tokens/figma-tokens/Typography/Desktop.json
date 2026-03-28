@@ -1,0 +1,178 @@
+{
+  "font-family": {
+    "font-family": {
+      "value": "Geist",
+      "type": "text"
+    },
+    "font-family-mono": {
+      "value": "Geist Mono",
+      "type": "text"
+    }
+  },
+  "font-weight": {
+    "font-weight-bold": {
+      "value": 700,
+      "type": "number"
+    },
+    "font-weight-regular": {
+      "value": 400,
+      "type": "number"
+    },
+    "font-weight-semibold": {
+      "value": 600,
+      "type": "number"
+    },
+    "font-weight-medium": {
+      "value": 500,
+      "type": "number"
+    }
+  },
+  "font-size": {
+    "font-size-xxs": {
+      "value": "{px.5}",
+      "type": "number"
+    },
+    "font-size-6xl": {
+      "value": "{px.25}",
+      "type": "number"
+    },
+    "font-size-3xl": {
+      "value": "{px.15}",
+      "type": "number"
+    },
+    "font-size-2xl": {
+      "value": "{px.11}",
+      "type": "number"
+    },
+    "font-size-xs": {
+      "value": "{px.6}",
+      "type": "number"
+    },
+    "font-size-xl": {
+      "value": "{px.9}",
+      "type": "number"
+    },
+    "font-size-5xl": {
+      "value": "{px.21}",
+      "type": "number"
+    },
+    "font-size-m": {
+      "value": "{px.7}",
+      "type": "number"
+    },
+    "font-size-4xl": {
+      "value": "{px.19}",
+      "type": "number"
+    },
+    "font-size-l": {
+      "value": "{px.8}",
+      "type": "number"
+    },
+    "font-size-s": {
+      "value": "{px.6,5}",
+      "type": "number"
+    }
+  },
+  "line-height": {
+    "line-height-2xl": {
+      "value": "{px.11}",
+      "type": "number"
+    },
+    "line-height-5xl": {
+      "value": "{px.21}",
+      "type": "number"
+    },
+    "line-height-6xl": {
+      "value": "{px.23}",
+      "type": "number"
+    },
+    "line-height-l": {
+      "value": "{px.8}",
+      "type": "number"
+    },
+    "line-height-4xl": {
+      "value": "{px.19}",
+      "type": "number"
+    },
+    "line-height-3xl": {
+      "value": "{px.15}",
+      "type": "number"
+    },
+    "line-height-xl": {
+      "value": "{px.9}",
+      "type": "number"
+    },
+    "line-height-s": {
+      "value": "{px.6}",
+      "type": "number"
+    },
+    "line-height-xs": {
+      "value": "{px.5}",
+      "type": "number"
+    },
+    "line-height-m": {
+      "value": "{px.9}",
+      "type": "number"
+    }
+  },
+  "paragraph-spacing": {
+    "paragraph-spacing-s": {
+      "value": "{px.3}",
+      "type": "number"
+    },
+    "paragraph-spacing-none": {
+      "value": "{px.0}",
+      "type": "number"
+    },
+    "paragraph-spacing-l": {
+      "value": "{px.8}",
+      "type": "number"
+    },
+    "paragraph-spacing-m": {
+      "value": "{px.6}",
+      "type": "number"
+    }
+  },
+  "tracking": {
+    "tracking-m": {
+      "value": "{pt.1}",
+      "type": "number"
+    },
+    "tracking-s": {
+      "value": "{pt.0}",
+      "type": "number"
+    },
+    "tracking-6xl": {
+      "value": "{pt.8}",
+      "type": "number"
+    },
+    "tracking-5xl": {
+      "value": "{pt.7}",
+      "type": "number"
+    },
+    "tracking-4xl": {
+      "value": "{pt.6}",
+      "type": "number"
+    },
+    "tracking-2xl": {
+      "value": "{pt.4}",
+      "type": "number"
+    },
+    "tracking-xl": {
+      "value": "{pt.3}",
+      "type": "number"
+    },
+    "tracking-l": {
+      "value": "{pt.2}",
+      "type": "number"
+    },
+    "tracking-xs": {
+      "value": "{pt.1}",
+      "type": "number"
+    },
+    "tracking-3xl": {
+      "value": "{pt.5}",
+      "type": "number"
+    }
+  }
+}

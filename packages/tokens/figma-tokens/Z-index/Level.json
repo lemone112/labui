@@ -1,0 +1,77 @@
+{
+  "Primary": {
+    "value": 0,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "SkipLink": {
+    "value": 50,
+    "type": "number",
+    "description": "Для a11y-компонентов"
+  },
+  "Dropdown": {
+    "value": 800,
+    "type": "number",
+    "description": "Меню, select и др."
+  },
+  "Sticky": {
+    "value": 900,
+    "type": "number",
+    "description": "Фиксированные шапки, боковые панели"
+  },
+  "ModalUnderlay": {
+    "value": 1000,
+    "type": "number",
+    "description": "Фоновая подложка под модалкой (scrim)"
+  },
+  "Modal": {
+    "value": 1100,
+    "type": "number",
+    "description": "Основное окно модалки"
+  },
+  "Toast": {
+    "value": 1200,
+    "type": "number",
+    "description": "Временные уведомления"
+  },
+  "Tooltip": {
+    "value": 1300,
+    "type": "number",
+    "description": "Высший уровень"
+  },
+  "Secondary": {
+    "value": 100,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Tertiary": {
+    "value": 200,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Grouped-Primary": {
+    "value": 400,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Grouped-Secondary": {
+    "value": 500,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Inverted": {
+    "value": 700,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Grouped-Tertiary": {
+    "value": 600,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  },
+  "Quaternary": {
+    "value": 400,
+    "type": "number",
+    "description": "Базовый уровень для всех нефиксированных элементов"
+  }
+}
