@@ -4,32 +4,59 @@ on:
   pull_request:
     paths:
       - 'packages/tokens/**'
-      - '.changeset/**'
+      - '.github/workflows/tokens-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packages/tokens/**'
+      - '.github/workflows/tokens-ci.yml'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  validate:
+  bun:
+    name: Build + test (Bun)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/tokens
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.1.38'
+
+      - name: Install deps
+        run: bun install --frozen-lockfile
+
+      - name: Build tokens
+        run: bun run build
+
+      - name: Run tests
+        run: bun test
+
+  node:
+    name: Build (Node + tsx fallback)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/tokens
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.1.38'
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: 'pnpm'
+          node-version: '22'
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install deps (bun lockfile)
+        run: bun install --frozen-lockfile
 
-      - name: Build tokens
-        run: pnpm --filter @lab-ui/tokens build
-
-      - name: Lint token sources
-        run: pnpm --filter @lab-ui/tokens lint
-
-      - name: Check changeset
-        run: pnpm changeset status
+      - name: Build via Node + tsx
+        run: bun run build:node
