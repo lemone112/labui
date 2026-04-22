@@ -1,29 +1,32 @@
 /**
  * Primitive colour generation — neutrals, accents, statics.
- * See spec.md §4.
  *
- * Output is a {@link PrimitiveColorSet} IR consumed by both the semantic
- * generator and the writers. This function is deterministic and side-effect
- * free.
+ * @governs implementation-plan-v2.md §4.1 (neutrals) · §4.2 (accents) · §4.3 (comp)
+ *
+ * Output: a {@link PrimitiveColorSet} with one OKLCH value per
+ * {@link OutputKey} (light/normal, light/ic, dark/normal, dark/ic) for
+ * every primitive. Opacity composition happens at the semantic layer.
  */
 
 import type {
+  AccentDef,
+  AccentName,
   ColorsConfig,
-  Mode,
+  Contrast,
+  BaseMode,
   OklchValue,
+  OutputKey,
   PrimitiveColorSet,
-  PrimitiveSolid,
+  ResolvedPrimitive,
+  SpineControl,
 } from '../types'
-import { MODES, isIcMode } from '../types'
-import { clampToGamut, isInP3Gamut, roundOklch } from '../utils/oklch'
-import { interpAt, tSequence } from '../utils/interp'
+import { BASE_MODES, CONTRASTS, outputKey } from '../types'
+import { accentChromaAt, driftedHue, neutralChromaAt } from '../utils/chroma-curve'
+import { spineInterp, validateSpine } from '../utils/spine'
+import { applyPerceptualComp, fitGamut, resolveAccentDef } from './resolver'
+import { roundOklch } from '../utils/oklch'
 
 export interface GenerateOptions {
-  /**
-   * Collected warnings (e.g. chroma clamped to fit P3). Callers pass in an
-   * array; this function appends to it instead of throwing so CI surfaces
-   * all issues at once.
-   */
   warnings?: string[]
 }
 
@@ -32,6 +35,15 @@ export function generatePrimitiveColors(
   options: GenerateOptions = {},
 ): PrimitiveColorSet {
   const warnings = options.warnings ?? []
+
+  // Validate spines upfront (fail-fast)
+  for (const [name, def] of Object.entries(colors.accents)) {
+    if ('alias' in def) continue
+    const errs = validateSpine(def.spine, name)
+    if (errs.length > 0) {
+      throw new Error(`spine validation failed:\n  ${errs.join('\n  ')}`)
+    }
+  }
 
   return {
     neutrals: generateNeutrals(colors, warnings),
@@ -42,41 +54,66 @@ export function generatePrimitiveColors(
 }
 
 // ─── Neutrals ───────────────────────────────────────────────────────────
+// Pivot-mirror: we generate the physical ladder from step 0 (lightest) to
+// step 12 (darkest) in light mode; dark mode flips the index so step 0 in
+// dark mode == step 12 in light mode (same physical L).
 
-function generateNeutrals(colors: ColorsConfig, warnings: string[]): PrimitiveSolid[] {
-  const cfg = colors.neutrals
-  const ts = tSequence(cfg.steps)
-  const chromaLerp = (t: number) => interpAt(cfg.chroma.min, cfg.chroma.max, t, cfg.interp)
+function generateNeutrals(
+  colors: ColorsConfig,
+  _warnings: string[],
+): ResolvedPrimitive[] {
+  const n = colors.neutrals
+  const out: ResolvedPrimitive[] = []
 
-  const out: PrimitiveSolid[] = []
+  // For each contrast, compute physical L ladder once.
+  const physical: Record<Contrast, OklchValue[]> = { normal: [], ic: [] }
 
-  for (let step = 0; step < cfg.steps; step++) {
-    const t = ts[step]
-    const values: Partial<Record<Mode, OklchValue>> = {}
-
-    for (const mode of colors.modes) {
-      const baseFromTo =
-        mode === 'dark' || mode === 'dark_ic' ? cfg.lightness.dark : cfg.lightness.light
-      let L = interpAt(baseFromTo.from, baseFromTo.to, t, cfg.interp)
-
-      if (isIcMode(mode)) {
-        const sign = mode === 'light_ic' ? 1 : -1
-        L += cfg.lightness_ic_delta * sign
+  for (const contrast of CONTRASTS) {
+    const endpoints =
+      contrast === 'ic' ? n.endpoints_ic : n.endpoints_normal
+    for (let step = 0; step < n.steps; step++) {
+      const t = n.steps > 1 ? step / (n.steps - 1) : 0
+      let L: number
+      if (n.lightness_curve === 'linear') {
+        L = endpoints.L0 + (endpoints.L12 - endpoints.L0) * t
+      } else {
+        // 'apple' — subtle S-curve, emphasizes mid-range
+        const k = smootherstep(t)
+        L = endpoints.L0 + (endpoints.L12 - endpoints.L0) * k
       }
+      const C = neutralChromaAt(n.chroma_curve, step, n.steps)
+      const H = driftedHue(
+        n.hue_drift.start_H,
+        n.hue_drift.end_H,
+        step,
+        n.steps,
+        n.hue_drift.easing,
+      )
+      physical[contrast].push({ L, C, H })
+    }
+  }
 
-      L = clamp01(L)
-      const C = chromaLerp(t)
-      const H = cfg.hue
-
-      const raw: OklchValue = { L, C, H }
-      values[mode] = fitToGamut(raw, colors.gamut, `neutral-${step}/${mode}`, warnings)
+  for (let step = 0; step < n.steps; step++) {
+    const values: Partial<Record<OutputKey, OklchValue>> = {}
+    for (const mode of BASE_MODES) {
+      for (const contrast of CONTRASTS) {
+        const key = outputKey(mode, contrast)
+        const physIdx = mode === 'dark' ? n.steps - 1 - step : step
+        let v = physical[contrast][physIdx]
+        // Neutrals are achromatic-ish — perceptual comp effect is minimal,
+        // but we apply it uniformly so label-on-neutral and label-on-accent
+        // participate in the same pipeline.
+        v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        v = fitGamut(v, colors.gamut)
+        values[key] = roundOklch(v)
+      }
     }
 
     out.push({
       name: `neutral-${step}`,
       group: 'neutral',
       id: String(step),
-      values: values as Record<Mode, OklchValue>,
+      values: values as Record<OutputKey, OklchValue>,
     })
   }
 
@@ -84,88 +121,95 @@ function generateNeutrals(colors: ColorsConfig, warnings: string[]): PrimitiveSo
 }
 
 // ─── Accents ────────────────────────────────────────────────────────────
+// Accent primitives = the canonical spine anchor (middle control point
+// if 2+ points, or the sole point). This gives `--blue` etc. for direct
+// consumption; tier-aware labels go through the resolver pipeline instead.
+// For each mode we apply perceptual comp.
 
-function generateAccents(colors: ColorsConfig, warnings: string[]): PrimitiveSolid[] {
-  const out: PrimitiveSolid[] = []
+function generateAccents(
+  colors: ColorsConfig,
+  _warnings: string[],
+): ResolvedPrimitive[] {
+  const out: ResolvedPrimitive[] = []
 
-  for (const [name, def] of Object.entries(colors.accents)) {
-    const values: Partial<Record<Mode, OklchValue>> = {}
+  for (const name of Object.keys(colors.accents) as AccentName[]) {
+    const def = resolveAccentDef(name, colors)
+    const anchor = pickAnchor(def.spine)
+    const anchorC =
+      anchor.C ??
+      accentChromaAt(
+        def.chroma_curve,
+        anchor.L,
+        null,
+        def.chroma_boost_per_dL,
+        colors.vibrancy,
+      )
 
-    for (const mode of colors.modes) {
-      const override = def.overrides?.[mode]
-      let raw: OklchValue
-
-      if (override) {
-        raw = override
-      } else if (mode === 'light') {
-        raw = def.light
-      } else {
-        const delta = colors.mode_derivation[mode]
-        raw = {
-          L: clamp01(def.light.L + delta.dL),
-          C: Math.max(0, Math.min(0.4, def.light.C + delta.dC)),
-          H: ((def.light.H + delta.dH) % 360 + 360) % 360,
-        }
+    const values: Partial<Record<OutputKey, OklchValue>> = {}
+    for (const mode of BASE_MODES) {
+      for (const contrast of CONTRASTS) {
+        const key = outputKey(mode, contrast)
+        let v: OklchValue = { L: anchor.L, C: anchorC, H: anchor.H }
+        v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        v = fitGamut(v, colors.gamut)
+        values[key] = roundOklch(v)
       }
-
-      values[mode] = fitToGamut(raw, colors.gamut, `${name}/${mode}`, warnings)
     }
 
     out.push({
       name,
       group: 'accent',
       id: name,
-      values: values as Record<Mode, OklchValue>,
+      values: values as Record<OutputKey, OklchValue>,
     })
   }
 
   return out
 }
 
+/**
+ * Pick the anchor control point for emitting the canonical `--{accent}` var.
+ * Prefer the middle point with explicit C (Figma-anchored); fallback to
+ * spine midpoint by interp.
+ */
+function pickAnchor(spine: SpineControl[]): SpineControl {
+  const withC = spine.find((p) => p.C != null)
+  if (withC) return withC
+  if (spine.length === 1) return spine[0]
+  // sample at midpoint
+  const midL = (spine[0].L + spine[spine.length - 1].L) / 2
+  const { H, C } = spineInterp(spine, midL)
+  return { L: midL, H, C: C ?? undefined }
+}
+
 // ─── Statics ────────────────────────────────────────────────────────────
 
-function generateStatics(colors: ColorsConfig): PrimitiveSolid[] {
-  // Static anchors are mode-invariant by design; we repeat the same value
-  // across all modes so downstream code doesn't have to special-case them.
-  const fill = (v: OklchValue): Record<Mode, OklchValue> =>
-    MODES.reduce<Record<Mode, OklchValue>>(
-      (acc, mode) => ((acc[mode] = v), acc),
-      {} as Record<Mode, OklchValue>,
-    )
+function generateStatics(colors: ColorsConfig): ResolvedPrimitive[] {
+  const white = colors.statics.white
+  const darkDef = colors.statics.dark
+  const dark: OklchValue =
+    'alias' in darkDef
+      ? { L: 0.08, C: 0, H: 0 } // TODO: resolve alias to neutral step
+      : darkDef
+
+  const fill = (v: OklchValue): Record<OutputKey, OklchValue> => {
+    const out: Partial<Record<OutputKey, OklchValue>> = {}
+    for (const mode of BASE_MODES) {
+      for (const contrast of CONTRASTS) {
+        out[outputKey(mode, contrast)] = roundOklch(v)
+      }
+    }
+    return out as Record<OutputKey, OklchValue>
+  }
 
   return [
-    {
-      name: 'static-white',
-      group: 'static',
-      id: 'white',
-      values: fill(colors.statics.white),
-    },
-    {
-      name: 'static-dark',
-      group: 'static',
-      id: 'dark',
-      values: fill(colors.statics.dark),
-    },
+    { name: 'static-white', group: 'static', id: 'white', values: fill(white) },
+    { name: 'static-dark', group: 'static', id: 'dark', values: fill(dark) },
   ]
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────
 
-function clamp01(v: number): number {
-  return Math.max(0, Math.min(1, v))
-}
-
-function fitToGamut(
-  raw: OklchValue,
-  gamut: 'p3' | 'srgb',
-  label: string,
-  warnings: string[],
-): OklchValue {
-  const check = gamut === 'p3' ? isInP3Gamut : undefined
-  if (!check || check(raw)) return roundOklch(raw)
-  const clamped = clampToGamut(raw, gamut)
-  warnings.push(
-    `${label}: OKLCH out of ${gamut} gamut (C=${raw.C.toFixed(3)} @ L=${raw.L.toFixed(3)}, H=${raw.H.toFixed(1)}). Clamped to C=${clamped.C.toFixed(3)}.`,
-  )
-  return roundOklch(clamped)
+function smootherstep(t: number): number {
+  return t * t * t * (t * (t * 6 - 15) + 10)
 }

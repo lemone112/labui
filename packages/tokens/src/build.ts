@@ -1,9 +1,9 @@
 /**
- * Lab UI · token build entry point.
+ * Lab UI · token build entry point (v2).
  *
- * Runs on Bun (preferred) or Node + tsx. Generates primitives + semantic
- * tokens from `config/tokens.config.ts` and writes CSS / ESM / d.ts into
- * `dist/`. Validators run after write; on error the process exits 1.
+ * Reads `config/tokens.config.ts`, generates primitives + semantic tokens,
+ * writes CSS / ESM / d.ts into `dist/`, and runs validators.
+ * Exits 1 on validator error.
  */
 
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -22,7 +22,7 @@ const t0 = performance.now()
 
 const warnings: string[] = []
 const primitive = generatePrimitiveColors(config.colors, { warnings })
-const semantic = generateSemanticColors(config.ladders, primitive, config.colors)
+const semantic = generateSemanticColors(config.semantics, primitive, config.colors)
 
 const css = writeCSS(primitive, semantic)
 const esm = writeESM(primitive, semantic)
@@ -51,5 +51,9 @@ if (validation.errors.length) {
 }
 
 console.log(
-  `✓ tokens built in ${(t1 - t0).toFixed(1)}ms (${primitive.neutrals.length} neutrals, ${primitive.accents.length} accents, ${semantic.tokens.length} semantic)`,
+  `✓ tokens built in ${(t1 - t0).toFixed(1)}ms (` +
+    `${primitive.neutrals.length} neutrals, ` +
+    `${primitive.accents.length} accents, ` +
+    `${semantic.tokens.length} semantic, ` +
+    `${semantic.shadow_presets.length} shadow presets)`,
 )

@@ -23,7 +23,7 @@ export function validateAll(
   const ref = validateReferences(primitive, semantic)
   errors.push(...ref.errors)
 
-  const g = validateGamut(primitive, gamut)
+  const g = validateGamut(primitive, semantic, gamut)
   errors.push(...g.errors)
   warnings.push(...g.warnings)
 

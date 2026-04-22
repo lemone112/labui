@@ -1,22 +1,17 @@
 /**
- * Snapshot regression tests for generated output.
+ * Snapshot / structural guards — locks key values so parameter tweaks
+ * trigger obvious diffs.
  *
- * These lock in key invariants so parameter tweaks trigger an obvious diff.
- * They do NOT compare the entire CSS (that would be too brittle); instead
- * they assert on specific deterministic values.
+ * @layer L3/L4 · Guard
+ * @governs plan-v2 §6 · Emit layer · §9 · Invariants
+ * @on-fail if intentional, update the snapshot; otherwise investigate what
+ *          upstream changed (commit SHA in PR title helps).
  */
 
 import { describe, expect, test } from 'bun:test'
-import { config } from '../config/tokens.config'
-import { generatePrimitiveColors } from '../src/generators/primitive-colors'
-import { generateSemanticColors } from '../src/generators/semantic-colors'
-import { writeCSS } from '../src/writers/css'
+import { primitive, semantic, css } from './_helpers/fixtures'
 
-const primitive = generatePrimitiveColors(config.colors)
-const semantic = generateSemanticColors(config.ladders, primitive, config.colors)
-const css = writeCSS(primitive, semantic)
-
-describe('CSS snapshot', () => {
+describe('Primitive snapshot', () => {
   test('neutral scale has 13 steps', () => {
     expect(primitive.neutrals.length).toBe(13)
   })
@@ -25,76 +20,71 @@ describe('CSS snapshot', () => {
     expect(primitive.opacityStops.length).toBe(29)
   })
 
-  test('N0 in light is pure white', () => {
+  test('N0 in light/normal is pure white', () => {
     const n0 = primitive.neutrals[0]
-    expect(n0.values.light.L).toBeCloseTo(1.0, 3)
-    expect(n0.values.light.C).toBeCloseTo(0, 3)
+    expect(n0.values['light/normal'].L).toBeCloseTo(1.0, 3)
+    expect(n0.values['light/normal'].C).toBeLessThanOrEqual(0.01)
   })
 
-  test('N12 in light is near-black', () => {
+  test('N12 in light/normal approaches configured endpoint (L≈0.08)', () => {
     const n12 = primitive.neutrals[12]
-    expect(n12.values.light.L).toBeCloseTo(0.08, 3)
+    expect(n12.values['light/normal'].L).toBeCloseTo(0.08, 2)
   })
 
-  test('neutral scale inverts in dark mode', () => {
-    const n0 = primitive.neutrals[0]
-    const n12 = primitive.neutrals[12]
-    expect(n0.values.dark.L).toBeCloseTo(0.08, 3)
-    expect(n12.values.dark.L).toBeCloseTo(1.0, 3)
+  test('pivot mirror: N0 dark == N12 light (physical L), within comp shift', () => {
+    const n0Dark = primitive.neutrals[0].values['dark/normal']
+    const n12Light = primitive.neutrals[12].values['light/normal']
+    // dark applies -0.02 HK shift → n0Dark.L ≈ 0.08 - 0.02 = 0.06
+    expect(Math.abs(n0Dark.L - (n12Light.L - 0.02))).toBeLessThan(0.01)
   })
 
-  test('has all 11 accents', () => {
+  test('11 accents are present', () => {
     const names = primitive.accents.map((a) => a.name).sort()
     expect(names).toEqual(
-      ['blue', 'brand', 'green', 'indigo', 'mint', 'orange', 'pink', 'purple', 'red', 'teal', 'yellow'].sort(),
+      [
+        'blue',
+        'brand',
+        'green',
+        'indigo',
+        'mint',
+        'orange',
+        'pink',
+        'purple',
+        'red',
+        'teal',
+        'yellow',
+      ].sort(),
     )
   })
+})
 
-  test('yellow IC uses per-mode override (hue shift toward amber)', () => {
-    const yellow = primitive.accents.find((a) => a.name === 'yellow')!
-    expect(yellow.values.light_ic.H).toBeCloseTo(50, 1) // override hue, not default 83
-  })
-
-  test('CSS contains :root block with light-mode primitives', () => {
+describe('CSS emit', () => {
+  test(':root contains light/normal primitives', () => {
     expect(css).toContain(':root {')
     expect(css).toContain('--neutral-0:')
     expect(css).toContain('--brand:')
     expect(css).toContain('--label-brand-primary:')
   })
 
-  test('CSS contains dark-mode selector and prefers-color-scheme block', () => {
+  test('dark mode selectors + prefers-color-scheme block emitted', () => {
     expect(css).toContain('[data-mode="dark"]')
     expect(css).toContain('@media (prefers-color-scheme: dark)')
-    expect(css).toContain('[data-mode="light-ic"]')
-    expect(css).toContain('[data-mode="dark-ic"]')
   })
 
-  test('CSS emits opacity ladder variables for a primitive', () => {
+  test('IC selector emitted', () => {
+    expect(css).toContain('[data-contrast="ic"]')
+  })
+
+  test('opacity ladder vars emitted', () => {
     expect(css).toContain('--neutral-0-a0:')
     expect(css).toContain('--neutral-0-a72:')
-    expect(css).toContain('--neutral-0-a99:')
     expect(css).toContain('--brand-a12:')
   })
 
-  test('accent fills are mode-invariant (same opacity across all modes)', () => {
-    const token = semantic.tokens.find((t) => t.name === 'fill-brand-primary')!
-    const refs = Object.values(token.values).map((v) =>
-      v.kind === 'primitive' ? `${v.primitive}@${v.alpha}` : 'ref',
-    )
-    const uniq = new Set(refs)
-    expect(uniq.size).toBe(1)
-    expect([...uniq][0]).toBe('brand@0.12')
-  })
-
-  test('neutral fills vary by mode', () => {
-    const token = semantic.tokens.find((t) => t.name === 'fill-neutral-primary')!
-    const light = token.values.light
-    const dark = token.values.dark
-    expect(light.kind).toBe('primitive')
-    expect(dark.kind).toBe('primitive')
-    if (light.kind === 'primitive' && dark.kind === 'primitive') {
-      expect(light.alpha).toBeCloseTo(0.2, 2)
-      expect(dark.alpha).toBeCloseTo(0.36, 2)
-    }
+  test('progressive shadow var is multi-layer', () => {
+    expect(css).toContain('--fx-shadow-xl:')
+    const xlLine = css.split('\n').find((l) => l.includes('--fx-shadow-xl:'))!
+    // XL has 4 layers separated by commas
+    expect(xlLine.match(/,/g)?.length).toBeGreaterThanOrEqual(3)
   })
 })

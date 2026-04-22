@@ -1,17 +1,36 @@
 /**
- * CSS custom-properties writer.
+ * CSS custom-properties writer (v2).
+ *
+ * @governs implementation-plan-v2.md §6 · Emit layer
  *
  * Emits a single `tokens.css` containing:
- * 1. Opacity utility variables (mode-invariant)
- * 2. Static primitives (mode-invariant)
- * 3. Per-mode blocks for neutral + accent primitives AND semantic tokens
- * 4. `@media (prefers-color-scheme: dark)` auto-switch
+ *   1. Opacity utility variables (mode-invariant)
+ *   2. Static primitives + opacity ladder (mode-invariant)
+ *   3. Four mode × contrast blocks (light/normal, light/ic, dark/normal, dark/ic)
+ *      each containing all primitives and semantics
+ *   4. `@media (prefers-color-scheme: dark)` auto-switch for normal contrast
  *
- * Structure per §6 of the spec. :root → light (default), selectors for
- * dark / light-ic / dark-ic.
+ * Selector scheme:
+ *   :root                                                → light/normal (default)
+ *   :root[data-contrast="ic"]                            → light/ic
+ *   :root[data-mode="dark"]                              → dark/normal
+ *   :root[data-mode="dark"][data-contrast="ic"]          → dark/ic
+ *   @media (prefers-color-scheme: dark) :root:not([data-mode])  → dark/normal
  */
 
-import type { Mode, OklchValue, PrimitiveColorSet, PrimitiveSolid, SemanticColorSet, ResolvedTokenValue } from '../types'
+import type {
+  BaseMode,
+  Contrast,
+  OklchValue,
+  OklchWithAlpha,
+  OutputKey,
+  PrimitiveColorSet,
+  ResolvedPrimitive,
+  ResolvedSemantic,
+  SemanticColorSet,
+  ShadowPreset,
+} from '../types'
+import { BASE_MODES, CONTRASTS, outputKey } from '../types'
 import { formatOklchCss } from '../utils/oklch'
 
 const HEADER = '/* Lab UI — generated design tokens. DO NOT EDIT. */\n'
@@ -22,84 +41,99 @@ export function writeCSS(
 ): string {
   const lines: string[] = [HEADER]
 
-  // Build group → CSS name lookup for cross-semantic refs.
-  const groupToName = new Map<string, string>()
-  for (const t of semantic.tokens) groupToName.set(t.group, t.name)
-
-  // ─── 1. Opacity utility variables ─────────────────────────────────
+  // 1. Opacity utility variables (mode-invariant)
   lines.push(':root {')
   for (const stop of primitive.opacityStops) {
     lines.push(`  --opacity-${stop}: ${(stop / 100).toFixed(2)};`)
   }
   lines.push('}\n')
 
-  // ─── 2. Static primitives (mode-invariant) ────────────────────────
+  // 2. Statics (mode-invariant; use 'light/normal' since they're flat)
   lines.push(':root {')
   for (const s of primitive.statics) {
-    const v = s.values.light // same across all modes
+    const v = s.values[outputKey('light', 'normal')]
     writeSolid(lines, s.name, v)
     writeOpacityLadder(lines, s.name, v, primitive.opacityStops)
   }
   lines.push('}\n')
 
-  // ─── 3. Light mode (default) ──────────────────────────────────────
-  lines.push(':root {')
-  writePrimitivesForMode(lines, 'light', primitive)
-  writeSemanticsForMode(lines, 'light', semantic, '  ', groupToName)
-  lines.push('}\n')
+  // 3. Four mode × contrast blocks
+  for (const mode of BASE_MODES) {
+    for (const contrast of CONTRASTS) {
+      const selector = selectorFor(mode, contrast)
+      lines.push(`${selector} {`)
+      writePrimitivesForOutput(lines, mode, contrast, primitive)
+      writeSemanticsForOutput(lines, mode, contrast, semantic)
+      writeShadowPresets(lines, semantic.shadow_presets)
+      lines.push('}\n')
+    }
+  }
 
-  // ─── 4. Dark mode — media query auto-switch ──────────────────────
+  // 4. Auto-switch via prefers-color-scheme for normal contrast
   lines.push('@media (prefers-color-scheme: dark) {')
   lines.push('  :root:not([data-mode]) {')
-  writePrimitivesForMode(lines, 'dark', primitive, '    ')
-  writeSemanticsForMode(lines, 'dark', semantic, '    ', groupToName)
+  writePrimitivesForOutput(lines, 'dark', 'normal', primitive, '    ')
+  writeSemanticsForOutput(lines, 'dark', 'normal', semantic, '    ')
+  writeShadowPresets(lines, semantic.shadow_presets, '    ')
   lines.push('  }')
   lines.push('}\n')
-
-  // ─── 5. Explicit data-mode selectors ──────────────────────────────
-  for (const mode of ['dark', 'light_ic', 'dark_ic'] as const) {
-    const selector = `[data-mode="${mode.replace(/_/g, '-')}"]`
-    lines.push(`${selector} {`)
-    writePrimitivesForMode(lines, mode, primitive)
-    writeSemanticsForMode(lines, mode, semantic, '  ', groupToName)
-    lines.push('}\n')
-  }
 
   return lines.join('\n')
 }
 
-// ─── Internals ──────────────────────────────────────────────────────────
+// ─── Selector ──────────────────────────────────────────────────────────
 
-function writePrimitivesForMode(
+function selectorFor(mode: BaseMode, contrast: Contrast): string {
+  if (mode === 'light' && contrast === 'normal') return ':root'
+  if (mode === 'light' && contrast === 'ic')
+    return ':root[data-contrast="ic"]:not([data-mode="dark"])'
+  if (mode === 'dark' && contrast === 'normal')
+    return ':root[data-mode="dark"]:not([data-contrast="ic"])'
+  return ':root[data-mode="dark"][data-contrast="ic"]'
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────
+
+function writePrimitivesForOutput(
   lines: string[],
-  mode: Mode,
+  mode: BaseMode,
+  contrast: Contrast,
   primitive: PrimitiveColorSet,
   indent = '  ',
 ): void {
-  const groups = [primitive.neutrals, primitive.accents]
+  const key = outputKey(mode, contrast)
+  const groups: ResolvedPrimitive[][] = [primitive.neutrals, primitive.accents]
   for (const group of groups) {
     for (const solid of group) {
-      const v = solid.values[mode]
+      const v = solid.values[key]
       writeSolid(lines, solid.name, v, indent)
       writeOpacityLadder(lines, solid.name, v, primitive.opacityStops, indent)
     }
   }
 }
 
-function writeSemanticsForMode(
+function writeSemanticsForOutput(
   lines: string[],
-  mode: Mode,
+  mode: BaseMode,
+  contrast: Contrast,
   semantic: SemanticColorSet,
   indent = '  ',
-  groupToName?: Map<string, string>,
 ): void {
+  const key = outputKey(mode, contrast)
   for (const token of semantic.tokens) {
-    const value = token.values[mode]
-    lines.push(`${indent}--${token.name}: ${renderResolvedValue(value, groupToName)};`)
+    const value = token.values[key]
+    lines.push(
+      `${indent}--${token.name}: ${formatOklchAlphaCss(value)};`,
+    )
   }
 }
 
-function writeSolid(lines: string[], name: string, v: OklchValue, indent = '  '): void {
+function writeSolid(
+  lines: string[],
+  name: string,
+  v: OklchValue,
+  indent = '  ',
+): void {
   lines.push(`${indent}--${name}: ${formatOklchCss(v)};`)
 }
 
@@ -111,23 +145,31 @@ function writeOpacityLadder(
   indent = '  ',
 ): void {
   for (const stop of stops) {
-    lines.push(`${indent}--${name}-a${stop}: ${formatOklchCss(v, stop / 100)};`)
+    lines.push(
+      `${indent}--${name}-a${stop}: ${formatOklchCss(v, stop / 100)};`,
+    )
   }
 }
 
-function renderResolvedValue(
-  value: ResolvedTokenValue,
-  groupToName?: Map<string, string>,
-): string {
-  if (value.kind === 'semantic-ref') {
-    const mapped = groupToName?.get(value.target)
-    if (!mapped) {
-      throw new Error(`css: unresolved semantic-ref target '${value.target}'`)
-    }
-    return `var(--${mapped})`
+function writeShadowPresets(
+  lines: string[],
+  presets: ShadowPreset[],
+  indent = '  ',
+): void {
+  for (const preset of presets) {
+    const layers = preset.layers
+      .map(
+        (l) =>
+          `0px ${l.y}px ${l.blur}px ${l.spread}px var(${l.tint_var})`,
+      )
+      .join(', ')
+    lines.push(`${indent}--fx-shadow-${preset.name}: ${layers};`)
   }
-  if (value.alpha !== undefined && value.alpha < 1) {
-    return `var(--${value.primitive}-a${Math.round(value.alpha * 100)})`
+}
+
+function formatOklchAlphaCss(v: OklchWithAlpha): string {
+  if (v.alpha >= 1) {
+    return formatOklchCss({ L: v.L, C: v.C, H: v.H })
   }
-  return `var(--${value.primitive})`
+  return formatOklchCss({ L: v.L, C: v.C, H: v.H }, v.alpha)
 }
