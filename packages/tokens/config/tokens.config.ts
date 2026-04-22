@@ -1,11 +1,35 @@
 /**
- * Lab UI — master token config (phase 1 · colors).
+ * Lab UI — master token config (phase 1.5 · colors v2).
  *
- * SINGLE SOURCE OF TRUTH. Change a value here → full regeneration of
- * primitives + semantic + CSS/ESM/d.ts on `bun run build`.
+ * @governs implementation-plan-v2.md
  *
- * See packages/tokens/spec.md §3 for the full grammar and §4–5 for
- * the generation algorithms.
+ * SINGLE SOURCE OF TRUTH for:
+ *   - 13 neutral spine (pivot-mirror)
+ *   - 11 accent spines (monotonic Hermite interp)
+ *   - 2 statics (white / dark)
+ *   - 29 opacity stops
+ *   - perceptual compensation cells (Hunt/HK)
+ *   - tier contrast targets (APCA Lc per tier × contrast)
+ *   - semantic tree (backgrounds, labels, fills, borders, fx, misc)
+ *   - progressive shadow presets (multi-layer)
+ *
+ * Architectural decisions locked in plan v2:
+ *   1. Unified spine model — every accent tier is a solid spine-point,
+ *      NO opacity-based tier derivation for labels/borders.
+ *   2. Perceptual compensation between light/dark (accents subtly differ).
+ *   3. Composition derivable — color + opacity stay independent; composed
+ *      at resolution time, only for true-translucent semantics (glass,
+ *      overlays, shadows, skeleton, focus, glow).
+ *   4. Progressive shadows — XS..XL each = 1-4 drop-shadow layers.
+ *   5. IC orthogonal to mode — 2 axes × 2 values = 4 outputs.
+ *
+ * When calibrating spines from Figma:
+ *   - Primary accent anchor (L, C, H) at default brand hue maps to a
+ *     spine point near the middle of the L range.
+ *   - Dark-side and light-side control points extend the spine to cover
+ *     all tier target L values. The spine is what tiers traverse.
+ *
+ * See plan §4.2 for per-accent spine calibration methodology.
  */
 
 import type { TokensConfig } from '../src/types'
@@ -13,236 +37,611 @@ import type { TokensConfig } from '../src/types'
 export const config: TokensConfig = {
   colors: {
     gamut: 'p3',
+    vibrancy: 1.0,
 
+    // ─── Neutrals ─────────────────────────────────────────────────────
+    // @governs plan §4.1. Base physical ladder generated once per contrast;
+    // dark mode flips via pivot-mirror (step i → step 12-i).
     neutrals: {
-      steps: 13, // 0..12
-      hue: 283, // cool-gray bias
-      chroma: { min: 0, max: 0.005 },
-      lightness: {
-        light: { from: 1.0, to: 0.08 },
-        dark: { from: 0.08, to: 1.0 },
+      steps: 13,
+      pivot_step: 6,
+      hue: 247, // cool-blue bias
+      endpoints_normal: { L0: 1.0, L12: 0.08 },
+      endpoints_ic: { L0: 1.0, L12: 0.0 },
+      chroma_curve: {
+        peak: 0.008,
+        peak_step: 6,
+        falloff: 1.0,
+        floor: 0.002,
       },
-      lightness_ic_delta: -0.02,
-      interp: 'linear',
+      hue_drift: {
+        start_H: 247,
+        end_H: 247,
+        easing: 'linear',
+      },
+      lightness_curve: 'linear',
     },
 
+    // ─── Accents (spines) ─────────────────────────────────────────────
+    // @governs plan §4.2 + §15 (appendix A). Each accent has:
+    //   - spine: 2-4 control points {L, H, C?} sorted by L
+    //   - chroma_curve: how C shapes over L
+    //   - chroma_boost_per_dL: compensation for gamut in dark region
+    //
+    // Spine calibration: first draft. These are anchored to Figma HEX
+    // for primary tier; dark/light endpoints extrapolated. Final
+    // calibration happens in a follow-up commit with Figma 44-anchor
+    // data.
     accents: {
-      brand: { light: { L: 0.603, C: 0.218, H: 257 } },
-      red: { light: { L: 0.608, C: 0.214, H: 22 } },
-      orange: { light: { L: 0.712, C: 0.18, H: 56 } },
+      brand: { alias: 'blue' },
+
+      blue: {
+        spine: [
+          { L: 0.2, H: 265 },
+          { L: 0.47, H: 252 },
+          { L: 0.603, H: 257, C: 0.218 }, // Figma anchor (primary, light)
+          { L: 0.85, H: 240 },
+        ],
+        chroma_curve: {
+          peak: 0.25,
+          peak_L: 0.55,
+          falloff_low: 0.8,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.1,
+      },
+
+      red: {
+        spine: [
+          { L: 0.2, H: 20 },
+          { L: 0.608, H: 22, C: 0.214 },
+          { L: 0.88, H: 25 },
+        ],
+        chroma_curve: {
+          peak: 0.24,
+          peak_L: 0.55,
+          falloff_low: 0.7,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.12,
+      },
+
+      orange: {
+        spine: [
+          { L: 0.25, H: 40 },
+          { L: 0.712, H: 56, C: 0.18 },
+          { L: 0.92, H: 70 },
+        ],
+        chroma_curve: {
+          peak: 0.2,
+          peak_L: 0.7,
+          falloff_low: 0.9,
+          falloff_high: 1.1,
+          floor: 0.05,
+        },
+        chroma_boost_per_dL: 0.15,
+      },
+
       yellow: {
-        light: { L: 0.855, C: 0.177, H: 83 },
-        overrides: {
-          // Hue shift toward amber gives usable contrast in IC mode.
-          light_ic: { L: 0.564, C: 0.145, H: 50 },
+        // Yellow requires aggressive spine — without H-shift it becomes
+        // olive at low L. Key insight (plan §4.2): low-L yellow = amber.
+        spine: [
+          { L: 0.2, H: 45 },
+          { L: 0.5, H: 65 },
+          { L: 0.855, H: 83, C: 0.177 }, // Figma anchor
+          { L: 0.95, H: 100 },
+        ],
+        chroma_curve: {
+          peak: 0.2,
+          peak_L: 0.8,
+          falloff_low: 1.2,
+          falloff_high: 1.0,
+          floor: 0.05,
         },
+        chroma_boost_per_dL: 0.25,
       },
-      green: { light: { L: 0.656, C: 0.191, H: 144 } },
-      teal: { light: { L: 0.72, C: 0.14, H: 190 } },
+
+      green: {
+        spine: [
+          { L: 0.22, H: 150 },
+          { L: 0.656, H: 144, C: 0.191 },
+          { L: 0.9, H: 140 },
+        ],
+        chroma_curve: {
+          peak: 0.22,
+          peak_L: 0.6,
+          falloff_low: 0.8,
+          falloff_high: 1.0,
+          floor: 0.05,
+        },
+        chroma_boost_per_dL: 0.12,
+      },
+
+      teal: {
+        spine: [
+          { L: 0.25, H: 195 },
+          { L: 0.72, H: 190, C: 0.14 },
+          { L: 0.92, H: 185 },
+        ],
+        chroma_curve: {
+          peak: 0.18,
+          peak_L: 0.68,
+          falloff_low: 0.8,
+          falloff_high: 1.0,
+          floor: 0.04,
+        },
+        chroma_boost_per_dL: 0.12,
+      },
+
       mint: {
-        light: { L: 0.85, C: 0.105, H: 165 },
-        overrides: {
-          // TODO(spec §14.2): verify real Figma HEX for Mint IC.
-          light_ic: { L: 0.62, C: 0.12, H: 155 },
+        spine: [
+          { L: 0.3, H: 170 },
+          { L: 0.85, H: 165, C: 0.105 },
+          { L: 0.95, H: 160 },
+        ],
+        chroma_curve: {
+          peak: 0.14,
+          peak_L: 0.8,
+          falloff_low: 1.0,
+          falloff_high: 1.0,
+          floor: 0.04,
         },
+        chroma_boost_per_dL: 0.15,
       },
-      blue: { light: { L: 0.603, C: 0.218, H: 257 } }, // alias brand
-      indigo: { light: { L: 0.52, C: 0.23, H: 280 } },
-      purple: { light: { L: 0.555, C: 0.23, H: 310 } },
-      pink: { light: { L: 0.64, C: 0.23, H: 355 } },
+
+      indigo: {
+        spine: [
+          { L: 0.2, H: 290 },
+          { L: 0.52, H: 280, C: 0.23 },
+          { L: 0.88, H: 270 },
+        ],
+        chroma_curve: {
+          peak: 0.25,
+          peak_L: 0.5,
+          falloff_low: 0.7,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.1,
+      },
+
+      purple: {
+        spine: [
+          { L: 0.2, H: 320 },
+          { L: 0.555, H: 310, C: 0.23 },
+          { L: 0.9, H: 305 },
+        ],
+        chroma_curve: {
+          peak: 0.25,
+          peak_L: 0.55,
+          falloff_low: 0.7,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.1,
+      },
+
+      pink: {
+        spine: [
+          { L: 0.25, H: 358 },
+          { L: 0.64, H: 355, C: 0.23 },
+          { L: 0.92, H: 350 },
+        ],
+        chroma_curve: {
+          peak: 0.25,
+          peak_L: 0.6,
+          falloff_low: 0.7,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.1,
+      },
     },
 
     statics: {
       white: { L: 1.0, C: 0, H: 0 },
-      dark: { L: 0.08, C: 0, H: 0 }, // non-pure-black for shadows/gradients
+      dark: { L: 0.08, C: 0, H: 0 }, // non-pure black for shadows
     },
 
-    modes: ['light', 'dark', 'light_ic', 'dark_ic'] as const,
-
-    mode_derivation: {
-      dark: { dL: 0.045, dC: 0, dH: 0 },
-      light_ic: { dL: -0.1, dC: 0.01, dH: 5 },
-      dark_ic: { dL: 0.08, dC: -0.02, dH: 0 },
-    },
-
+    // ─── Opacity primitive (29 stops) ────────────────────────────────
     opacity: {
       stops: [
         0, 1, 2, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64,
         68, 72, 76, 80, 84, 88, 92, 96, 98, 99,
       ],
     },
+
+    // ─── Perceptual compensation (Hunt / HK) ─────────────────────────
+    // @governs plan §4.3. Applied AFTER spine-lookup, BEFORE gamut clamp.
+    // Light mode = identity. Dark mode = reduce chroma (Hunt) and L (HK).
+    perceptual_comp: {
+      enable: true,
+      light: {
+        chroma_mult: 1.0,
+        lightness_shift: 0,
+        hue_shift: 0,
+      },
+      dark: {
+        chroma_mult: 0.93, // -7% (Hunt)
+        lightness_shift: -0.02, // HK: dark colors appear brighter
+        hue_shift: 0,
+      },
+    },
+
+    // ─── Tier targets (APCA Lc per tier × contrast) ──────────────────
+    // @governs plan §5.1
+    tier_targets: {
+      primary: { normal: { apca: 60 }, ic: { apca: 75 } },
+      secondary: { normal: { apca: 45 }, ic: { apca: 60 } },
+      tertiary: { normal: { apca: 30 }, ic: { apca: 45 } },
+      quaternary: { normal: { apca: 15 }, ic: { apca: 30 } },
+      fill_primary: { normal: { apca: 30 }, ic: { apca: 45 } },
+      fill_secondary: { normal: { apca: 20 }, ic: { apca: 30 } },
+      fill_tertiary: { normal: { apca: 12 }, ic: { apca: 20 } },
+      fill_quaternary: { normal: { apca: 6 }, ic: { apca: 12 } },
+      border_strong: { normal: { apca: 45 }, ic: { apca: 60 } },
+      border_base: { normal: { apca: 20 }, ic: { apca: 30 } },
+      border_soft: { normal: { apca: 8 }, ic: { apca: 15 } },
+    },
+
+    // ─── Sentiment aliases ───────────────────────────────────────────
+    // @governs plan §5.2. Semantic tree uses `Brand/Danger/Warning/...`
+    // as purpose-level names; these map to concrete accent names.
+    semantic_aliases: {
+      Brand: 'brand',
+      Danger: 'red',
+      Warning: 'orange',
+      Success: 'green',
+      Info: 'blue',
+    },
   },
 
-  ladders: {
-    // Backgrounds (common page surfaces). Referenced by control.bg and APCA
-    // tests. Neutral steps 0..2 map to the page → secondary → tertiary surfaces.
-    background: {
+  // ─── Semantic tree ──────────────────────────────────────────────────
+  // @governs plan §5.2. For every semantic we specify:
+  //   - kind: 'pipeline' | 'direct' | 'mode-branch'
+  //   - primitive ref (accent/neutral/static)
+  //   - tier (for pipeline) — drives target_L via apca_inverse
+  //   - canonical_bg (for pipeline) — the bg context against which contrast
+  //     is computed
+  //
+  // Canonical-bg pattern: most labels/fills/borders are designed on
+  // `backgrounds.neutral.primary`. Inverted variants use fills.neutral.primary.
+  semantics: {
+    backgrounds: {
       neutral: {
-        primary: 'N0@solid',
-        secondary: 'N1@solid',
-        tertiary: 'N2@solid',
+        primary: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '0' },
+        },
+        secondary: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '1' },
+        },
+        tertiary: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '2' },
+        },
+      },
+      overlay: {
+        kind: 'direct',
+        ref: { family: 'static', id: 'dark', opacity_stop: 40 },
+      },
+      static: {
+        kind: 'direct',
+        ref: { family: 'static', id: 'white' },
       },
     },
 
-    label: {
-      accent: {
-        steps: {
-          primary: 'solid',
-          secondary: { normal: '@72', ic: '@80' },
-          tertiary: { normal: '@52', ic: '@72' },
-          quaternary: { normal: '@32', ic: '@52' },
-        },
-      },
-      neutral: {
-        // Split per-mode so dark backgrounds pick up lighter neutral steps
-        // (the scale is inverted but the Figma ladder references light-mode
-        // step names). Without this split, `N8@72` is too dim in dark modes.
-        steps: {
-          primary: {
-            light: 'N12@solid',
-            dark: 'N12@solid',
-            light_ic: 'N12@solid',
-            dark_ic: 'N12@solid',
-          },
-          secondary: {
-            light: 'N8@72',
-            dark: 'N11@80',
-            light_ic: 'N10@solid',
-            dark_ic: 'N11@solid',
-          },
-          tertiary: {
-            light: 'N8@52',
-            dark: 'N11@52',
-            light_ic: 'N9@72',
-            dark_ic: 'N10@72',
-          },
-          quaternary: {
-            light: 'N8@32',
-            dark: 'N11@32',
-            light_ic: 'N9@52',
-            dark_ic: 'N10@52',
-          },
-        },
-      },
-    },
-
-    fill: {
-      accent: {
-        // Accent fills are mode-invariant (§5.2).
-        steps: {
-          primary: '@12',
-          secondary: '@8',
-          tertiary: '@4',
-          quaternary: '@2',
-          none: '@0',
-        },
-      },
-      neutral: {
-        steps: {
-          primary: {
-            light: 'N6@20',
-            dark: 'N6@36',
-            light_ic: 'N6@32',
-            dark_ic: 'N6@44',
-          },
-          secondary: {
-            light: 'N6@16',
-            dark: 'N6@32',
-            light_ic: 'N6@24',
-            dark_ic: 'N6@40',
-          },
-          tertiary: {
-            light: 'N6@12',
-            dark: 'N6@24',
-            light_ic: 'N6@20',
-            dark_ic: 'N6@32',
-          },
-          quaternary: {
-            light: 'N6@8',
-            dark: 'N6@16',
-            light_ic: 'N6@16',
-            dark_ic: 'N6@24',
-          },
-        },
-      },
-    },
-
-    border: {
-      accent: {
-        steps: {
-          strong: 'solid',
-          base: { normal: '@20', ic: '@32' },
-          soft: { normal: '@12', ic: '@20' },
-          ghost: '@0',
-        },
-      },
-      neutral: {
-        steps: {
-          strong: {
-            light: 'N9@solid',
-            dark: 'N7@solid',
-            light_ic: 'N10@solid',
-            dark_ic: 'N6@solid',
-          },
-          base: {
-            light: 'N6@20',
-            dark: 'N6@32',
-            light_ic: 'N6@28',
-            dark_ic: 'N6@40',
-          },
-          soft: {
-            light: 'N6@12',
-            dark: 'N6@20',
-            light_ic: 'N6@16',
-            dark_ic: 'N6@28',
-          },
-          ghost: 'N6@0',
-        },
-      },
-    },
+    labels: buildLabels(),
+    fills: buildFills(),
+    borders: buildBorders(),
 
     fx: {
-      shadow: {
-        steps: {
-          minor: { light_like: 'Dark@1', dark_like: 'Dark@2' },
-          ambient: { light_like: 'Dark@2', dark_like: 'Dark@4' },
-          penumbra: { light_like: 'Dark@4', dark_like: 'Dark@12' },
-          major: { light_like: 'Dark@12', dark_like: 'Dark@20' },
+      glow: {
+        Brand: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
         },
-        mode_map: {
-          light: 'light_like',
-          dark: 'dark_like',
-          light_ic: 'light_like',
-          dark_ic: 'dark_like',
+        Danger: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'red', opacity_stop: 40 },
         },
+        Warning: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'orange', opacity_stop: 40 },
+        },
+        Success: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'green', opacity_stop: 40 },
+        },
+        Info: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'blue', opacity_stop: 40 },
+        },
+      },
+      focus_ring: {
+        kind: 'direct',
+        ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
+      },
+      skeleton: {
+        kind: 'direct',
+        ref: { family: 'neutral', id: '6', opacity_stop: 16 },
+      },
+      shadow_tints: {
+        minor: { family: 'static', id: 'dark', opacity_stop: 1 },
+        ambient: { family: 'static', id: 'dark', opacity_stop: 2 },
+        penumbra: { family: 'static', id: 'dark', opacity_stop: 4 },
+        major: { family: 'static', id: 'dark', opacity_stop: 12 },
+      },
+      shadow_presets: {
+        xs: [{ y: 1, blur: 2, spread: 0, tint: 'minor' }],
+        s: [
+          { y: 1, blur: 3, spread: 0, tint: 'minor' },
+          { y: 2, blur: 4, spread: 0, tint: 'ambient' },
+        ],
+        m: [
+          { y: 2, blur: 6, spread: 0, tint: 'minor' },
+          { y: 4, blur: 12, spread: 0, tint: 'ambient' },
+          { y: 1, blur: 3, spread: 0, tint: 'major' },
+        ],
+        l: [
+          { y: 4, blur: 12, spread: 0, tint: 'minor' },
+          { y: 8, blur: 24, spread: 0, tint: 'ambient' },
+          { y: 2, blur: 6, spread: 0, tint: 'penumbra' },
+          { y: 1, blur: 3, spread: 0, tint: 'major' },
+        ],
+        xl: [
+          { y: 48, blur: 96, spread: 0, tint: 'minor' },
+          { y: 24, blur: 48, spread: 0, tint: 'ambient' },
+          { y: 8, blur: 24, spread: 0, tint: 'penumbra' },
+          { y: 2, blur: 8, spread: 0, tint: 'major' },
+        ],
       },
     },
 
     misc: {
       badge: {
         label_contrast: {
-          light: 'White@solid',
-          dark: 'White@solid',
-          light_ic: 'White@solid',
-          dark_ic: 'White@solid',
+          kind: 'direct',
+          ref: { family: 'static', id: 'white' },
         },
         label_default: {
-          light: 'White@solid',
-          dark: 'Dark@solid',
-          light_ic: 'White@solid',
-          dark_ic: 'Dark@solid',
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'white' },
+            'light/ic': { family: 'static', id: 'white' },
+            'dark/normal': { family: 'static', id: 'dark' },
+            'dark/ic': { family: 'static', id: 'dark' },
+          },
         },
       },
       control: {
-        // Control-bg is a documented TEMPORARY cross-semantic ref (§5.5, §13.2).
-        // Will be replaced by component-level tokens in tier-2.
         bg: {
-          light: { ref: 'background.neutral.primary' },
-          dark: { ref: 'fill.neutral.primary' },
-          light_ic: { ref: 'background.neutral.primary' },
-          dark_ic: { ref: 'fill.neutral.primary' },
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'neutral', id: '0' },
+            'light/ic': { family: 'neutral', id: '0' },
+            'dark/normal': { family: 'neutral', id: '6', opacity_stop: 36 },
+            'dark/ic': { family: 'neutral', id: '6', opacity_stop: 44 },
+          },
         },
       },
     },
   },
+}
+
+// ─── Helpers that build repetitive semantic branches ──────────────────
+
+type SemDef = import('../src/types').SemanticDef
+
+function pipelineAccent(
+  accent: import('../src/types').AccentName,
+  tier: import('../src/types').TierName,
+): SemDef {
+  return {
+    kind: 'pipeline',
+    primitive: { family: 'accent', id: accent },
+    tier,
+    canonical_bg: { kind: 'semantic', path: 'backgrounds.neutral.primary' },
+    orientation: 'auto',
+  }
+}
+
+function pipelineNeutral(
+  tier: import('../src/types').TierName,
+): SemDef {
+  return {
+    kind: 'pipeline',
+    primitive: { family: 'neutral', id: '12' },
+    tier,
+    canonical_bg: { kind: 'semantic', path: 'backgrounds.neutral.primary' },
+    orientation: 'auto',
+  }
+}
+
+function buildLabels() {
+  return {
+    neutral: {
+      primary: pipelineNeutral('primary'),
+      secondary: pipelineNeutral('secondary'),
+      tertiary: pipelineNeutral('tertiary'),
+      quaternary: pipelineNeutral('quaternary'),
+    },
+    inverted: {
+      kind: 'direct' as const,
+      ref: { family: 'neutral' as const, id: '0' },
+    },
+    brand: {
+      primary: pipelineAccent('brand', 'primary'),
+      secondary: pipelineAccent('brand', 'secondary'),
+      tertiary: pipelineAccent('brand', 'tertiary'),
+      quaternary: pipelineAccent('brand', 'quaternary'),
+    },
+    danger: {
+      primary: pipelineAccent('red', 'primary'),
+      secondary: pipelineAccent('red', 'secondary'),
+      tertiary: pipelineAccent('red', 'tertiary'),
+      quaternary: pipelineAccent('red', 'quaternary'),
+    },
+    warning: {
+      primary: pipelineAccent('orange', 'primary'),
+      secondary: pipelineAccent('orange', 'secondary'),
+      tertiary: pipelineAccent('orange', 'tertiary'),
+      quaternary: pipelineAccent('orange', 'quaternary'),
+    },
+    success: {
+      primary: pipelineAccent('green', 'primary'),
+      secondary: pipelineAccent('green', 'secondary'),
+      tertiary: pipelineAccent('green', 'tertiary'),
+      quaternary: pipelineAccent('green', 'quaternary'),
+    },
+    info: {
+      primary: pipelineAccent('blue', 'primary'),
+      secondary: pipelineAccent('blue', 'secondary'),
+      tertiary: pipelineAccent('blue', 'tertiary'),
+      quaternary: pipelineAccent('blue', 'quaternary'),
+    },
+    static: {
+      light: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'white' },
+      },
+      dark: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'dark' },
+      },
+    },
+  }
+}
+
+function buildFills() {
+  // Fills use opacity-derivation (translucent overlays of neutral/accent)
+  // because fills aren't text — contrast is less critical. They're one of
+  // the few places composition-with-opacity is legitimate.
+  const fill = (accent: import('../src/types').AccentName, stops: [number, number, number, number]) => ({
+    primary: {
+      kind: 'direct' as const,
+      ref: { family: 'accent' as const, id: accent, opacity_stop: stops[0] },
+    },
+    secondary: {
+      kind: 'direct' as const,
+      ref: { family: 'accent' as const, id: accent, opacity_stop: stops[1] },
+    },
+    tertiary: {
+      kind: 'direct' as const,
+      ref: { family: 'accent' as const, id: accent, opacity_stop: stops[2] },
+    },
+    quaternary: {
+      kind: 'direct' as const,
+      ref: { family: 'accent' as const, id: accent, opacity_stop: stops[3] },
+    },
+  })
+  const fillN = (stops: [number, number, number, number]) => ({
+    primary: {
+      kind: 'direct' as const,
+      ref: { family: 'neutral' as const, id: '6', opacity_stop: stops[0] },
+    },
+    secondary: {
+      kind: 'direct' as const,
+      ref: { family: 'neutral' as const, id: '6', opacity_stop: stops[1] },
+    },
+    tertiary: {
+      kind: 'direct' as const,
+      ref: { family: 'neutral' as const, id: '6', opacity_stop: stops[2] },
+    },
+    quaternary: {
+      kind: 'direct' as const,
+      ref: { family: 'neutral' as const, id: '6', opacity_stop: stops[3] },
+    },
+  })
+
+  return {
+    neutral: fillN([20, 16, 12, 8]),
+    brand: fill('brand', [12, 8, 4, 2]),
+    danger: fill('red', [12, 8, 4, 2]),
+    warning: fill('orange', [12, 8, 4, 2]),
+    success: fill('green', [12, 8, 4, 2]),
+    info: fill('blue', [12, 8, 4, 2]),
+    static: {
+      light: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'white', opacity_stop: 20 },
+      },
+      dark: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'dark', opacity_stop: 20 },
+      },
+    },
+  }
+}
+
+function buildBorders() {
+  // Borders: strong uses pipeline (solid spine), base/soft/ghost use
+  // opacity (translucent on bg). Strong border = visible, pipeline-based.
+  const strongPipeline = (accent: import('../src/types').AccentName): SemDef => ({
+    kind: 'pipeline',
+    primitive: { family: 'accent', id: accent },
+    tier: 'border_strong',
+    canonical_bg: { kind: 'semantic', path: 'backgrounds.neutral.primary' },
+    orientation: 'auto',
+  })
+  const soft = (accent: import('../src/types').AccentName, stop: number): SemDef => ({
+    kind: 'direct',
+    ref: { family: 'accent', id: accent, opacity_stop: stop },
+  })
+
+  const border = (accent: import('../src/types').AccentName) => ({
+    strong: strongPipeline(accent),
+    base: soft(accent, 20),
+    soft: soft(accent, 12),
+    ghost: soft(accent, 0),
+  })
+
+  const neutralBorder = (): {
+    strong: SemDef
+    base: SemDef
+    soft: SemDef
+    ghost: SemDef
+  } => ({
+    strong: {
+      kind: 'pipeline',
+      primitive: { family: 'neutral', id: '12' },
+      tier: 'border_strong',
+      canonical_bg: { kind: 'semantic', path: 'backgrounds.neutral.primary' },
+      orientation: 'auto',
+    },
+    base: {
+      kind: 'direct',
+      ref: { family: 'neutral', id: '6', opacity_stop: 20 },
+    },
+    soft: {
+      kind: 'direct',
+      ref: { family: 'neutral', id: '6', opacity_stop: 12 },
+    },
+    ghost: {
+      kind: 'direct',
+      ref: { family: 'neutral', id: '6', opacity_stop: 0 },
+    },
+  })
+
+  return {
+    neutral: neutralBorder(),
+    brand: border('brand'),
+    danger: border('red'),
+    warning: border('orange'),
+    success: border('green'),
+    info: border('blue'),
+    static: {
+      light: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'white', opacity_stop: 40 },
+      },
+      dark: {
+        kind: 'direct' as const,
+        ref: { family: 'static' as const, id: 'dark', opacity_stop: 40 },
+      },
+    },
+  }
 }

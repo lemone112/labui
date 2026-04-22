@@ -1,26 +1,31 @@
+/**
+ * Reference integrity — all semantic tokens resolve to finite, valid OKLCH.
+ *
+ * @layer L4 (semantic)
+ * @governs plan-v2 §5 · Semantic tree
+ * @invariant Every semantic has a value per OutputKey with L∈[0,1], C≥0,
+ *            H∈[0,360), alpha∈[0,1], all finite.
+ * @on-fail inspect generator emitting NaN/∞; most common cause is spine
+ *          validation bypass or chroma_curve with negative peak.
+ */
+
 import { describe, expect, test } from 'bun:test'
-import { config } from '../config/tokens.config'
-import { generatePrimitiveColors } from '../src/generators/primitive-colors'
-import { generateSemanticColors } from '../src/generators/semantic-colors'
+import { primitive, semantic } from './_helpers/fixtures'
 import { validateReferences } from '../src/validators/references'
 
-const primitive = generatePrimitiveColors(config.colors)
-const semantic = generateSemanticColors(config.ladders, primitive, config.colors)
+describe('References · semantic integrity', () => {
+  const r = validateReferences(primitive, semantic)
 
-describe('References', () => {
-  test('every semantic token resolves to a real primitive or semantic target', () => {
-    const result = validateReferences(primitive, semantic)
-    if (result.errors.length) {
-      throw new Error(`Reference errors:\n${result.errors.join('\n')}`)
-    }
-    expect(result.errors.length).toBe(0)
+  test('no integrity errors across all OutputKeys', () => {
+    if (r.errors.length) throw new Error(r.errors.join('\n'))
+    expect(r.errors.length).toBe(0)
   })
 
-  test('control-bg is a cross-semantic reference', () => {
-    const control = semantic.tokens.find((t) => t.name === 'control-bg')
-    expect(control).toBeDefined()
-    for (const mode of config.colors.modes) {
-      expect(control!.values[mode].kind).toBe('semantic-ref')
+  test('every semantic has 4 output values', () => {
+    for (const token of semantic.tokens) {
+      expect(Object.keys(token.values).sort()).toEqual(
+        ['dark/ic', 'dark/normal', 'light/ic', 'light/normal'],
+      )
     }
   })
 })

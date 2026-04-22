@@ -1,14 +1,12 @@
 /**
- * Gamut validator — spec §4.2 / §12.1.
+ * Gamut validator — verifies all generated OKLCH primitives + semantics
+ * fit inside the target gamut.
  *
- * Checks that every generated OKLCH primitive fits inside the target gamut
- * (Display-P3 by default). If not, the validator reports an error. The
- * generator already clamps, so errors here should never happen — they
- * indicate a regression in the clamping logic.
+ * @governs implementation-plan-v2.md §9 · Invariants
  */
 
-import type { PrimitiveColorSet, Mode } from '../types'
-import { MODES } from '../types'
+import type { OutputKey, PrimitiveColorSet, SemanticColorSet } from '../types'
+import { OUTPUT_KEYS } from '../types'
 import { isInP3Gamut, isInSrgbGamut } from '../utils/oklch'
 
 export interface GamutResult {
@@ -18,6 +16,7 @@ export interface GamutResult {
 
 export function validateGamut(
   primitive: PrimitiveColorSet,
+  semantic: SemanticColorSet,
   gamut: 'p3' | 'srgb',
 ): GamutResult {
   const errors: string[] = []
@@ -26,13 +25,24 @@ export function validateGamut(
 
   for (const group of [primitive.neutrals, primitive.accents, primitive.statics]) {
     for (const solid of group) {
-      for (const mode of MODES) {
-        const v = solid.values[mode]
+      for (const output of OUTPUT_KEYS) {
+        const v = solid.values[output]
         if (!check(v)) {
           errors.push(
-            `${solid.name} (${mode}): OKLCH(${v.L}, ${v.C}, ${v.H}) outside ${gamut} gamut`,
+            `${solid.name} (${output}): OKLCH(${v.L}, ${v.C}, ${v.H}) outside ${gamut} gamut`,
           )
         }
+      }
+    }
+  }
+
+  for (const token of semantic.tokens) {
+    for (const output of OUTPUT_KEYS) {
+      const v = token.values[output]
+      if (!check({ L: v.L, C: v.C, H: v.H })) {
+        warnings.push(
+          `${token.name} (${output}): OKLCH(${v.L}, ${v.C}, ${v.H}) outside ${gamut} gamut`,
+        )
       }
     }
   }

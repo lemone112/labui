@@ -1,57 +1,44 @@
 /**
- * Reference integrity validator.
+ * Reference integrity validator (v2).
  *
- * Checks that every semantic token's resolved value points at a primitive
- * that actually exists, and that cross-semantic refs have a matching target.
+ * In the v2 model, semantics don't carry ref strings — they carry resolved
+ * OKLCH values directly. This validator verifies:
+ *   - Every semantic has a value for every OutputKey
+ *   - No NaN / Infinity values
+ *   - L ∈ [0, 1]; C ≥ 0; H ∈ [0, 360); alpha ∈ [0, 1]
  */
 
-import type { Mode, PrimitiveColorSet, SemanticColorSet } from '../types'
-import { MODES } from '../types'
+import type { PrimitiveColorSet, SemanticColorSet } from '../types'
+import { OUTPUT_KEYS } from '../types'
 
 export interface RefResult {
   errors: string[]
 }
 
 export function validateReferences(
-  primitive: PrimitiveColorSet,
+  _primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
 ): RefResult {
   const errors: string[] = []
 
-  // Build set of all primitive names
-  const primNames = new Set<string>()
-  for (const group of [primitive.neutrals, primitive.accents, primitive.statics]) {
-    for (const solid of group) {
-      primNames.add(solid.name)
-    }
-  }
-
-  // Build group → token-name map for cross-semantic ref resolution.
-  // Cross-refs in the config use dot-paths (e.g. `background.neutral.primary`)
-  // that correspond to a token's `group` field, not its CSS variable name.
-  const byGroup = new Map<string, string>()
   for (const token of semantic.tokens) {
-    byGroup.set(token.group, token.name)
-  }
-
-  for (const token of semantic.tokens) {
-    for (const mode of MODES) {
-      const value = token.values[mode]
-
-      if (value.kind === 'primitive') {
-        if (!primNames.has(value.primitive)) {
-          errors.push(
-            `${token.name} (${mode}): references unknown primitive '${value.primitive}'`,
-          )
-        }
+    for (const output of OUTPUT_KEYS) {
+      const v = token.values[output]
+      if (!v) {
+        errors.push(`${token.name}: missing value for output '${output}'`)
+        continue
       }
-
-      if (value.kind === 'semantic-ref') {
-        if (!byGroup.has(value.target)) {
-          errors.push(
-            `${token.name} (${mode}): cross-semantic ref '${value.target}' does not match any semantic token group`,
-          )
-        }
+      if (!Number.isFinite(v.L) || v.L < 0 || v.L > 1) {
+        errors.push(`${token.name} (${output}): invalid L=${v.L}`)
+      }
+      if (!Number.isFinite(v.C) || v.C < 0) {
+        errors.push(`${token.name} (${output}): invalid C=${v.C}`)
+      }
+      if (!Number.isFinite(v.H) || v.H < 0 || v.H >= 360) {
+        errors.push(`${token.name} (${output}): invalid H=${v.H}`)
+      }
+      if (!Number.isFinite(v.alpha) || v.alpha < 0 || v.alpha > 1) {
+        errors.push(`${token.name} (${output}): invalid alpha=${v.alpha}`)
       }
     }
   }
