@@ -3,14 +3,17 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "lib": ["ES2023", "DOM"],
     "strict": true,
+    "noUncheckedIndexedAccess": false,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "src",
     "resolveJsonModule": true,
-    "declaration": true
+    "declaration": true,
+    "types": ["bun-types", "node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "config/**/*.ts", "tests/**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }
