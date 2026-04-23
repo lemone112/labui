@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'packages/tokens/**'
+      - 'plan/**'
       - '.github/workflows/tokens-ci.yml'
   push:
     branches: [main]
     paths:
       - 'packages/tokens/**'
+      - 'plan/**'
       - '.github/workflows/tokens-ci.yml'
 
 concurrency:
