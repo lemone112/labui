@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 27 test files
+**Total:** 29 test files
 
 ## Cross-layer
 
@@ -49,7 +49,7 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L1-units/integer-px.test.ts`
 
 - **Governs:** plan-v2 §2.3 · Constraint
-- **Invariant:** Every --px-N value is an integer pixel across the plan's four recommended scaling presets {0.75, 1.0, 1.166, 1.333}; non-integer px-1 would break subpixel rendering.
+- **Invariant:** Every internal `units.values.unit-N` is an integer pixel at root font-size 16 across the plan's four recommended scaling presets {0.75, 1.0, 1.166, 1.333}. Non-integer unit-1 would break subpixel rendering after `rem` → px resolution.
 - **On fail:** pick a scaling factor from plan §2.3 presets {0.75, 1.0, 1.166, 1.333}. If you need stricter grid alignment (base_px*scaling integer), use {0.75, 1.0, 1.25}.
 
 ## L1/L2 × Emit
@@ -57,8 +57,22 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L1-units/emit.test.ts`
 
 - **Governs:** plan-v2 §2.4 · Units output · §3 · Dimensions
-- **Invariant:** Emitted tokens.css contains --px-*, --pt-*, --padding-*, --radius-*, --size-* in a mode-invariant :root block.
+- **Invariant:** Emitted tokens.css contains --unit-*, --padding-*, --radius-*, --size-* in a mode-invariant :root block. Values are in `rem` (except --radius-full, which stays 9999px as pill sentinel).
 - **On fail:** check writers/dimensions.ts slugs and iteration.
+
+## L2 (dimensions · radius)
+
+### `tests/L2-dimensions/radius-anchors.test.ts`
+
+- **Governs:** plan-v2 §3.2 Radius · §3.5 Output · §3.6 Invariants
+- **Invariant:** Radius family emits exactly 5 anchors (none/min/base/max/full); `--radius-full` emits as `calc(infinity * 1rem)`; monotonic ordering `0 = none < min < base < max < full`.
+- **On fail:** check generators/dimensions.ts radius resolution and writers/dimensions.ts emitRadius — anchor set must match plan §3.2 R1 Hybrid exactly; no legacy t-shirt steps. * PR-N target: replace the 12-step t-shirt radius scale (none/xxs/xs/s/m/l/xl/2xl/3xl/4xl/5xl/full) with a 5-anchor parametric set (none / min / base / max / full) where intermediate values are derived in place via `clamp()` (see radius-concentric.test.ts). * Tests are currently `test.skip` because PR-N implementation (config/generator/writer changes) is not yet landed. They describe the target state — flip `skip` → `test` once PR-N code is in place.
+
+### `tests/L2-dimensions/radius-concentric.test.ts`
+
+- **Governs:** plan-v2 §3.4 Concentric radius pattern
+- **Invariant:** `innerOf(outer, pad)` returns `clamp(var(--radius-min), calc(outer - pad), var(--radius-max))`; `outerOf(inner, pad)` returns `min(var(--radius-max), calc(inner + pad))`; floor = radius-min (never 0), ceiling = radius-max (never radius-full/infinity).
+- **On fail:** update writers/esm.ts helpers to emit the exact clamp/min string shape from plan §3.4; confirm neither helper leaks the pill sentinel (radius-full) into auto-computed nesting. * PR-N target: add two ESM helpers that produce CSS `clamp()` / `min()` expressions for concentric nesting, and verify their output shape matches the pattern documented in the plan. * Tests are currently `test.skip` because the helpers (`innerOf`, `outerOf`) do not yet exist in the ESM output. Flip skip → test when PR-N implementation lands.
 
 ## L2 (dimensions)
 

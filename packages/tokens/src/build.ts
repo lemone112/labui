@@ -104,8 +104,7 @@ if (validation.errors.length) {
   process.exit(1)
 }
 
-const pxCount = Object.keys(unitsResult.units.px).length
-const ptCount = Object.keys(unitsResult.units.pt).length
+const unitCount = Object.keys(unitsResult.units.values).length
 const dimsCount = Object.values(dimsResult.dimensions).reduce(
   (sum, m) => sum + Object.keys(m).length,
   0,
@@ -120,7 +119,7 @@ const materialsCount = materialsResult.materials.levels.length
 
 console.log(
   `✓ tokens built in ${(t1 - t0).toFixed(1)}ms (` +
-    `${pxCount} px + ${ptCount} pt, ` +
+    `${unitCount} units, ` +
     `${dimsCount} dims, ` +
     `${typoCount} typo, ` +
     `${zCount} z, ` +

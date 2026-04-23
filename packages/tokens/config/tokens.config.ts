@@ -432,18 +432,20 @@ export const config: TokensConfig = {
   },
 
   // ─── Units (L1) ──────────────────────────────────────────────────
-  // @governs plan §2. base_px × scaling must be integer for px-1 to be
-  // whole-pixel. Figma uses N·4px grid; keep 4 unless redesigning.
+  // @governs plan §2. base_px × scaling must be integer for unit-1 to
+  // land on a whole pixel at root font-size 16 (Figma uses N·4px grid).
+  // Emitted in `rem` — 4px corresponds to 0.25rem, scales with root
+  // font-size for accessibility (browser zoom, user overrides).
   units: {
     base_px: 4,
     scaling: 1.0,
-    px_range: { min: -7, max: 27 },
-    pt_range: { min: -1, max: 8 },
+    range: { min: -7, max: 27 },
   },
 
   // ─── Dimensions (L2) ─────────────────────────────────────────────
-  // @governs plan §3. Values are indices into units.px; airiness shifts
-  // the index multiplicatively. 'full' radius uses 9999 sentinel.
+  // @governs plan §3. Values are indices into the unit scale (L1);
+  // airiness shifts the index multiplicatively. 'full' radius uses
+  // 9999 sentinel (emitted as literal 9999px — pill, density-immune).
   dimensions: {
     airiness: 1.0,
     adaptives: {

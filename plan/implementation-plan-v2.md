@@ -67,10 +67,10 @@ Layer 5 · Typography    Layer 6 · Z-index    Layer 7 · Materials
 
 ### 1.2. Все числа — только в L1
 
-- В L2 нет raw `px`/`pt` literals — только refs (`px/2`, `pt/1`)
+- В L2 нет raw px/pt literals — только refs (`unit/2`, `unit/4`)
 - В L3 числа L/C/H только в spine control points и endpoint'ах нейтралов
 - В L4 — только refs в формате `{primitive}@{opacity_stop?}` или `{semantic}`
-- В L5 — только refs на `px/N`, `pt/N` + коэффициенты масштаба
+- В L5 — только refs на `unit/N` + коэффициенты масштаба
 - Regex-lint в CI ловит raw числа вне L1
 
 ### 1.3. Unified resolution pipeline
@@ -138,8 +138,9 @@ Primitives в конфиге держат цветовые spines отдельн
 
 | слой | invariant |
 |---|---|
-| L1 | `px-N`, `pt-N` целые; `scaling` не ломает целочисленность (CI проверяет) |
-| L2 | все refs резольвятся; нет raw чисел |
+| L1 | `unit-N` целые px при root=16; эмит в rem; нет `--px-*`/`--pt-*`; `scaling` не ломает целочисленность (CI проверяет) |
+| L2 | все refs резольвятся; нет raw чисел; radius-full=9999px сентинел в px |
+| L2 concentric | `clamp(min, outer−padding, max)` ≥ 0; anchor-set `none/min/base/max/full` полный |
 | L3 spines | `H(L)` monotonic; anchor — одна из control points; chroma_curve ≥ 0 |
 | L3 neutrals | mirror симметрия: dark выводится логически от light через mode |
 | L3 derivable | opacity_stop применяется только к финальному цвету; L/H не меняется |
@@ -157,47 +158,48 @@ Primitives в конфиге держат цветовые spines отдельн
 
 ```typescript
 units: {
-  base_px: 4,              // базовый инкремент
+  base_px: 4,              // базовый инкремент в px при root font-size = 16
   scaling: 1.0,             // continuous float; рекомендованные пресеты: 0.75, 1.0, 1.166, 1.333
+  range: { min: -7, max: 27 },
 }
 ```
 
 ### 2.2. Генерация
 
 ```
-px(n) = round(n * base_px * scaling)       // целые пиксели после округления
-pt(n) = round(n * base_px * scaling / 2, 2) // pt = полпикселя, 2 знака
+unit(n) = round(n * base_px * scaling)   // целые px; эмитится в rem через /16
 ```
 
-Range:
-- `px-N` для `N ∈ {-7, -6, ..., 27}` — соответствует Figma `px/N` variables
-- `pt-N` для `N ∈ {-1, 0, ..., 8}` — соответствует Figma `pt/N`
+Range: `unit-N` для `N ∈ {-7, -6, ..., 27}` — одна целочисленная шкала индексов. Negatives используются в `spacing_margin`.
+
+Half-step/`pt` семейство упразднено — `rem` нативно покрывает sub-pixel precision без параллельной шкалы.
 
 ### 2.3. Constraint
 
-`base_px * scaling` должно давать целое (иначе `px-1` будет 4.5px, ломает subpixel rendering). 
+`base_px * scaling` должно давать целое (иначе `unit-1` после `rem × root=16` резолвится в 4.5px, ломая subpixel rendering).
 
-**Валидация:** при non-integer результате → ошибка build'а с suggestion ближайшего безопасного scaling. В CI проверяем для пресетов {0.75, 1.0, 1.166, 1.333} что все N в range дают целые.
+**Валидация:** при non-integer результате → warning build'а с suggestion ближайшего безопасного scaling. В CI проверяем для пресетов {0.75, 1.0, 1.166, 1.333} что все N в range дают целые (значения в `units.values` до rem-конвертации).
 
 ### 2.4. Output
 
 ```css
-/* L1 Units */
+/* L1 Units — emitted in rem at root=16; scales with browser zoom */
 :root {
-  --px-0:  0px;
-  --px-1:  4px;
-  --px-2:  8px;
+  --unit-0:   0;           /* bare zero is idiomatic */
+  --unit-1:   0.25rem;     /*  4px @ root=16 */
+  --unit-2:   0.5rem;      /*  8px */
+  --unit-4:   1rem;        /* 16px — anchor */
   /* ... */
-  --px--1: -4px;
-  --pt-0:  0pt;
-  --pt-1:  2pt;
+  --unit-27:  6.75rem;     /* 108px */
+  --unit--1: -0.25rem;
 }
 ```
 
 ### 2.5. Invariants
 
-- Все `--px-N` целые
-- Все `--pt-N` кратны 0.5
+- Все `--unit-N` при scaling ∈ plan presets резольвятся в целые px при root=16
+- Нет остаточных `--px-*` или `--pt-*` имён в эмите
+- `--radius-full: 9999px` — единственное место где px остаётся в CSS (pill sentinel, density-immune)
 
 ---
 
@@ -215,40 +217,47 @@ dimensions: {
 
 **Adaptives** (responsive targets):
 ```
-breakpoint.desktop.width = px/360  // 1440px
-breakpoint.mobile.width  = px/97   // 390px
-layout_padding.default   = px/5    // 20px
-w_sidebar_left           = px/16   // 64px
-w_sidebar_right          = px/5    // 20px
+breakpoint.desktop.width = unit/360  // 1440px
+breakpoint.mobile.width  = unit/97   // 390px
+layout_padding.default   = unit/5    // 20px
+w_sidebar_left           = unit/16   // 64px
+w_sidebar_right          = unit/5    // 20px
 ```
 
 **Spacing / Padding** (positive only):
 ```
-none=px/0, xxs=px/1, xs=px/2, s=px/3, m=px/4, l=px/6, xl=px/8,
-2xl=px/10, 3xl=px/12, 4xl=px/16, 5xl=px/20, 6xl=px/24, 7xl=px/27
+none=unit/0, xxs=unit/1, xs=unit/2, s=unit/3, m=unit/4, l=unit/6, xl=unit/8,
+2xl=unit/10, 3xl=unit/12, 4xl=unit/16, 5xl=unit/20, 6xl=unit/24, 7xl=unit/27
 ```
 
 **Spacing / Margin** (includes negatives):
 ```
-neg-l=px/-4, neg-m=px/-3, ..., none=px/0, xxs..7xl (как padding)
+neg-l=unit/-4, neg-m=unit/-3, ..., none=unit/0, xxs..7xl (как padding)
 ```
 
-**Radius**:
+**Radius** (R1 Hybrid — 5 anchors, continuous via `clamp()`, no discrete t-shirt steps):
 ```
-none=px/0, xxs=px/0.5, xs=px/1, s=px/1.5, m=px/2, l=px/3, xl=px/4,
-2xl=px/5, 3xl=px/6, 4xl=px/8, 5xl=px/10, full=9999
+none = 0                        /* sharp corners (indicator-like) */
+min  = unit/1                   /* 4px  — minimum soft radius */
+base = unit/3                   /* 12px — default for non-nested elements */
+max  = unit/8                   /* 32px — largest non-pill shape (ceiling for clamp) */
+full = calc(infinity * 1rem)    /* pill/circle sentinel; used directly only */
 ```
+
+**Дизайн-принцип:** параметрическая шкала вместо t-shirt набора. Промежуточные значения вычисляются **в месте применения** через `clamp(min, OUTER-PADDING, max)` — см. §3.4.
+
+**Why R1 Hybrid.** Замена 12-значной t-shirt шкалы (`xxs..5xl, full`) на 5 anchor-точек. Сохраняет Figma variable совместимость (named stops для экспорта), но лишает дизайнера/разработчика необходимости выбирать между `radius-m` и `radius-l` — `clamp()` делает это сам исходя из outer × padding в конкретном месте.
 
 **Size** (icon/avatar dimensions):
 ```
-xxs=px/5, xs=px/6, s=px/7, m=px/8, l=px/10, xl=px/12, 2xl=px/14, 3xl=px/16
+xxs=unit/5, xs=unit/6, s=unit/7, m=unit/8, l=unit/10, xl=unit/12, 2xl=unit/14, 3xl=unit/16
 ```
 
 **FX**:
 ```
-blur.{none,xxs..7xl}  → px/N
-shift.{neg-l..4xl}    → px/N
-spread.{none,xxs..m}  → px/N
+blur.{none,xxs..7xl}  → unit/N
+shift.{neg-l..4xl}    → unit/N
+spread.{none,xxs..m}  → unit/N
 ```
 
 **Opacity stops** (29 значений):
@@ -259,7 +268,7 @@ spread.{none,xxs..m}  → px/N
 
 ### 3.3. Airiness application
 
-Каждая name→px-step мапа задаётся как **индекс** в px-шкале. Airiness смещает индекс:
+Каждая name→step мапа задаётся как **индекс** в unit-шкале (L1). Airiness смещает индекс:
 
 ```
 final_step = base_step + round(airiness_shift(base_step, airiness))
@@ -271,9 +280,100 @@ final_step = base_step + round(airiness_shift(base_step, airiness))
 airiness_shift(step, a) = step * log2(a)  // log2(1.0)=0 → no shift, log2(1.25)≈+0.32 → +1 step on xl+
 ```
 
-### 3.4. Nested radius rule (документация, не токен)
+### 3.4. Concentric radius pattern (CSS `clamp()`, runtime)
 
-Курс §05 rule 8: `outer_radius = inner_radius + padding`. Это runtime-правило для компонентов, применяется дизайнером/разработчиком при построении иерархии вложений. Документируется в README.
+Курс §05 rule 8: `outer_radius = inner_radius + padding`. Ментально это симметричная формула — её можно читать в обе стороны:
+
+- **Outside-in:** `inner = outer − padding` — «есть обёртка, вычисляем что внутри»
+- **Inside-out:** `outer = inner + padding` — «есть маленький элемент, вычисляем что вокруг»
+
+Обе формы корректны. Мы **не навязываем направление** в токенах — компонент-автор выбирает по месту.
+
+**CSS-реализация (симметричный clamp):**
+
+```css
+.outer {
+  --_r:   var(--radius-base);   /* собственный радиус */
+  --_pad: var(--padding-m);     /* собственный padding */
+  border-radius: var(--_r);
+  padding: var(--_pad);
+}
+
+/* Вложенный элемент — inner концентрично */
+.outer > [data-nested] {
+  border-radius: clamp(
+    var(--radius-min),                  /* floor — меньше не бывает */
+    calc(var(--_r) - var(--_pad)),      /* idealized concentric */
+    var(--radius-max)                   /* ceiling для nесимметричных случаев */
+  );
+}
+```
+
+**Что гарантирует `clamp()`:**
+
+1. `outer − padding < min` → браузер выдаёт `min`. Floor срабатывает при «тонкой рамке»: дефолтный radius сохраняется, не уезжает в sharp angle.
+2. `outer − padding > max` → браузер выдаёт `max`. Ceiling срабатывает при «огромном padding»: радиус не раздувается, упирается в `radius-max` (`2rem` по умолчанию). Если нужна пилюля — компонент явно пишет `border-radius: var(--radius-full);`, **не** полагается на clamp.
+3. `min ≤ outer − padding ≤ max` → чистая концентрика.
+
+**Inside-out вариант (если компонент хочет расти вокруг дочернего элемента):**
+
+```css
+.wrapper {
+  --_child-r: var(--radius-min);
+  --_pad:     var(--padding-s);
+  border-radius: min(
+    var(--radius-max),
+    calc(var(--_child-r) + var(--_pad))
+  );
+}
+```
+
+**Арифметика.** `clamp()`/`calc()` выполняются браузером в floating-point; при дефолтных cells (`base_px=4, scaling=1.0, airiness=1.0, root=16px`) все входные anchor'ы кратны `0.25rem = 4px`, результат тоже целый px. При `airiness ≠ 1.0` или `scaling ∈ {1.166, 1.333}` значения могут стать fractional — браузер рендерит их без артефактов (subpixel antialiasing). `abs()` и `round()` не нужны — `clamp()` с `min` анкором уже отбрасывает отрицательные результаты корректно, а `round()` — ненужное усложнение.
+
+### 3.5. Radius anchors · Output
+
+```css
+:root {
+  --radius-none: 0;                      /* sharp */
+  --radius-min:  0.25rem;                /* 4px  */
+  --radius-base: 0.75rem;                /* 12px */
+  --radius-max:  2rem;                   /* 32px */
+  --radius-full: calc(infinity * 1rem);  /* pill — used directly only */
+}
+```
+
+**Что остаётся в `px`:** ничего. Все anchor'ы — в `rem`. Даже `--radius-full` использует `calc(infinity * 1rem)` — числовое значение (infinity) не зависит от множителя, но единица `rem` держит стилистическую консистентность с остальной системой.
+
+**ESM helpers** (packages/tokens dist):
+
+```typescript
+/** Outside-in: compute inner-radius CSS expression from outer + padding. */
+export function innerOf(outerRadius: string, padding: string): string {
+  return `clamp(var(--radius-min), calc(${outerRadius} - ${padding}), var(--radius-max))`
+}
+
+/** Inside-out: compute outer-radius CSS expression from inner + padding. */
+export function outerOf(innerRadius: string, padding: string): string {
+  return `min(var(--radius-max), calc(${innerRadius} + ${padding}))`
+}
+```
+
+Usage:
+```typescript
+import { innerOf, radiusBase, paddingM } from '@labui/tokens'
+const nestedRadius = innerOf(radiusBase, paddingM)
+// → 'clamp(var(--radius-min), calc(var(--radius-base) - var(--padding-m)), var(--radius-max))'
+```
+
+### 3.6. Radius invariants (CI tests)
+
+- Exactly 5 radius vars эмитятся: `none`, `min`, `base`, `max`, `full`. Нет `xxs/xs/s/m/l/xl/2xl/.../5xl`.
+- `radius-none` = `0`
+- `radius-min > 0` и `radius-min < radius-base`
+- `radius-base < radius-max`
+- `radius-full` эмитится как `calc(infinity * 1rem)` (not as `9999px`, not as `calc(infinity * 1px)`, not as `var(--radius-max)`)
+- `innerOf(radiusBase, paddingM)` возвращает valid CSS `clamp()` expression
+- При любых `outer, padding` из L1/L2 шкалы: CSS `clamp(min, outer-padding, max)` математически ≥ `min` (regex/string-test на эмите + numeric simulation)
 
 ---
 
@@ -696,28 +796,28 @@ fx: {
 ```typescript
 shadow_presets: {
   xs: [
-    { y: 'px/0.25', blur: 'px/0.5', spread: 'px/0', tint: 'minor' },
+    { y: 'unit/0.25', blur: 'unit/0.5', spread: 'unit/0', tint: 'minor' },
   ],
   s: [
-    { y: 'px/0.5', blur: 'px/1',   spread: 'px/0', tint: 'minor' },
-    { y: 'px/1',   blur: 'px/2',   spread: 'px/0', tint: 'ambient' },
+    { y: 'unit/0.5', blur: 'unit/1',   spread: 'unit/0', tint: 'minor' },
+    { y: 'unit/1',   blur: 'unit/2',   spread: 'unit/0', tint: 'ambient' },
   ],
   m: [
-    { y: 'px/1', blur: 'px/2', spread: 'px/0', tint: 'minor' },
-    { y: 'px/2', blur: 'px/4', spread: 'px/0', tint: 'ambient' },
-    { y: 'px/4', blur: 'px/8', spread: 'px/0', tint: 'penumbra' },
+    { y: 'unit/1', blur: 'unit/2', spread: 'unit/0', tint: 'minor' },
+    { y: 'unit/2', blur: 'unit/4', spread: 'unit/0', tint: 'ambient' },
+    { y: 'unit/4', blur: 'unit/8', spread: 'unit/0', tint: 'penumbra' },
   ],
   l: [
-    { y: 'px/1',  blur: 'px/3',  spread: 'px/0', tint: 'minor' },
-    { y: 'px/3',  blur: 'px/6',  spread: 'px/0', tint: 'ambient' },
-    { y: 'px/6',  blur: 'px/12', spread: 'px/0', tint: 'penumbra' },
-    { y: 'px/12', blur: 'px/24', spread: 'px/0', tint: 'major' },
+    { y: 'unit/1',  blur: 'unit/3',  spread: 'unit/0', tint: 'minor' },
+    { y: 'unit/3',  blur: 'unit/6',  spread: 'unit/0', tint: 'ambient' },
+    { y: 'unit/6',  blur: 'unit/12', spread: 'unit/0', tint: 'penumbra' },
+    { y: 'unit/12', blur: 'unit/24', spread: 'unit/0', tint: 'major' },
   ],
   xl: [
-    { y: 'px/2',  blur: 'px/8',  spread: 'px/0', tint: 'major' },
-    { y: 'px/8',  blur: 'px/24', spread: 'px/0', tint: 'penumbra' },
-    { y: 'px/24', blur: 'px/48', spread: 'px/0', tint: 'ambient' },
-    { y: 'px/48', blur: 'px/96', spread: 'px/0', tint: 'minor' },
+    { y: 'unit/2',  blur: 'unit/8',  spread: 'unit/0', tint: 'major' },
+    { y: 'unit/8',  blur: 'unit/24', spread: 'unit/0', tint: 'penumbra' },
+    { y: 'unit/24', blur: 'unit/48', spread: 'unit/0', tint: 'ambient' },
+    { y: 'unit/48', blur: 'unit/96', spread: 'unit/0', tint: 'minor' },
   ],
 }
 ```
@@ -725,10 +825,10 @@ shadow_presets: {
 Emit как CSS:
 ```css
 --fx-shadow-xl: 
-  0px var(--px-2)  var(--px-8)  0px var(--fx-shadow-major),
-  0px var(--px-8)  var(--px-24) 0px var(--fx-shadow-penumbra),
-  0px var(--px-24) var(--px-48) 0px var(--fx-shadow-ambient),
-  0px var(--px-48) var(--px-96) 0px var(--fx-shadow-minor);
+  0 var(--unit-2)  var(--unit-8)  0 var(--fx-shadow-major),
+  0 var(--unit-8)  var(--unit-24) 0 var(--fx-shadow-penumbra),
+  0 var(--unit-24) var(--unit-48) 0 var(--fx-shadow-ambient),
+  0 var(--unit-48) var(--unit-96) 0 var(--fx-shadow-minor);
 ```
 
 Использование: `box-shadow: var(--fx-shadow-xl);`
@@ -816,9 +916,9 @@ typography: {
 for key in ['xxs', 'xs', 's', 'm', 'l', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl']:
   exponent = index_of(key) - index_of('m')
   raw_size = base * scale_ratio^exponent
-  size[key] = round_to_px_half(raw_size)        // округляем до px/N или pt/N
-  lh_body[key] = round_to_px(size[key] * lh_body_density)
-  lh_headline[key] = round_to_px(size[key] * lh_headline_density)
+  size[key] = round_to_unit_half(raw_size)       // округляем до unit/N или unit/N.5
+  lh_body[key] = round_to_unit(size[key] * lh_body_density)
+  lh_headline[key] = round_to_unit(size[key] * lh_headline_density)
   tracking[key] = size[key] < 18 ? 0 : tracking.headline_per_log_size * log(size[key] / base)
 ```
 
@@ -832,13 +932,13 @@ for key in ['xxs', 'xs', 's', 'm', 'l', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl']
 --font-family:      "Geist", system-ui, sans-serif;
 --font-family-mono: "Geist Mono", monospace;
 
---font-size-xxs: var(--px-3);    /* 12 */
---font-size-xs:  var(--px-3.5);  /* 14 */
---font-size-m:   var(--px-4);    /* 16 */
+--font-size-xxs: var(--unit-3);    /* 12px */
+--font-size-xs:  var(--unit-3.5);  /* 14px */
+--font-size-m:   var(--unit-4);    /* 16px */
 /* ... */
 
---lh-body-m:     var(--px-6);    /* 24 — lh=1.5 */
---lh-headline-3xl: var(--px-12); /* 48 — lh=0.95 */
+--lh-body-m:       var(--unit-6);  /* 24px — lh=1.5 */
+--lh-headline-3xl: var(--unit-12); /* 48px — lh=0.95 */
 
 --tracking-3xl:  -0.024em;
 ```

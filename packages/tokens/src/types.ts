@@ -65,19 +65,25 @@ export interface OklchWithAlpha extends OklchValue {
  * @governs plan-v2 §2 · Layer 1 Units
  */
 export interface UnitsConfig {
-  /** Base increment, typically 4 (px). Must produce integer px-1. */
+  /**
+   * Base increment in px at root font-size = 16. Typically 4.
+   * `base_px × scaling` must be integer for unit-1 to land on a whole pixel.
+   */
   base_px: number
   /** Continuous float; recommended presets {0.75, 1.0, 1.166, 1.333}. */
   scaling: number
-  /** px-N range — inclusive. Negative lower allowed. */
-  px_range: { min: number; max: number }
-  /** pt-N range. pt = half-pixel. */
-  pt_range: { min: number; max: number }
+  /** --unit-N integer index range, inclusive. Negative lower allowed. */
+  range: { min: number; max: number }
 }
 
 export interface ResolvedUnits {
-  px: Record<string, number> // 'px/-7' → -28 (raw number, unit added at emit)
-  pt: Record<string, number> // 'pt/0' → 0
+  /**
+   * name → px value (raw number).
+   * CSS writer converts to rem via `value / 16` at emit time;
+   * internal consumers (dimensions generator, integer invariant tests)
+   * operate on these px values directly.
+   */
+  values: Record<string, number> // 'unit/-7' → -28
 }
 
 // ─── Config: dimensions (L2) ───────────────────────────────────────────
@@ -93,7 +99,7 @@ export type StepMap = Record<string, number>
 export interface DimensionsConfig {
   /** Multiplier for index shift (1.0 = identity, 1.25 ≈ +0.32 step). */
   airiness: number
-  /** Layout/adaptive dimensions — px-step indices. */
+  /** Layout/adaptive dimensions — unit-step indices. */
   adaptives: StepMap
   spacing_padding: StepMap
   spacing_margin: StepMap
@@ -448,7 +454,7 @@ export interface BordersConfig {
 // ─── FX (glow, focus, skeleton, shadow) ─────────────────────────────────
 
 export interface ShadowLayerDef {
-  /** L1 reference, e.g. 'px/2'. For PR#4 we accept raw pixel numbers. */
+  /** L1 reference, e.g. 'unit/2'. For PR#4 we accept raw pixel numbers. */
   y: number
   blur: number
   spread: number
@@ -585,7 +591,7 @@ export interface ResolvedMaterials {
 export interface TypographyConfig {
   font_family: string
   font_family_mono: string
-  /** Index into units.px. base_size_step=4 → 16px at scaling=1.0. */
+  /** Index into units.values. base_size_step=4 → 16px at scaling=1.0. */
   base_size_step: number
   /** Multiplicative ratio per step. 1.125 ≈ major second. */
   scale_ratio: number

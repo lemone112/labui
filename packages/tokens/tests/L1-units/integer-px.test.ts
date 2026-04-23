@@ -3,9 +3,10 @@
  *
  * @layer L1 (units)
  * @governs plan-v2 §2.3 · Constraint
- * @invariant Every --px-N value is an integer pixel across the plan's
- *            four recommended scaling presets {0.75, 1.0, 1.166, 1.333};
- *            non-integer px-1 would break subpixel rendering.
+ * @invariant Every internal `units.values.unit-N` is an integer pixel at
+ *            root font-size 16 across the plan's four recommended scaling
+ *            presets {0.75, 1.0, 1.166, 1.333}. Non-integer unit-1 would
+ *            break subpixel rendering after `rem` → px resolution.
  * @on-fail pick a scaling factor from plan §2.3 presets
  *          {0.75, 1.0, 1.166, 1.333}. If you need stricter grid
  *          alignment (base_px*scaling integer), use {0.75, 1.0, 1.25}.
@@ -13,42 +14,31 @@
 
 import { describe, expect, test } from 'bun:test'
 import { config } from '../../config/tokens.config'
-import { generateUnits, px, pt } from '../../src/generators/units'
+import { generateUnits, unit } from '../../src/generators/units'
 
 describe('Units · integer px', () => {
   const { units, warnings } = generateUnits(config.units)
 
-  test('px map covers the configured range inclusive', () => {
+  test('unit map covers the configured range inclusive', () => {
     const expectedKeys =
-      config.units.px_range.max - config.units.px_range.min + 1
-    expect(Object.keys(units.px).length).toBe(expectedKeys)
+      config.units.range.max - config.units.range.min + 1
+    expect(Object.keys(units.values).length).toBe(expectedKeys)
   })
 
-  test('every px is an integer', () => {
-    for (const [name, value] of Object.entries(units.px)) {
+  test('every unit value is an integer (px, pre-rem-conversion)', () => {
+    for (const [, value] of Object.entries(units.values)) {
       expect(Number.isInteger(value)).toBe(true)
     }
   })
 
-  test('px(0) = 0, px(1) = 4, px(-1) = -4 at default scaling', () => {
-    expect(px(0, config.units)).toBe(0)
-    expect(px(1, config.units)).toBe(4)
-    expect(px(-1, config.units)).toBe(-4)
-  })
-
-  test('pt is a 0.5-precision value', () => {
-    for (const value of Object.values(units.pt)) {
-      expect(value * 2).toBe(Math.round(value * 2))
-    }
+  test('unit(0) = 0, unit(1) = 4, unit(-1) = -4 at default scaling', () => {
+    expect(unit(0, config.units)).toBe(0)
+    expect(unit(1, config.units)).toBe(4)
+    expect(unit(-1, config.units)).toBe(-4)
   })
 
   test('no warnings at default scaling', () => {
     expect(warnings.length).toBe(0)
-  })
-
-  test('pt(1) = base/2 = 2 at default', () => {
-    expect(pt(1, config.units)).toBe(2)
-    expect(pt(0, config.units)).toBe(0)
   })
 })
 
@@ -61,16 +51,11 @@ describe('Units · scaling presets produce integer px (plan §2.3)', () => {
     test(`scaling=${scaling} yields integer px across range`, () => {
       const cfg = { ...config.units, scaling }
       const { units } = generateUnits(cfg)
-      for (const [name, v] of Object.entries(units.px)) {
-        expect(Number.isInteger(v), `${name} at scaling=${scaling} is ${v}, not integer`).toBe(true)
-      }
-    })
-
-    test(`scaling=${scaling} yields 0.5-precision pt across range`, () => {
-      const cfg = { ...config.units, scaling }
-      const { units } = generateUnits(cfg)
-      for (const [name, v] of Object.entries(units.pt)) {
-        expect(v * 2, `${name} at scaling=${scaling} is ${v}, not 0.5-precision`).toBe(Math.round(v * 2))
+      for (const [name, v] of Object.entries(units.values)) {
+        expect(
+          Number.isInteger(v),
+          `${name} at scaling=${scaling} is ${v}, not integer`,
+        ).toBe(true)
       }
     })
   }
@@ -93,7 +78,7 @@ describe('Units · scaling presets produce integer px (plan §2.3)', () => {
       const cfg = { ...config.units, scaling }
       const { units, warnings } = generateUnits(cfg)
       expect(warnings.some((w) => /not integer/.test(w))).toBe(true)
-      for (const v of Object.values(units.px)) {
+      for (const v of Object.values(units.values)) {
         expect(Number.isInteger(v)).toBe(true)
       }
     })
