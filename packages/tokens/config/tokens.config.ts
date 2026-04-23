@@ -489,19 +489,15 @@ export const config: TokensConfig = {
       '6xl': 24,
       '7xl': 27,
     },
+    // R1 Hybrid · 5 anchors + clamp() pattern. See plan §3.2.
+    // Intermediate values derived in-place via `clamp(min, outer-pad, max)`
+    // (see innerOf/outerOf helpers in ESM, plan §3.4-3.5).
     radius: {
-      none: 0,
-      xxs: 0.5,
-      xs: 1,
-      s: 1.5,
-      m: 2,
-      l: 3,
-      xl: 4,
-      '2xl': 5,
-      '3xl': 6,
-      '4xl': 8,
-      '5xl': 10,
-      full: 9999,
+      none: 0,                      // sharp corners
+      min: 1,                       // unit/1 = 4px  — floor for clamp()
+      base: 3,                      // unit/3 = 12px — default for non-nested
+      max: 8,                       // unit/8 = 32px — ceiling for clamp()
+      full: Number.POSITIVE_INFINITY, // pill sentinel → calc(infinity * 1rem)
     },
     size: {
       xxs: 5,

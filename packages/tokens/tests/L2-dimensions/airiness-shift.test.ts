@@ -30,13 +30,14 @@ describe('Airiness · identity at 1.0', () => {
     expect(dimensions.spacing_padding.m).toBe(16)
     // spacing_padding.xxs = step 1 → 4
     expect(dimensions.spacing_padding.xxs).toBe(4)
-    // radius.xxs = step 0.5 → 2
-    expect(dimensions.radius.xxs).toBe(2)
+    // radius.base = step 3 → 12 (R1 Hybrid anchor, plan §3.2)
+    expect(dimensions.radius.base).toBe(12)
   })
 
-  test('full radius sentinel preserved (9999)', () => {
+  test('full radius sentinel preserved (Infinity)', () => {
     const { dimensions } = generateDimensions(config.dimensions, config.units)
-    expect(dimensions.radius.full).toBe(9999)
+    // R1 Hybrid: full is emitted as `calc(infinity * 1rem)`, stored as ∞.
+    expect(dimensions.radius.full).toBe(Number.POSITIVE_INFINITY)
   })
 })
 

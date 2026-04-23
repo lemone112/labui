@@ -39,15 +39,17 @@ function resolveStepMap(
 ): Record<string, number> {
   const out: Record<string, number> = {}
   for (const [name, baseStep] of Object.entries(map)) {
-    if (baseStep === 9999) {
-      out[name] = 9999 // full-radius sentinel
+    if (!Number.isFinite(baseStep)) {
+      // Infinity sentinel — used by radius.full for the pill shape.
+      // Propagated through; CSS writer emits it as `calc(infinity * 1rem)`.
+      out[name] = baseStep
       continue
     }
     const shifted = applyAiriness(baseStep, airiness)
     // Compute px directly from (possibly fractional) step index so
-    // radius.xxs=0.5 etc. work without requiring fractional pre-generation.
+    // fractional base_steps (rare) work without pre-generation.
     const raw = shifted * units.base_px * units.scaling
-    // Round to 1 decimal to avoid binary float noise (e.g. 0.5 + airiness).
+    // Round to 1 decimal to avoid binary float noise.
     out[name] = Math.round(raw * 10) / 10
   }
   return out
