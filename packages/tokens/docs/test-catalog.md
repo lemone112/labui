@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 32 test files
+**Total:** 34 test files
 
 ## Cross-layer
 
@@ -64,6 +64,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Governs:** plan-v2 §9 · Invariants
 - **Invariant:** A handful of canonical anchor values stay stable across routine edits. Intentional changes require updating this file.
 - **On fail:** (a) intentional calibration change → update here; (b) unintended drift → track down recent commit touching generators/resolver.
+
+### `tests/guards/snapshot-tailwind.test.ts`
+
+- **Governs:** plan/implementation-plan-v2.md §16 · Tailwind v4 preset
+- **Invariant:** `dist/tailwind-preset.css` matches the committed snapshot byte-for-byte. Protects the public `@lab-ui/tokens/tailwind` surface that downstream Tailwind consumers import.
+- **Why:** The preset is a thin mapping layer over the primitive / semantic namespaces. Silent changes to its shape break utility class resolution in consumer apps without surfacing in CSS-level tests.
+- **On fail:** (a) intentional shape change → rerun with `bun test -u`, note the new/removed mappings in the PR body; (b) unintended → inspect `src/writers/tailwind-preset.ts` and the data it receives from the build.
 
 ## L1 (units)
 
@@ -207,6 +214,15 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Invariant:** primary/secondary/border_strong tiers meet their APCA target (±2 tolerance) on their canonical_bg across all 4 OutputKeys.
 - **Why:** Labels must be readable; strict tiers are the body-text / strong- border cases where failure breaks accessibility.
 - **On fail:** adjust the accent spine — usually by pulling the dark control point lower in L, or raising chroma_boost_per_dL. If structural, revisit tier_targets in config.
+
+## L4 Semantics · emission surface
+
+### `tests/L4-semantics/tailwind-preset.test.ts`
+
+- **Governs:** plan/implementation-plan-v2.md §16 · Tailwind v4 preset
+- **Invariant:** The generated `dist/tailwind-preset.css` wraps all Lab UI primitive + semantic color tokens into Tailwind's `--color-*` namespace, exposes `--spacing` as the base increment, and maps radius / shadow / blur / font rungs onto Tailwind's own `--radius-*` / `--shadow-*` / `--blur-*` / `--text-*` / `--font-*` namespaces.
+- **Why:** The preset is the mapping contract between Lab UI's token namespace and Tailwind v4's utility namespace. If it drifts the downstream `bg-brand`, `p-4`, `rounded-md`, `shadow-sm`, … etc. utilities stop resolving and apps silently render defaults.
+- **On fail:** A missing mapping here usually means a writer branch was skipped. A duplicated or mistyped mapping collides Tailwind utility classes — inspect `src/writers/tailwind-preset.ts`.
 
 ## L4 × Guard
 
