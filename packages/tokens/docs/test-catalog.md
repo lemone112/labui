@@ -143,9 +143,9 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L3-primitives/perceptual-comp.test.ts`
 
 - **Governs:** plan-v2 §4.3 · Perceptual compensation
-- **Invariant:** In dark mode, accents carry chroma_mult=0.93 and lightness _shift=-0.02 relative to the un-compensated spine value.
+- **Invariant:** `applyPerceptualComp` with the `dark` cell reduces chroma by `chroma_mult` (≈0.93) and lightness by `|lightness_shift|` (≈0.02) relative to the input. Accents that do NOT carry an explicit `primitive_per_mode` flow through this transform in `generatePrimitiveColors`.
 - **Why:** Accents on dark surrounds appear MORE saturated (Hunt) and BRIGHTER (HK); physically reducing C and L compensates.
-- **On fail:** verify config.colors.perceptual_comp.dark values; check applyPerceptualComp order in pipeline (must be AFTER spine+chroma_curve, BEFORE gamut_clamp).
+- **On fail:** verify config.colors.perceptual_comp.dark values; check applyPerceptualComp order in pipeline (must be AFTER spine+chroma_curve, BEFORE gamut_clamp). * Post primitive-per-mode calibration: every accent now pins its light + dark primitive value directly against the Figma anchor, so `generateAccents` bypasses the comp transform. We still validate the transform itself as a pure function so the fallback path (any accent without `primitive_per_mode`) keeps working.
 
 ### `tests/L3-primitives/spine-clamping.test.ts`
 
@@ -270,8 +270,8 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/parity/accent-anchors.test.ts`
 
 - **Governs:** plan/test-strategy.md §10 Parity · PT1 (plan target ΔE ≤ 3)
-- **Invariant:** 11 accent hues × 4 modes produce HEX within a sanity ΔE2000 bound of the Figma Color Guides swatch sectors. The per-accent ΔE and the full delta table are logged on every run so spine calibration can be driven against live data.
-- **On fail:** Either (a) an accent moved hue/chroma beyond the drift guard in our config, OR (b) the Figma reference was restyled. Inspect the offending hue in the printed table; adjust the spine L/C/H anchor in `config.colors.accents.<name>`, rerun. * Scope note: the plan target is ΔE ≤ 3 per anchor. Today we ship with a drift guard of ΔE ≤ 40 because the accent spine is not yet calibrated against Figma — this test's job for now is to surface current deltas, not block merges. Tightening to the plan target is a separate follow-up PR driven by reading the rows this test logs.
+- **Invariant:** 11 accent hues match the Figma Color Guides primary sectors (`light/normal`, `dark/normal`) within ΔE2000 ≤ 1.0 because `accents.<name>.primitive_per_mode` pins those sectors byte-for-byte against the fixture. * The IC sectors (`light/ic`, `dark/ic`) are intentionally NOT calibrated here: primitive accents are a `mode`-only axis (plan §4.2). IC variation lives on the semantic tier (`--label-brand-primary-ic` etc. in plan §5.1) where per-tier APCA targeting produces the darker / lighter IC shade from the same spine. Comparing the Figma IC sector HEX against our primitive `--{accent}` var would be a category error; we still log those rows for information and keep a loose sanity guard of ΔE ≤ 60 on them so the numbers are visible in CI output. * @on-fail If a primary-sector row regressed, inspect the Figma HEX in the printed table and fix `config.colors.accents.<name>.primitive_per_mode` to re-pin the sector. If an IC-sector row crosses the sanity guard, something broke the primitive-mode orthogonality (e.g. perceptual-comp leaked in, or a writer collapsed scopes).
+- **On fail:** If a primary-sector row regressed, inspect the Figma HEX in the printed table and fix `config.colors.accents.<name>.primitive_per_mode` to re-pin the sector. If an IC-sector row crosses the sanity guard, something broke the primitive-mode orthogonality (e.g. perceptual-comp leaked in, or a writer collapsed scopes).
 
 ### `tests/parity/mode-sector-order.test.ts`
 
