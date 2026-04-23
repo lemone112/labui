@@ -181,8 +181,15 @@ function generateAccents(
     for (const mode of BASE_MODES) {
       for (const contrast of CONTRASTS) {
         const key = outputKey(mode, contrast)
-        let v: OklchValue = { L: anchor.L, C: anchorC, H: anchor.H }
-        v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        let v: OklchValue
+        if (def.primitive_per_mode) {
+          // Pinned per-mode primitive: same value for normal and ic
+          // contrast (IC lives on the semantic tier, not the primitive).
+          v = def.primitive_per_mode[mode]
+        } else {
+          v = { L: anchor.L, C: anchorC, H: anchor.H }
+          v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        }
         v = fitGamut(v, colors.gamut)
         values[key] = roundOklch(v)
       }

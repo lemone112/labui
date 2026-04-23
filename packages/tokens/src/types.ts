@@ -254,6 +254,18 @@ export interface AccentDef {
    * Compensates for gamut shrinkage in dark regions.
    */
   chroma_boost_per_dL: number
+  /**
+   * Optional explicit OKLCH values for the `--{accent}` primitive var
+   * per base mode. When set, `generatePrimitiveColors` emits these
+   * directly instead of picking a spine anchor and layering perceptual
+   * compensation, and the same value is used for both `normal` and
+   * `ic` contrast (primitive accents are mode-only; IC variation lives
+   * at the semantic-tier layer, see `plan/implementation-plan-v2.md`
+   * §4.2 vs §5.1). Used to pin `--{accent}` byte-for-byte against the
+   * Figma reference for the two primary sectors (light/normal,
+   * dark/normal); IC-sector Figma values are a semantic-tier concern.
+   */
+  primitive_per_mode?: { light: OklchValue; dark: OklchValue }
 }
 
 export type AccentName =

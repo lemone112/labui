@@ -114,12 +114,38 @@ export const config: TokensConfig = {
     //   - chroma_curve: how C shapes over L
     //   - chroma_boost_per_dL: compensation for gamut in dark region
     //
-    // Spine calibration: first draft. These are anchored to Figma HEX
-    // for primary tier; dark/light endpoints extrapolated. Final
-    // calibration happens in a follow-up commit with Figma 44-anchor
-    // data.
+    // Spine: drives tier-aware semantic output (APCA-targeted labels,
+    //   backgrounds, …). Kept from the first-draft calibration; touch
+    //   only if tier contrast targets regress.
+    // primitive_per_mode: pins the `--{accent}` primitive var directly
+    //   against the Figma light/normal + dark/normal anchor HEX. IC
+    //   sectors are NOT calibrated here — primitive is a mode-only
+    //   axis (plan §4.2); IC lives on the semantic tier (§5.1).
     accents: {
-      brand: { alias: 'blue' },
+      // `brand` shares blue's spine (so tier-aware semantics line up) but
+      // pins its own primitive per mode against Figma. Figma shows
+      // brand ≠ blue at the primitive layer (#007AFF vs #3E87FF), even
+      // though they share a hue family.
+      brand: {
+        spine: [
+          { L: 0.2, H: 265 },
+          { L: 0.47, H: 252 },
+          { L: 0.603, H: 257, C: 0.218 },
+          { L: 0.85, H: 240 },
+        ],
+        chroma_curve: {
+          peak: 0.25,
+          peak_L: 0.55,
+          falloff_low: 0.8,
+          falloff_high: 1.0,
+          floor: 0.06,
+        },
+        chroma_boost_per_dL: 0.1,
+        primitive_per_mode: {
+          light: { L: 0.6028, C: 0.2177, H: 257.42 }, // #007AFF
+          dark: { L: 0.6612, C: 0.1806, H: 259.65 }, // #4A8FFF
+        },
+      },
 
       blue: {
         spine: [
@@ -136,6 +162,10 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
+        primitive_per_mode: {
+          light: { L: 0.6405, C: 0.1931, H: 259.89 }, // #3E87FF
+          dark: { L: 0.6805, C: 0.169, H: 259.79 }, // #5696FF
+        },
       },
 
       red: {
@@ -152,6 +182,10 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.12,
+        primitive_per_mode: {
+          light: { L: 0.6542, C: 0.2321, H: 28.66 }, // #FF3B30
+          dark: { L: 0.6544, C: 0.2317, H: 26.47 }, // #FF3A3A
+        },
       },
 
       orange: {
@@ -168,6 +202,10 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.15,
+        primitive_per_mode: {
+          light: { L: 0.7857, C: 0.1717, H: 68.61 }, // #FFA100
+          dark: { L: 0.7571, C: 0.1764, H: 59.82 }, // #FF9008
+        },
       },
 
       yellow: {
@@ -187,6 +225,10 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.25,
+        primitive_per_mode: {
+          light: { L: 0.873, C: 0.1786, H: 92.23 }, // #FFD000
+          dark: { L: 0.8849, C: 0.1805, H: 94.78 }, // #FFD60A
+        },
       },
 
       green: {
@@ -203,6 +245,10 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.12,
+        primitive_per_mode: {
+          light: { L: 0.7303, C: 0.1944, H: 147.44 }, // #34C759
+          dark: { L: 0.7556, C: 0.2082, H: 146.98 }, // #30D158
+        },
       },
 
       teal: {
@@ -219,6 +265,12 @@ export const config: TokensConfig = {
           floor: 0.04,
         },
         chroma_boost_per_dL: 0.12,
+        primitive_per_mode: {
+          // Figma labels this 'Teal' but the HEX is Apple's system-teal
+          // which sits at H≈231 (sky-blue), not a traditional teal.
+          light: { L: 0.7886, C: 0.1225, H: 230.83 }, // #5AC8FA
+          dark: { L: 0.8166, C: 0.1185, H: 227.75 }, // #64D2FF
+        },
       },
 
       mint: {
@@ -235,6 +287,10 @@ export const config: TokensConfig = {
           floor: 0.04,
         },
         chroma_boost_per_dL: 0.15,
+        primitive_per_mode: {
+          light: { L: 0.7481, C: 0.1296, H: 189.03 }, // #00C7BE
+          dark: { L: 0.8514, C: 0.1149, H: 192.44 }, // #63E6E2
+        },
       },
 
       indigo: {
@@ -251,6 +307,10 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
+        primitive_per_mode: {
+          light: { L: 0.5295, C: 0.191, H: 278.34 }, // #5856D6
+          dark: { L: 0.5564, C: 0.2032, H: 278.15 }, // #5E5CE6
+        },
       },
 
       purple: {
@@ -267,6 +327,10 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
+        primitive_per_mode: {
+          light: { L: 0.6149, C: 0.2129, H: 312.41 }, // #AF52DE
+          dark: { L: 0.656, C: 0.2274, H: 312.42 }, // #BF5AF2
+        },
       },
 
       pink: {
@@ -283,6 +347,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
+        primitive_per_mode: {
+          // Figma has pink identical in light/normal and dark/normal.
+          light: { L: 0.6497, C: 0.2383, H: 17.9 }, // #FF2D55
+          dark: { L: 0.6497, C: 0.2383, H: 17.9 }, // #FF2D55
+        },
       },
     },
 
