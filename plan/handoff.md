@@ -5,7 +5,11 @@
 > that a fresh agent (or a human) can pick up mid-stream without losing
 > context.
 
-Last PR opened against this doc: **PR-F · G6 + G8 guards** (`devin/1776933355-g6-g8-guards`).
+Last PR opened against this doc: **PR-G · PT1 IC via `primitive_per_output`** (`devin/1776935674-pt1-ic-per-output`).
+
+Any new agent: your `bun test` output should show **233 pass, 0 fail**.
+If PT1 max ΔE prints anything above 1.0, something regressed — start
+with `tests/parity/accent-anchors.test.ts`.
 
 ---
 
@@ -41,12 +45,20 @@ Governing documents:
 These are the hard-won rules. Most were established via PRs; each has a
 test guarding it.
 
-1. **Primitive accents are a `mode`-only axis.** `--{accent}` is the
-   same value for `normal` and `ic` contrast in a given mode. IC
-   variation lives on the semantic tier (APCA-targeted
-   `--label-*-ic` etc.), not on the primitive. See plan §4.2 vs §5.1.
-   Tests: `tests/parity/accent-anchors.test.ts` (split thresholds),
-   `tests/L3-primitives/perceptual-comp.test.ts`.
+1. **Primitive accents support a full `(mode × contrast)` axis via
+   `primitive_per_output`.** `--{accent}` can differ per sector
+   (`light/normal`, `light/ic`, `dark/ic`, `dark/normal`) — e.g.
+   Yellow light/ic `#B25000` is brown, intentionally distinct from
+   `#FFD000` light/normal. When `primitive_per_output` is set for an
+   accent, the pipeline emits the sector value verbatim and
+   bypasses spine + comp for that sector.
+   - Legacy `primitive_per_mode` (2-sector `{light, dark}`) is still
+     honoured when `_per_output` is absent — useful for accents
+     where IC should collapse onto mode.
+   - Spine-sampled + comp-adjusted is the fallback when neither pin
+     is set (no production accent currently uses this path).
+   Tests: `tests/parity/accent-anchors.test.ts` (all 4 sectors
+   ≤ 1.0 ΔE), `tests/L3-primitives/perceptual-comp.test.ts`.
 
 2. **Ladder-driven neutrals bypass perceptual-comp.** When
    `neutrals.L_ladder`, `C_ladder`, or `H_ladder` is set, the pipeline
@@ -56,22 +68,25 @@ test guarding it.
    `tests/snapshot.test.ts` (both detect `LADDER_DRIVEN`),
    `tests/parity/neutral-anchors.test.ts`.
 
-3. **Pin-per-mode bypasses spine + comp.** When
-   `accents.<name>.primitive_per_mode` is set,
-   `generatePrimitiveColors` emits the pinned OKLCH directly and
-   bypasses anchor + `applyPerceptualComp`. Same pattern as ladders.
-   Tests: `tests/parity/accent-anchors.test.ts`,
+3. **Pin-per-output / pin-per-mode bypass spine + comp.** When
+   `accents.<name>.primitive_per_output[sector]` or
+   `.primitive_per_mode[mode]` is set, `generatePrimitiveColors`
+   emits the pinned OKLCH directly and bypasses anchor +
+   `applyPerceptualComp`. `_per_output` takes precedence over
+   `_per_mode` when both are present. Same bypass pattern as neutral
+   ladders. Tests: `tests/parity/accent-anchors.test.ts`,
    `tests/L3-primitives/perceptual-comp.test.ts`.
 
 4. **Spine calibration is a semantic-tier concern.** Don't touch
    `accents.<name>.spine` to fix a primitive-layer delta — that would
    re-shape the tier-aware APCA resolution. Pin via
-   `primitive_per_mode` instead.
+   `primitive_per_output` instead (or `primitive_per_mode` if the
+   accent genuinely collapses IC onto mode).
 
 5. **Brand ≠ Blue at the primitive layer.** Figma's brand HEX is
    `#007AFF` while blue is `#3E87FF`. `brand` is its own `AccentDef`
    with blue's spine (so tier semantics align) but a distinct
-   `primitive_per_mode`.
+   `primitive_per_output`.
 
 6. **Writers are snapshot-locked.** `G1` (CSS), `G2` (ESM), and
    `G5` (size budget) pin `dist/*` byte-for-byte. Any writer change
@@ -114,34 +129,36 @@ test guarding it.
 | #18 | neutral L_ladder calibration | PT2: 16.31 → 4.66 ΔE |
 | #19 | neutral C/H ladders (bypass comp) | PT2: 4.66 → **0.00** ΔE |
 | #20 | accent `primitive_per_mode` per-mode pinning | PT1 primary: 36.89 → **0.11** ΔE |
+| #22 | G6 + G8 guards + living handoff | — |
+| #23 | `TokensConfig.deprecated` JSDoc fix (PR-F follow-up) | — |
 
 ### In flight
 
-**PR-F** (`devin/1776933355-g6-g8-guards`) — this PR:
+**PR-G** (`devin/1776935674-pt1-ic-per-output`) — this PR:
 
-- Adds `schema_version: SchemaVersion` and `deprecated: DeprecationsConfig`
-  to `TokensConfig`.
-- Extends `writeCSS(primitive, semantic, deprecated?)` to emit a
-  deprecation banner when the registry is non-empty.
-- Adds guard `tests/guards/deprecations.test.ts` (G6) — asserts shape +
-  in-flight emit + post-removal absence for every registered
-  deprecation. Currently registry is empty → the emit/absence branches
-  are vacuous, but the scaffolding is ready for the first real rename.
-- Adds guard `tests/guards/schema-version.test.ts` (G8) — asserts
-  `schema_version` is well-formed semver and matches `package.json`
-  (major, minor). Also asserts every `deprecated.<path>.removed_in` is
-  strictly greater than the current `schema_version`.
-- Adds `plan/handoff.md` (this file).
+- Opens the contrast axis on the primitive accent layer. New type
+  `PrimitivePerOutput = Partial<Record<OutputKey, OklchValue>>` and
+  new field `AccentDef.primitive_per_output`.
+- `generatePrimitiveColors` now prefers `_per_output[sector]` over
+  `_per_mode[mode]`; both bypass spine + comp.
+- All 11 accents migrated from `primitive_per_mode` to
+  `primitive_per_output`, pinned to Figma's 4-sector HEX anchors
+  (fixture `tests/parity/fixtures/figma-anchors.json`).
+- `tests/parity/accent-anchors.test.ts` rewritten with a uniform
+  `≤ 1.0 ΔE` threshold across all 4 sectors. No more `IC_SANITY`
+  bifurcation.
+- G1 CSS snapshot regenerated (IC accent values shifted across all
+  11 accents). G2 ESM + G5 size byte-identical (ESM is a `var(--...)`
+  barrel, no HEX). G7 APCA baseline byte-identical (tier Lc targets
+  depend on tier_targets, not on primitive HEX).
+- Updated invariants §2.1, §2.3, §2.5 to reflect the per-output axis.
 
-### Queued after PR-F
-
-The user's ask was "all four together, coordinated":
+### Queued after PR-G
 
 | PR | scope | rationale |
 |---|---|---|
-| **PR-G** | PT1 IC via semantic tier | Naturally continues #20. Primary-sectors now Figma-pinned on primitive; IC-sectors should be pinned on semantic tier (`--label-*-ic` etc. against Figma). Requires extending `SemanticDef` with a per-mode/per-output override (or adjusting `tier_targets.<tier>.ic`). |
-| **PR-H** | PT3 semantic-diff tooling | After PR-G there's a real use-case for a diff tool: script that takes two config commits, rebuilds both, and produces a matrix of changed Lc per semantic × output. Also CI annotation. |
-| **PR-I** | `apps/preview/` + R4 Tailwind integration | The biggest. Vite + real Tailwind compilation against `dist/tailwind-preset.css`, Playwright R1-R4 tests. Unblocks breakpoints/z-index/materials wiring in preset. |
+| **PR-H** | PT3 semantic-diff tooling | Now that PT1 + PT2 are pinned byte-tight, it's useful to see per-PR what semantic output shifts. Script takes two git refs, rebuilds both, emits a matrix of `(semantic × output) → ΔLc / ΔHEX`. CI posts as a PR comment. |
+| **PR-I** | `apps/preview/` + R4 Tailwind integration | The biggest. Vite app that imports `@lab-ui/tokens/tailwind`, Playwright R1-R4 checks (CSS var resolution, mode/contrast toggling, real Tailwind compilation). Unblocks breakpoints/z-index/materials wiring in the preset. |
 
 ---
 
@@ -188,8 +205,7 @@ fail on any `dist/*` diff. When a guard fails:
 | test | current max | threshold | guard |
 |---|---:|---:|---|
 | PT2 neutrals | 0.00 | 1.0 | `tests/parity/neutral-anchors.test.ts` |
-| PT1 primary | 0.11 | 1.0 | `tests/parity/accent-anchors.test.ts` |
-| PT1 IC sanity | 27.90 | 60 | same file, loose guard |
+| PT1 (all 4 sectors) | 0.11 | 1.0 | `tests/parity/accent-anchors.test.ts` |
 | G7 APCA | 0 | 3.0 Lc regression | `tests/guards/apca-regression.test.ts` |
 
 Tightening thresholds is always a separate PR driven off the delta
@@ -213,11 +229,12 @@ bun run fetch-figma                        # re-scrape Figma anchors (if token p
 
 ### 4.5. Known sharp edges
 
-- **`generatePrimitiveColors` branching.** If a neutral ladder OR an
-  accent `primitive_per_mode` is set, `applyPerceptualComp` is
-  skipped. Tests `tests/L3-primitives/perceptual-comp.test.ts`
-  currently validate `applyPerceptualComp` as a pure function because
-  every accent now has `primitive_per_mode` — so the comp path isn't
+- **`generatePrimitiveColors` branching.** If a neutral ladder is
+  set, or an accent has `primitive_per_output` / `primitive_per_mode`
+  set, `applyPerceptualComp` is skipped for that entry.
+  `tests/L3-primitives/perceptual-comp.test.ts` validates
+  `applyPerceptualComp` as a pure function because every production
+  accent now uses `primitive_per_output` — the comp path isn't
   exercised in the happy build.
 
 - **Teal is actually sky-blue.** Figma labels `#5AC8FA` "Teal" but its
@@ -225,9 +242,9 @@ bun run fetch-figma                        # re-scrape Figma anchors (if token p
   Don't "fix" this — it's intentional fidelity.
 
 - **Brand is a first-class accent.** It has its own spine and its own
-  `primitive_per_mode`. The spine is deliberately the same as blue's so
-  tier-semantic resolution stays in lockstep, but the primitive is pinned
-  to `#007AFF` (blue's is `#3E87FF`).
+  `primitive_per_output`. The spine is deliberately the same as blue's
+  so tier-semantic resolution stays in lockstep, but the primitive is
+  pinned to `#007AFF` (blue's is `#3E87FF`).
 
 - **`NeutralsConfig.L_ladder.ic[12]` is `0.0`**, not `0.08`. Figma's IC
   dark endpoint is literal pure black. The L_ladder pin makes
@@ -237,36 +254,6 @@ bun run fetch-figma                        # re-scrape Figma anchors (if token p
 ---
 
 ## 5. What "done" looks like for the queued PRs
-
-### PR-G · PT1 IC via semantic tier
-
-Exit criteria:
-
-- For each accent family, `--label-{accent}-primary` (or the equivalent
-  tier anchor per semantic tree) in `light/ic` and `dark/ic` matches
-  the Figma IC HEX within ΔE2000 ≤ 1.0.
-- PT1 IC-sector sanity guard tightens 60 → 5 → 3 in a **separate**
-  follow-up PR once the calibration lands.
-- Mechanism: either (a) extend `SemanticDef` with
-  `override_per_output?: Partial<Record<OutputKey, OklchValue>>`, or
-  (b) refactor tier resolution so `tier_targets.<tier>.ic` can accept
-  a per-accent map. Decide based on surface area — option (a) is more
-  surgical, option (b) is more architecturally clean.
-- G7 baseline regenerated (IC Lc values will shift by design).
-
-Files almost certainly touched:
-
-```
-packages/tokens/src/types.ts
-packages/tokens/src/generators/semantic-colors.ts
-packages/tokens/src/generators/resolver.ts
-packages/tokens/config/tokens.config.ts
-packages/tokens/tests/parity/accent-anchors.test.ts      (IC sanity →
-                                                          proper guard)
-packages/tokens/tests/guards/__snapshots__/apca-baseline.json
-packages/tokens/tests/guards/__snapshots__/snapshot-*.snap
-plan/handoff.md                                           (update §3)
-```
 
 ### PR-H · PT3 semantic-diff tooling
 
@@ -314,7 +301,7 @@ plan/handoff.md
 
 ## 6. Test catalog snapshot
 
-As of this PR: **40 test files, 233 pass, 0 fail.** See
+As of this PR (PR-G): **40 test files, 233 pass, 0 fail.** See
 `packages/tokens/docs/test-catalog.md` for the auto-generated index.
 
 ---

@@ -239,6 +239,20 @@ export interface AccentChromaCurve {
   floor: number
 }
 
+/**
+ * Per-output pin for an accent primitive. Keys are
+ * {@link OutputKey}s (`light/normal`, `light/ic`, `dark/ic`,
+ * `dark/normal`). When present on an {@link AccentDef}, the primitive
+ * `--{accent}` var emits the specified value verbatim in each scope,
+ * bypassing spine sampling AND perceptual compensation. Use this to
+ * Figma-pin the 4 sectors when the reference palette draws IC variants
+ * as distinct primitive colors rather than derived tier values.
+ *
+ * Takes precedence over {@link AccentDef.primitive_per_mode}; the
+ * mode shorthand remains for accents where IC = normal within a mode.
+ */
+export type PrimitivePerOutput = Partial<Record<OutputKey, OklchValue>>
+
 export interface AccentDef {
   /**
    * Control points sorted by L ascending (1-4 points).
@@ -266,6 +280,11 @@ export interface AccentDef {
    * dark/normal); IC-sector Figma values are a semantic-tier concern.
    */
   primitive_per_mode?: { light: OklchValue; dark: OklchValue }
+  /**
+   * Optional 4-sector pin — see {@link PrimitivePerOutput}. Takes
+   * precedence over {@link primitive_per_mode} when both are set.
+   */
+  primitive_per_output?: PrimitivePerOutput
 }
 
 export type AccentName =
