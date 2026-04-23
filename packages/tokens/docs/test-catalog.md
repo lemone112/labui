@@ -49,8 +49,8 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L1-units/integer-px.test.ts`
 
 - **Governs:** plan-v2 §2.3 · Constraint
-- **Invariant:** Every --px-N value is an integer pixel. Non-integer px-1 would break subpixel rendering.
-- **On fail:** pick a scaling factor where base_px*scaling is integer: {0.75, 1.0, 1.25}. Recommended presets in config comment.
+- **Invariant:** Every --px-N value is an integer pixel across the plan's four recommended scaling presets {0.75, 1.0, 1.166, 1.333}; non-integer px-1 would break subpixel rendering.
+- **On fail:** pick a scaling factor from plan §2.3 presets {0.75, 1.0, 1.166, 1.333}. If you need stricter grid alignment (base_px*scaling integer), use {0.75, 1.0, 1.25}.
 
 ## L1/L2 × Emit
 
