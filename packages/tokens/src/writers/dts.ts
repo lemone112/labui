@@ -5,8 +5,10 @@
 import type {
   PrimitiveColorSet,
   ResolvedDimensions,
+  ResolvedMaterials,
   ResolvedTypography,
   ResolvedUnits,
+  ResolvedZIndex,
   SemanticColorSet,
 } from '../types'
 import { TYPOGRAPHY_KEYS } from '../generators/typography'
@@ -17,6 +19,8 @@ export function writeDTS(
   units?: ResolvedUnits,
   dimensions?: ResolvedDimensions,
   typography?: ResolvedTypography,
+  zIndex?: ResolvedZIndex,
+  materials?: ResolvedMaterials,
 ): string {
   const lines: string[] = ['// Lab UI — generated type declarations. DO NOT EDIT.\n']
 
@@ -83,6 +87,22 @@ export function writeDTS(
     }
     for (const name of Object.keys(typography.semantics)) {
       lines.push(`export declare const ${camelCase(`text-${name}`)}: string;`)
+    }
+    lines.push('')
+  }
+
+  if (zIndex) {
+    for (const name of Object.keys(zIndex)) {
+      lines.push(`export declare const ${camelCase(`z-${name}`)}: string;`)
+    }
+    lines.push('')
+  }
+
+  if (materials) {
+    for (const level of materials.levels) {
+      lines.push(`export declare const ${camelCase(`materials-${level.name}-bg`)}: string;`)
+      lines.push(`export declare const ${camelCase(`materials-${level.name}-filter`)}: string;`)
+      lines.push(`export declare const ${camelCase(`materials-${level.name}-backdrop-filter`)}: string;`)
     }
     lines.push('')
   }
