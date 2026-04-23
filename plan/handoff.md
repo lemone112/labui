@@ -5,9 +5,9 @@
 > that a fresh agent (or a human) can pick up mid-stream without losing
 > context.
 
-Last PR opened against this doc: **PR-G · PT1 IC via `primitive_per_output`** (`devin/1776935674-pt1-ic-per-output`).
+Last PR opened against this doc: **PR-H · PT3 semantic-diff tooling** (`devin/1776936429-semantic-diff`).
 
-Any new agent: your `bun test` output should show **233 pass, 0 fail**.
+Any new agent: your `bun test` output should show **247 pass, 0 fail**.
 If PT1 max ΔE prints anything above 1.0, something regressed — start
 with `tests/parity/accent-anchors.test.ts`.
 
@@ -131,34 +131,46 @@ test guarding it.
 | #20 | accent `primitive_per_mode` per-mode pinning | PT1 primary: 36.89 → **0.11** ΔE |
 | #22 | G6 + G8 guards + living handoff | — |
 | #23 | `TokensConfig.deprecated` JSDoc fix (PR-F follow-up) | — |
+| #24 | `primitive_per_output` · 4-sector Figma pinning | PT1 all sectors: 27.90 → **0.11** ΔE |
 
 ### In flight
 
-**PR-G** (`devin/1776935674-pt1-ic-per-output`) — this PR:
+**PR-H** (`devin/1776936429-semantic-diff`) — this PR:
 
-- Opens the contrast axis on the primitive accent layer. New type
-  `PrimitivePerOutput = Partial<Record<OutputKey, OklchValue>>` and
-  new field `AccentDef.primitive_per_output`.
-- `generatePrimitiveColors` now prefers `_per_output[sector]` over
-  `_per_mode[mode]`; both bypass spine + comp.
-- All 11 accents migrated from `primitive_per_mode` to
-  `primitive_per_output`, pinned to Figma's 4-sector HEX anchors
-  (fixture `tests/parity/fixtures/figma-anchors.json`).
-- `tests/parity/accent-anchors.test.ts` rewritten with a uniform
-  `≤ 1.0 ΔE` threshold across all 4 sectors. No more `IC_SANITY`
-  bifurcation.
-- G1 CSS snapshot regenerated (IC accent values shifted across all
-  11 accents). G2 ESM + G5 size byte-identical (ESM is a `var(--...)`
-  barrel, no HEX). G7 APCA baseline byte-identical (tier Lc targets
-  depend on tier_targets, not on primitive HEX).
-- Updated invariants §2.1, §2.3, §2.5 to reflect the per-output axis.
+- Adds `packages/tokens/scripts/semantic-diff.ts` — CLI that builds
+  `dist/tokens.css` at two git refs (via `git worktree` into
+  `/tmp`), parses the four `:root` blocks brace-aware, and emits a
+  structured diff per `(scope, --var)` cell.
+- Color-aware: each changed cell reports `ΔE2000` (sRGB) and
+  `ΔL × 100` (OKLCH L shift, a rough Lc proxy). Non-color cells
+  (radii, sizes, typography) are flagged without color math.
+- Alpha variants (`--foo-aN`) are folded by default when their
+  base token already carries the same ΔE — reduces a 742-cell
+  diff to 104 meaningful rows for the PR-G (#24) case. Use
+  `--include-alpha` to disable.
+- Output formats: `markdown` (default, PR-comment-ready) and
+  `json` (CI consumption).
+- Flags: `--base <ref>` (default `origin/main`), `--head <ref>`
+  (default `HEAD`), `--threshold <ΔE>` (suppress sub-N colour drift),
+  `--format markdown|json`, `--include-alpha`.
+- New npm script `bun run semantic-diff`.
+- Tests: `tests/scripts/semantic-diff.test.ts` (14 cases) covering
+  parser, diff classification, alpha-fold heuristic, threshold
+  behaviour, and markdown rendering.
+- No `dist/` churn. No snapshot updates needed.
+- Not wired to CI yet — a follow-up PR will add
+  `.github/workflows/semantic-diff.yml` to post the comment
+  automatically on config-touching PRs. Doing it separately keeps
+  this PR surgical and lets the CI workflow go through review on
+  its own.
 
-### Queued after PR-G
+### Queued after PR-H
 
 | PR | scope | rationale |
 |---|---|---|
-| **PR-H** | PT3 semantic-diff tooling | Now that PT1 + PT2 are pinned byte-tight, it's useful to see per-PR what semantic output shifts. Script takes two git refs, rebuilds both, emits a matrix of `(semantic × output) → ΔLc / ΔHEX`. CI posts as a PR comment. |
 | **PR-I** | `apps/preview/` + R4 Tailwind integration | The biggest. Vite app that imports `@lab-ui/tokens/tailwind`, Playwright R1-R4 checks (CSS var resolution, mode/contrast toggling, real Tailwind compilation). Unblocks breakpoints/z-index/materials wiring in the preset. |
+| **PR-J** | Prettier + ESLint + EditorConfig | Lock the informal style (kebab-case files, single-quote, no semicolons, PascalCase types) with tooling. Add `bun run lint` + CI step. Do _after_ PR-I to avoid mass-rewriting new code. |
+| **PR-K** *(optional)* | `semantic-diff` CI workflow | Wire PR-H's script into GitHub Actions to post a PR comment automatically when `packages/tokens/config/**` or `packages/tokens/src/**` changes. |
 
 ---
 
@@ -225,6 +237,13 @@ bun test -u                                # snapshot refresh
 bun run apca-baseline                      # G7 baseline refresh
 bun run catalog                            # test-catalog.md refresh
 bun run fetch-figma                        # re-scrape Figma anchors (if token present)
+
+# diagnostics
+bun run semantic-diff                                    # origin/main vs HEAD
+bun run semantic-diff --base <a> --head <b>              # arbitrary refs
+bun run semantic-diff --threshold 0.5                    # drop tiny drift
+bun run semantic-diff --format json > diff.json          # for CI
+bun run semantic-diff --include-alpha                    # don't fold alpha stops
 ```
 
 ### 4.5. Known sharp edges
@@ -255,27 +274,6 @@ bun run fetch-figma                        # re-scrape Figma anchors (if token p
 
 ## 5. What "done" looks like for the queued PRs
 
-### PR-H · PT3 semantic-diff tooling
-
-Exit criteria:
-
-- `bun run semantic-diff <from-ref> <to-ref>` produces a table of
-  `(semantic × output)` rows whose Lc or HEX changed between two git
-  refs.
-- CI posts this as a PR comment on any `config/tokens.config.ts` or
-  `config/semantics/**` change.
-- Guard enforces that significant Lc shifts (>3 Lc per G7) are called
-  out in the PR body.
-
-Files almost certainly added:
-
-```
-packages/tokens/scripts/semantic-diff.ts
-packages/tokens/scripts/post-semantic-diff-comment.ts
-.github/workflows/semantic-diff.yml
-plan/handoff.md
-```
-
 ### PR-I · `apps/preview/` + R4
 
 Exit criteria:
@@ -301,7 +299,7 @@ plan/handoff.md
 
 ## 6. Test catalog snapshot
 
-As of this PR (PR-G): **40 test files, 233 pass, 0 fail.** See
+As of this PR (PR-H): **41 test files, 247 pass, 0 fail.** See
 `packages/tokens/docs/test-catalog.md` for the auto-generated index.
 
 ---
