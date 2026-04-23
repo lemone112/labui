@@ -31,7 +31,8 @@
     "lint": "bun run src/build.ts",
     "catalog": "bun run scripts/generate-test-catalog.ts",
     "coverage": "bun run scripts/verify-plan-coverage.ts",
-    "fetch-figma": "bun run scripts/fetch-figma-anchors.ts"
+    "fetch-figma": "bun run scripts/fetch-figma-anchors.ts",
+    "semantic-diff": "bun run scripts/semantic-diff.ts"
   },
   "dependencies": {
     "apca-w3": "^0.1.9",

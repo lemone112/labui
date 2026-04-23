@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 40 test files
+**Total:** 41 test files
 
 ## Cross-layer
 
@@ -305,3 +305,11 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Governs:** plan/test-strategy.md §10 Parity · PT2 (plan target ΔE ≤ 2)
 - **Invariant:** 13 neutral steps × 4 modes match Figma within ΔE2000 ≤ 1. Threshold is tighter than the plan target because the L/C/H ladders in `neutrals` are pinned directly against the Figma fixture — any non-zero ΔE signals either a rounding regression, a gamut-clamp change, or a Figma fixture update.
 - **On fail:** Either a rounding / perceptual-comp / gamut path re-entered the neutrals pipeline, or the fixture was updated. Inspect the printed delta table to identify which step/mode regressed and adjust either the generator or the ladder in `config.colors.neutrals.{L,C,H}_ladder`.
+
+## Tooling (not a parity or guard test — validates the diff script itself, which PT3 relies on).
+
+### `tests/scripts/semantic-diff.test.ts`
+
+- **Governs:** plan/test-strategy.md §10 Parity · PT3
+- **Invariant:** `parseCss` extracts the four canonical `:root` blocks and ignores unrelated selectors. `diff` classifies every differing `(scope, --var)` cell, computes ΔE2000 on colours, skips sub-threshold colour drift, and leaves non-colour cells untouched.
+- **On fail:** Investigate whether the CSS format of `dist/tokens.css` changed (new scope selectors, different declaration shape) or whether the diff semantics drifted. Both cases warrant updating `parseCss` / `diff` and keeping the tests green in the same PR.
