@@ -4,6 +4,9 @@
  *
  * @layer L3/L4 · Guard
  * @governs plan-v2 §6 · Emit layer · §9 · Invariants
+ * @invariant Canonical anchors (13 neutrals, 29 opacity stops, Figma
+ *            brand anchor L, tier Lc targets) stay stable across
+ *            routine edits; a change here means parameters moved.
  * @on-fail if intentional, update the snapshot; otherwise investigate what
  *          upstream changed (commit SHA in PR title helps).
  */

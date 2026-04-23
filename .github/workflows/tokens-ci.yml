@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'packages/tokens/**'
+      - 'plan/**'
       - '.github/workflows/tokens-ci.yml'
   push:
     branches: [main]
     paths:
       - 'packages/tokens/**'
+      - 'plan/**'
       - '.github/workflows/tokens-ci.yml'
 
 concurrency:
@@ -37,6 +39,18 @@ jobs:
 
       - name: Run tests
         run: bun test
+
+      - name: Verify plan coverage
+        run: bun run coverage
+
+      - name: Regenerate test catalog (check clean)
+        run: |
+          bun run catalog
+          if ! git diff --quiet -- docs/test-catalog.md; then
+            echo "::error::docs/test-catalog.md is stale. Run 'bun run catalog' and commit."
+            git --no-pager diff -- docs/test-catalog.md
+            exit 1
+          fi
 
   node:
     name: Build (Node + tsx fallback)
