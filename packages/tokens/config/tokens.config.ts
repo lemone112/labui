@@ -35,6 +35,17 @@
 import type { TokensConfig } from '../src/types'
 
 export const config: TokensConfig = {
+  // Schema version — kept in lockstep with `package.json` major.minor.
+  // Bump major on removed/renamed cells; bump minor on additive cells.
+  // Guard G8 asserts (schema_major, schema_minor) == (pkg_major, pkg_minor).
+  schema_version: '0.2.0',
+
+  // Deprecation registry. Each entry keeps an old token path emitting
+  // (with a CSS warning comment near the declaration) until `removed_in`
+  // ships, at which point the G6 guard flips to asserting absence.
+  // Empty today — lifecycle scaffolding for future renames.
+  deprecated: {},
+
   colors: {
     gamut: 'p3',
     vibrancy: 1.0,

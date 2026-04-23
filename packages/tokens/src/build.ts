@@ -58,7 +58,7 @@ const materialsResult = generateMaterials(
 )
 warnings.push(...materialsResult.warnings)
 
-const colorsCss = writeCSS(primitive, semantic)
+const colorsCss = writeCSS(primitive, semantic, config.deprecated)
 const unitsDimsCss = writeUnitsDimensionsCss(unitsResult.units, dimsResult.dimensions)
 const typoCss = writeTypographyCss(typoResult.typography)
 const zCss = writeZIndexCss(zResult.z_index)

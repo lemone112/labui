@@ -553,7 +553,50 @@ export interface SemanticsConfig {
 
 // ─── Top-level config ───────────────────────────────────────────────────
 
+/**
+ * Deprecation entry for a single token / cell path.
+ *
+ * @governs plan/test-strategy.md §11 · G6 deprecated-tokens guard ·
+ *          §15.3 Deprecation lifecycle
+ * @why A structured lifecycle (current emit + warning → removal after
+ *      `removed_in`) lets downstream consumers migrate without silent
+ *      breakage. The G6 guard enforces this contract.
+ */
+export interface DeprecationEntry {
+  /** Preferred new token path. */
+  replacement: string
+  /** Semver at which the old token is fully removed from `dist`. */
+  removed_in: string
+  /** Short human-readable reason (shown in CSS warning comment). */
+  reason: string
+}
+
+/** Map of deprecated source paths → lifecycle metadata. */
+export type DeprecationsConfig = Record<string, DeprecationEntry>
+
+/**
+ * Schema version of this `TokensConfig`. Follows semver.
+ * Breaking changes (renamed / removed cells) require a major bump AND
+ * a deprecation entry for at least one full minor release.
+ *
+ * @governs plan/test-strategy.md §11 · G8 schema backward compat
+ */
+export type SchemaVersion = `${number}.${number}.${number}`
+
 export interface TokensConfig {
+  /**
+   * Schema version for this config shape. Kept in lockstep with
+   * `packages/tokens/package.json` major.minor so the G8 guard can
+   * detect drift between published version and declared schema. See
+   * `DeprecationsConfig` / `G8` for the breaking-change protocol.
+   */
+  schema_version: SchemaVersion
+  /**
+   * Deprecated token paths, keyed by the old cell path (e.g.
+   * `labels.accent.primary`). Emitted to `dist/` with a warning
+   * comment until `removed_in`; absent after.
+   */
+  deprecated: DeprecationsConfig
   colors: ColorsConfig
   semantics: SemanticsConfig
   units: UnitsConfig

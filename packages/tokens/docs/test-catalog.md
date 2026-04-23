@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 38 test files
+**Total:** 40 test files
 
 ## Cross-layer
 
@@ -31,6 +31,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Why:** Spine tweaks, gamut changes, or pivot-mirror edits can unintentionally dim a tier just enough to slip under the APCA target while the tier-assertion test still passes (because the measured value is still within per-token `APCA_TOLERANCE=1.0` of the target). This guard catches *trend* regressions across the whole token surface, not just per-token compliance.
 - **On fail:** Inspect the printed delta table to find which tiers dropped. If the drop was intentional (e.g. relaxing a tier target or recalibrating neutrals), rerun `bun run apca-baseline` and commit the new JSON alongside the code change. If unintentional, revert the regressing commit and re-plan.
 
+### `tests/guards/deprecations.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G6 no deprecated tokens in dist · §15.3 Deprecation lifecycle
+- **Invariant:** For every entry in `config.deprecated`: - If the current `schema_version` < `removed_in`, the old token path is still emitted in `dist/tokens.css` and a CSS warning comment referencing the replacement sits within 3 lines of it. - If `schema_version` >= `removed_in`, the old token path is absent from `dist/tokens.css` entirely. - Every entry has shape `{ replacement, removed_in, reason }` with `removed_in` as valid semver.
+- **Why:** Structured deprecation lets downstream consumers migrate without silent breakage: they see the warning comment in their CSS build output during the grace period, then the token disappears after the announced major.
+- **On fail:** (a) if a listed deprecation is missing → the emit pipeline dropped it before `removed_in`; restore the token in the writer or bump `removed_in`. (b) if a token past `removed_in` still emits → delete the token from the semantic tree or writer. (c) if the warning comment is missing → check `writeDeprecationComment` hook in `writers/css.ts`.
+
 ### `tests/guards/header-lint.test.ts`
 
 - **Governs:** plan/test-strategy.md §14 · Self-documenting tests
@@ -44,6 +51,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Invariant:** Colors generation + emit < 150ms on CI. Colors alone < 80ms.
 - **Why:** If generation explodes, dev loop suffers and CI queues back up.
 - **On fail:** profile with Bun.nanoseconds(); usual culprit = apca_inverse with too many iterations (max 24), or excessive spine sampling.
+
+### `tests/guards/schema-version.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G8 config schema backward compat
+- **Invariant:** `config.schema_version` tracks `package.json.version` at (major, minor) granularity. Patch drift is allowed (pure bugfix releases don't have to touch the config shape), but a minor or major bump in the package MUST correspond to either (a) a matching schema bump + migration note, OR (b) an additive-only change that doesn't rename / remove cells. * Breaking changes (removed / renamed cells) additionally require a `config.deprecated` entry announcing the removal at least one minor release before it lands (see G6).
+- **Why:** Without this pin, a consumer upgrading `@lab-ui/tokens` from 0.2.x → 0.3.x can't tell from the version alone whether the config shape changed under them. The schema_version is the contract.
+- **On fail:** Either bump `config.schema_version` to match the package version, or roll the package version back until a CHANGELOG entry + schema bump lands together.
 
 ### `tests/guards/size-budget.test.ts`
 
