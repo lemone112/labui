@@ -33,7 +33,7 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 
 ### `tests/guards/deprecations.test.ts`
 
-- **Governs:** plan/test-strategy.md §11 · G6 no deprecated tokens in dist · §15.3 Deprecation lifecycle
+- **Governs:** plan/test-strategy.md §11 · G6 no deprecated tokens in dist
 - **Invariant:** For every entry in `config.deprecated`: - If the current `schema_version` < `removed_in`, the old token path is still emitted in `dist/tokens.css` and a CSS warning comment referencing the replacement sits within 3 lines of it. - If `schema_version` >= `removed_in`, the old token path is absent from `dist/tokens.css` entirely. - Every entry has shape `{ replacement, removed_in, reason }` with `removed_in` as valid semver.
 - **Why:** Structured deprecation lets downstream consumers migrate without silent breakage: they see the warning comment in their CSS build output during the grace period, then the token disappears after the announced major.
 - **On fail:** (a) if a listed deprecation is missing → the emit pipeline dropped it before `removed_in`; restore the token in the writer or bump `removed_in`. (b) if a token past `removed_in` still emits → delete the token from the semantic tree or writer. (c) if the warning comment is missing → check `writeDeprecationComment` hook in `writers/css.ts`.
