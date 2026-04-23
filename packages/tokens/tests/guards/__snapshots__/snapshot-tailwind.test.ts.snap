@@ -3,7 +3,7 @@
 exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committed snapshot 1`] = `
 "/* Lab UI — generated Tailwind v4 preset. DO NOT EDIT. */
 
-@theme {
+@theme inline {
   /* Colors — primitive hues */
   --color-static-white: var(--static-white);
   --color-static-white-a0: var(--static-white-a0);
