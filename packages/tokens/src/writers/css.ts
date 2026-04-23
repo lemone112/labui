@@ -21,6 +21,7 @@
 import type {
   BaseMode,
   Contrast,
+  DeprecationsConfig,
   OklchValue,
   OklchWithAlpha,
   OutputKey,
@@ -38,8 +39,19 @@ const HEADER = '/* Lab UI — generated design tokens. DO NOT EDIT. */\n'
 export function writeCSS(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
+  deprecated: DeprecationsConfig = {},
 ): string {
   const lines: string[] = [HEADER]
+
+  // 0. Deprecation banner — one comment per registered deprecation.
+  //    G6 guard (`tests/guards/deprecations.test.ts`) asserts each
+  //    entry whose `removed_in` is strictly greater than the current
+  //    `schema_version` has a matching comment here. When the registry
+  //    is empty this block emits nothing.
+  const depLines = formatDeprecationBanner(deprecated)
+  if (depLines.length > 0) {
+    lines.push(...depLines, '')
+  }
 
   // 1. Opacity utility variables (mode-invariant)
   lines.push(':root {')
@@ -79,6 +91,23 @@ export function writeCSS(
   lines.push('}\n')
 
   return lines.join('\n')
+}
+
+// ─── Deprecation banner ────────────────────────────────────────────────
+
+function formatDeprecationBanner(deps: DeprecationsConfig): string[] {
+  const entries = Object.entries(deps)
+  if (entries.length === 0) return []
+  const lines: string[] = ['/* ─── DEPRECATED TOKENS ─── */']
+  for (const [oldVar, entry] of entries) {
+    // Keys are the literal `--` CSS var names (see `DeprecationEntry`
+    // doc in types.ts) — use them directly, do not try to derive them.
+    // Exact format asserted by the G6 guard.
+    lines.push(
+      `/* DEPRECATED: ${oldVar} → ${entry.replacement} (removed in ${entry.removed_in}): ${entry.reason} */`,
+    )
+  }
+  return lines
 }
 
 // ─── Selector ──────────────────────────────────────────────────────────

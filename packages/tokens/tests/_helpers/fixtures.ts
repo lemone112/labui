@@ -20,7 +20,7 @@ export const semantic = generateSemanticColors(
   primitive,
   config.colors,
 )
-export const css = writeCSS(primitive, semantic)
+export const css = writeCSS(primitive, semantic, config.deprecated)
 export const esm = writeESM(primitive, semantic)
 export const dts = writeDTS(primitive, semantic)
 

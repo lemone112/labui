@@ -553,7 +553,62 @@ export interface SemanticsConfig {
 
 // ─── Top-level config ───────────────────────────────────────────────────
 
+/**
+ * Deprecation entry for a single emitted CSS custom property.
+ *
+ * @governs plan/test-strategy.md §11 · G6 deprecated-tokens guard
+ *          (lifecycle spec in §15.3 of the same doc)
+ * @why A structured lifecycle (current emit + warning → removal after
+ *      `removed_in`) lets downstream consumers migrate without silent
+ *      breakage. The G6 guard enforces this contract.
+ *
+ * Keys in {@link DeprecationsConfig} and the `replacement` field are
+ * the literal CSS variable names (e.g. `--label-accent-primary`) as
+ * they appear in `dist/tokens.css`, NOT dotted config paths. The
+ * semantic tree uses hand-crafted abbreviations (`bg-*` vs
+ * `backgrounds.*`, `badge-label-contrast` vs `misc.badge.label_contrast`,
+ * etc., see `generators/semantic-colors.ts::collectEntries`) that
+ * cannot be derived mechanically from the config path — using the
+ * emitted name directly avoids the mismatch entirely.
+ */
+export interface DeprecationEntry {
+  /** Literal CSS variable name that supersedes the deprecated one. */
+  replacement: string
+  /** Semver at which the old var is fully removed from `dist`. */
+  removed_in: string
+  /** Short human-readable reason (shown in CSS warning comment). */
+  reason: string
+}
+
+/**
+ * Map of deprecated CSS variable names → lifecycle metadata. Keys must
+ * start with `--` and contain only `[a-z0-9-]` characters.
+ */
+export type DeprecationsConfig = Record<string, DeprecationEntry>
+
+/**
+ * Schema version of this `TokensConfig`. Follows semver.
+ * Breaking changes (renamed / removed cells) require a major bump AND
+ * a deprecation entry for at least one full minor release.
+ *
+ * @governs plan/test-strategy.md §11 · G8 schema backward compat
+ */
+export type SchemaVersion = `${number}.${number}.${number}`
+
 export interface TokensConfig {
+  /**
+   * Schema version for this config shape. Kept in lockstep with
+   * `packages/tokens/package.json` major.minor so the G8 guard can
+   * detect drift between published version and declared schema. See
+   * `DeprecationsConfig` / `G8` for the breaking-change protocol.
+   */
+  schema_version: SchemaVersion
+  /**
+   * Deprecated token paths, keyed by the old cell path (e.g.
+   * `labels.accent.primary`). Emitted to `dist/` with a warning
+   * comment until `removed_in`; absent after.
+   */
+  deprecated: DeprecationsConfig
   colors: ColorsConfig
   semantics: SemanticsConfig
   units: UnitsConfig
