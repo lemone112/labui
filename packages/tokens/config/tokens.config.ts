@@ -550,6 +550,98 @@ export const config: TokensConfig = {
       m: 4,
     },
   },
+
+  // ─── Typography (L5) ─────────────────────────────────────────────
+  // @governs plan §6. base_size_step=4 → 16px at scaling=1.0.
+  // scale_ratio 1.125 = major second. Sizes snap to base_px/2 grid
+  // (§02 rule 1) which may flatten some ratio steps; monotonicity is
+  // enforced.
+  typography: {
+    font_family: 'Geist',
+    font_family_mono: 'Geist Mono',
+    base_size_step: 4,
+    scale_ratio: 1.125,
+    lh_body_density: 1.5,
+    lh_headline_density: 1.1,
+    tracking: {
+      body: 0,
+      headline_per_log_size: -0.012,
+      caps_boost: 0.08,
+    },
+    semantics: {
+      'label-small': 'xxs',
+      'label-default': 'xs',
+      'body-small': 's',
+      'body-default': 'm',
+      'body-large': 'l',
+      'title-m': 'xl',
+      'title-l': '2xl',
+      'headline-s': '3xl',
+      'headline-m': '4xl',
+      'headline-l': '5xl',
+      'headline-xl': '6xl',
+    },
+  },
+
+  // ─── Z-index (L6) ────────────────────────────────────────────────
+  // @governs plan §7. Pure integer stacking context; no mode-dependence.
+  z_index: {
+    primary: 0,
+    'skip-link': 50,
+    secondary: 100,
+    tertiary: 200,
+    quaternary: 400,
+    'grouped-primary': 400,
+    'grouped-secondary': 500,
+    'grouped-tertiary': 600,
+    inverted: 700,
+    dropdown: 800,
+    sticky: 900,
+    'modal-underlay': 1000,
+    modal: 1100,
+    toast: 1200,
+    tooltip: 1300,
+  },
+
+  // ─── Materials (L7) ──────────────────────────────────────────────
+  // @governs plan §8. material_mode is orthogonal to base mode and
+  // contrast. Runtime-switched via [data-material-mode] on :root.
+  // primitive refers to neutrals.id (0..12).
+  materials: {
+    default_mode: 'solid',
+    levels: {
+      elevated: {
+        primitive: '0',
+        glass_opacity: 80,
+        glass_blur: 'xl',
+        backdrop_blur: 's',
+      },
+      base: {
+        primitive: '1',
+        glass_opacity: 72,
+        glass_blur: 'l',
+        backdrop_blur: 's',
+      },
+      muted: {
+        primitive: '2',
+        glass_opacity: 64,
+        glass_blur: 'l',
+        backdrop_blur: 'xs',
+      },
+      soft: {
+        primitive: '3',
+        glass_opacity: 56,
+        glass_blur: 'm',
+        backdrop_blur: 'xs',
+      },
+      subtle: {
+        primitive: '4',
+        glass_opacity: 48,
+        glass_blur: 'm',
+        backdrop_blur: 'xxs',
+      },
+    },
+  },
 }
 
 // ─── Helpers that build repetitive semantic branches ──────────────────
