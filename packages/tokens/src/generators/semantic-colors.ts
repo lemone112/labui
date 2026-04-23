@@ -31,6 +31,7 @@ import type {
 import { BASE_MODES, CONTRASTS, outputKey } from '../types'
 import { resolveSemantic, type ResolveContext } from './resolver'
 import { oklchToApcaY } from '../utils/apca-inverse'
+import { wcagContrast } from '../utils/wcag'
 import { APCAcontrast } from 'apca-w3'
 import { roundOklch } from '../utils/oklch'
 
@@ -84,7 +85,7 @@ export function generateSemanticColors(
       values: final,
     }
 
-    // Diagnostic APCA for pipeline tokens
+    // Diagnostic APCA (+ WCAG when tier declares a floor) for pipeline tokens
     if (
       entry.diagnostic_tier &&
       entry.diagnostic_bg_path &&
@@ -93,6 +94,9 @@ export function generateSemanticColors(
       const bgVals = semanticMap.get(entry.diagnostic_bg_path)!
       const target: Record<OutputKey, number> = {} as Record<OutputKey, number>
       const measured: Record<OutputKey, number> = {} as Record<OutputKey, number>
+      const target_wcag: Record<OutputKey, number> = {} as Record<OutputKey, number>
+      const measured_wcag: Record<OutputKey, number> = {} as Record<OutputKey, number>
+      let hasWcagTarget = false
       for (const mode of BASE_MODES) {
         for (const contrast of CONTRASTS) {
           const key = outputKey(mode, contrast)
@@ -101,6 +105,11 @@ export function generateSemanticColors(
           const fgY = oklchToApcaY(final[key])
           const bgY = oklchToApcaY(bgVals[key])
           measured[key] = Math.abs(APCAcontrast(fgY, bgY) as number)
+          if (targets.wcag != null) {
+            hasWcagTarget = true
+            target_wcag[key] = targets.wcag
+            measured_wcag[key] = wcagContrast(final[key], bgVals[key])
+          }
         }
       }
       token.diagnostic = {
@@ -108,6 +117,9 @@ export function generateSemanticColors(
         tier: entry.diagnostic_tier,
         target_apca: target,
         measured_apca: measured,
+        ...(hasWcagTarget
+          ? { target_wcag, measured_wcag }
+          : {}),
       }
     }
 

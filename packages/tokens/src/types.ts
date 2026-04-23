@@ -794,12 +794,18 @@ export interface ResolvedSemantic {
   values: Record<OutputKey, OklchWithAlpha>
   /**
    * Optional diagnostic data — kept in-memory for validators + tests.
+   *
+   * `target_wcag` / `measured_wcag` are populated only when the tier
+   * declares a `wcag` floor (see `TierTargetsConfig`). Tiers without a
+   * WCAG floor (fills, borders) leave both fields undefined.
    */
   diagnostic?: {
     bg_path: string
     tier: TierName
     target_apca: Record<OutputKey, number>
     measured_apca: Record<OutputKey, number>
+    target_wcag?: Record<OutputKey, number>
+    measured_wcag?: Record<OutputKey, number>
   }
 }
 

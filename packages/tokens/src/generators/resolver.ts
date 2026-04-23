@@ -35,6 +35,7 @@ import type {
 } from '../types'
 import { outputKey } from '../types'
 import { apcaInverse, oklchToApcaY, resolveOrientation } from '../utils/apca-inverse'
+import { wcagInverse } from '../utils/wcag'
 import { accentChromaAt, driftedHue, neutralChromaAt } from '../utils/chroma-curve'
 import { spineInterp } from '../utils/spine'
 import { clampToGamut, isInP3Gamut, isInSrgbGamut } from '../utils/oklch'
@@ -119,9 +120,9 @@ function resolvePipeline(
   def: Extract<SemanticDef, { kind: 'pipeline' }>,
   ctx: ResolveContext,
 ): OklchWithAlpha {
-  const key = outputKey(ctx.mode, ctx.contrast)
   const targets = ctx.colors.tier_targets[def.tier]
   const target_apca = targets[ctx.contrast].apca
+  const target_wcag = targets[ctx.contrast].wcag
 
   // 1. Find bg luminance
   const bg = resolveBgContext(def.canonical_bg, ctx)
@@ -133,12 +134,19 @@ function resolvePipeline(
     raw = resolveAccentPipeline(
       def.primitive.id as AccentName,
       target_apca,
+      target_wcag,
       bg,
       orientation,
       ctx,
     )
   } else if (def.primitive.family === 'neutral') {
-    raw = resolveNeutralPipeline(target_apca, bg, orientation, ctx)
+    raw = resolveNeutralPipeline(
+      target_apca,
+      target_wcag,
+      bg,
+      orientation,
+      ctx,
+    )
   } else {
     // static — just look up
     raw = lookupPrimitive(def.primitive, ctx)
@@ -147,9 +155,27 @@ function resolvePipeline(
   return { ...raw, alpha: 1 }
 }
 
+/**
+ * Pick the L that satisfies BOTH the APCA and WCAG targets. Since both
+ * binary searches operate on the same monotonic axis (APCA and WCAG
+ * both increase with |fg.L − bg.L|), the stricter target is simply the
+ * one further from `bg.L` — i.e. smaller when `dir === 'darker'`,
+ * larger when `dir === 'lighter'`. When no WCAG target is declared,
+ * this degrades to the APCA-only behaviour.
+ */
+function pickStricterL(
+  apca_L: number,
+  wcag_L: number | null,
+  dir: 'darker' | 'lighter',
+): number {
+  if (wcag_L == null) return apca_L
+  return dir === 'darker' ? Math.min(apca_L, wcag_L) : Math.max(apca_L, wcag_L)
+}
+
 function resolveAccentPipeline(
   accentName: AccentName,
   target_apca: number,
+  target_wcag: number | undefined,
   bg: OklchValue,
   orientation: 'darker' | 'lighter',
   ctx: ResolveContext,
@@ -174,13 +200,17 @@ function resolveAccentPipeline(
     return v
   }
 
-  // Binary search target L that achieves target_apca vs bg
-  const inv = apcaInverse(target_apca, bg, build, orientation)
-  return build(inv.L)
+  const apcaL = apcaInverse(target_apca, bg, build, orientation).L
+  const wcagL =
+    target_wcag != null
+      ? wcagInverse(target_wcag, bg, build, orientation).L
+      : null
+  return build(pickStricterL(apcaL, wcagL, orientation))
 }
 
 function resolveNeutralPipeline(
   target_apca: number,
+  target_wcag: number | undefined,
   bg: OklchValue,
   orientation: 'darker' | 'lighter',
   ctx: ResolveContext,
@@ -212,8 +242,12 @@ function resolveNeutralPipeline(
     v = fitGamut(v, ctx.colors.gamut)
     return v
   }
-  const inv = apcaInverse(target_apca, bg, build, orientation)
-  return build(inv.L)
+  const apcaL = apcaInverse(target_apca, bg, build, orientation).L
+  const wcagL =
+    target_wcag != null
+      ? wcagInverse(target_wcag, bg, build, orientation).L
+      : null
+  return build(pickStricterL(apcaL, wcagL, orientation))
 }
 
 // ─── Supporting ops ────────────────────────────────────────────────────

@@ -212,7 +212,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 75.2,
+    "measured": 83.5,
     "target": 75
   },
   {
@@ -220,7 +220,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 59.9,
+    "measured": 70.3,
     "target": 60
   },
   {
@@ -244,7 +244,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 29.8,
+    "measured": 38.7,
     "target": 30
   },
   {
@@ -252,7 +252,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 15,
+    "measured": 23.2,
     "target": 15
   },
   {
@@ -276,7 +276,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 59.9,
+    "measured": 70.3,
     "target": 60
   },
   {
@@ -284,7 +284,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 44.9,
+    "measured": 56.4,
     "target": 45
   },
   {
@@ -308,7 +308,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 44.9,
+    "measured": 56.4,
     "target": 45
   },
   {
@@ -316,7 +316,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 29.8,
+    "measured": 38.7,
     "target": 30
   },
   {
@@ -340,7 +340,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 74.9,
+    "measured": 81.5,
     "target": 75
   },
   {
@@ -348,7 +348,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 60.2,
+    "measured": 69.4,
     "target": 60
   },
   {
@@ -372,7 +372,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 30.2,
+    "measured": 38.4,
     "target": 30
   },
   {
@@ -380,7 +380,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 14.9,
+    "measured": 23,
     "target": 15
   },
   {
@@ -404,7 +404,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 60.2,
+    "measured": 69.4,
     "target": 60
   },
   {
@@ -412,7 +412,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 45.1,
+    "measured": 55.7,
     "target": 45
   },
   {
@@ -436,7 +436,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 45.1,
+    "measured": 55.7,
     "target": 45
   },
   {
@@ -444,7 +444,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 30.2,
+    "measured": 38.4,
     "target": 30
   },
   {
@@ -468,7 +468,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 75.2,
+    "measured": 83.5,
     "target": 75
   },
   {
@@ -476,7 +476,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 59.9,
+    "measured": 70.3,
     "target": 60
   },
   {
@@ -500,7 +500,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 29.8,
+    "measured": 38.7,
     "target": 30
   },
   {
@@ -508,7 +508,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 15,
+    "measured": 23.2,
     "target": 15
   },
   {
@@ -532,7 +532,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 59.9,
+    "measured": 70.3,
     "target": 60
   },
   {
@@ -540,7 +540,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 44.9,
+    "measured": 56.4,
     "target": 45
   },
   {
@@ -564,7 +564,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 44.9,
+    "measured": 56.4,
     "target": 45
   },
   {
@@ -572,7 +572,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 29.8,
+    "measured": 38.7,
     "target": 30
   },
   {
@@ -596,7 +596,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 75,
+    "measured": 84.1,
     "target": 75
   },
   {
@@ -604,7 +604,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 59.9,
+    "measured": 71.4,
     "target": 60
   },
   {
@@ -628,7 +628,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 29.8,
+    "measured": 38.6,
     "target": 30
   },
   {
@@ -636,7 +636,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 15.4,
+    "measured": 23,
     "target": 15
   },
   {
@@ -660,7 +660,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 59.9,
+    "measured": 71.4,
     "target": 60
   },
   {
@@ -668,7 +668,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 45.1,
+    "measured": 56.5,
     "target": 45
   },
   {
@@ -692,7 +692,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 45.1,
+    "measured": 56.4,
     "target": 45
   },
   {
@@ -700,7 +700,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 29.9,
+    "measured": 38.6,
     "target": 30
   },
   {
@@ -724,7 +724,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 75,
+    "measured": 83.3,
     "target": 75
   },
   {
@@ -732,7 +732,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 60,
+    "measured": 70.6,
     "target": 60
   },
   {
@@ -756,7 +756,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 30.2,
+    "measured": 38.2,
     "target": 30
   },
   {
@@ -764,7 +764,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 15.1,
+    "measured": 23.1,
     "target": 15
   },
   {
@@ -788,7 +788,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 60,
+    "measured": 70.6,
     "target": 60
   },
   {
@@ -796,7 +796,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 45,
+    "measured": 56.3,
     "target": 45
   },
   {
@@ -820,7 +820,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 45,
+    "measured": 56.3,
     "target": 45
   },
   {
@@ -828,7 +828,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 30.2,
+    "measured": 38.2,
     "target": 30
   },
   {
@@ -852,7 +852,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/ic",
-    "measured": 75.1,
+    "measured": 83.4,
     "target": 75
   },
   {
@@ -860,7 +860,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "primary",
     "output": "light/normal",
-    "measured": 60,
+    "measured": 70.4,
     "target": 60
   },
   {
@@ -884,7 +884,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/ic",
-    "measured": 30.1,
+    "measured": 38.2,
     "target": 30
   },
   {
@@ -892,7 +892,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "quaternary",
     "output": "light/normal",
-    "measured": 15,
+    "measured": 23.5,
     "target": 15
   },
   {
@@ -916,7 +916,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/ic",
-    "measured": 60,
+    "measured": 70.4,
     "target": 60
   },
   {
@@ -924,7 +924,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "secondary",
     "output": "light/normal",
-    "measured": 44.8,
+    "measured": 55.8,
     "target": 45
   },
   {
@@ -948,7 +948,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/ic",
-    "measured": 44.8,
+    "measured": 55.8,
     "target": 45
   },
   {
@@ -956,7 +956,7 @@
     "bg_path": "backgrounds.neutral.primary",
     "tier": "tertiary",
     "output": "light/normal",
-    "measured": 30.1,
+    "measured": 38.2,
     "target": 30
   }
 ]

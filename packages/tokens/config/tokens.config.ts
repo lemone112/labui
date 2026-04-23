@@ -440,13 +440,35 @@ export const config: TokensConfig = {
       },
     },
 
-    // ─── Tier targets (APCA Lc per tier × contrast) ──────────────────
-    // @governs plan §5.1
+    // ─── Tier targets (APCA Lc + WCAG ratio per tier × contrast) ─────
+    // @governs plan §5.3.2 · §L4.4 + §L4.5
+    //
+    // APCA is the primary criterion. Label tiers additionally declare
+    // a WCAG 2.x `wcag` floor — the resolver hits
+    // max(apca_target, wcag_equivalent), so even the laxest tier
+    // (`quaternary` Lc 15) never drops below the WCAG readability
+    // threshold (1.5:1 normal, 2.0:1 ic).
+    //
+    // Fills & borders do not carry a WCAG floor: they render under
+    // surface-contrast rules, not text-contrast rules, and APCA already
+    // provides the correct decorative envelope.
     tier_targets: {
-      primary: { normal: { apca: 60 }, ic: { apca: 75 } },
-      secondary: { normal: { apca: 45 }, ic: { apca: 60 } },
-      tertiary: { normal: { apca: 30 }, ic: { apca: 45 } },
-      quaternary: { normal: { apca: 15 }, ic: { apca: 30 } },
+      primary: {
+        normal: { apca: 60, wcag: 4.5 },
+        ic: { apca: 75, wcag: 7.0 },
+      },
+      secondary: {
+        normal: { apca: 45, wcag: 3.0 },
+        ic: { apca: 60, wcag: 4.5 },
+      },
+      tertiary: {
+        normal: { apca: 30, wcag: 2.0 },
+        ic: { apca: 45, wcag: 3.0 },
+      },
+      quaternary: {
+        normal: { apca: 15, wcag: 1.5 },
+        ic: { apca: 30, wcag: 2.0 },
+      },
       fill_primary: { normal: { apca: 30 }, ic: { apca: 45 } },
       fill_secondary: { normal: { apca: 20 }, ic: { apca: 30 } },
       fill_tertiary: { normal: { apca: 12 }, ic: { apca: 20 } },

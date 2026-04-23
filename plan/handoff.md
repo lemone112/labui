@@ -5,10 +5,10 @@
 > that a fresh agent (or a human) can pick up mid-stream without losing
 > context.
 
-Last PR opened against this doc: **PR-I · preview app + R1-R4 Playwright** (`devin/1776939031-preview-app`).
+Last PR opened against this doc: **PR-M · WCAG floor for label tiers** (`devin/1776964033-wcag-floor`).
 
 Any new agent: your `bun test` output (under `packages/tokens`) should show
-**247 pass, 0 fail**; your `pnpm --filter @lab-ui/preview exec playwright test`
+**273 pass, 0 fail**; your `pnpm --filter @lab-ui/preview exec playwright test`
 should show **7 pass** across R1-R4.
 If PT1 max ΔE prints anything above 1.0, something regressed — start
 with `tests/parity/accent-anchors.test.ts`.
@@ -122,7 +122,7 @@ test guarding it.
 
 ---
 
-## 3. Where we are right now (as of PR-F)
+## 3. Where we are right now (as of PR-M)
 
 ### In `main`
 
@@ -138,42 +138,43 @@ test guarding it.
 | #23 | `TokensConfig.deprecated` JSDoc fix (PR-F follow-up) | — |
 | #24 | `primitive_per_output` · 4-sector Figma pinning | PT1 all sectors: 27.90 → **0.11** ΔE |
 | #25 | PT3 semantic-diff tooling · `bun run semantic-diff` | — |
+| #26 | PR-I · `apps/preview/` Vite + Playwright R1-R4 | — |
 
 ### In flight
 
-**PR-I** (`devin/1776939031-preview-app`) — this PR:
+**PR-M** (`devin/1776964033-wcag-floor`) — this PR:
 
-- Adds `apps/preview/` as a Vite + Tailwind v4 + TS workspace app.
-  Depends on `@lab-ui/tokens` via `workspace:*`.
-- Imports in `apps/preview/src/styles.css`:
-  1. `@import "tailwindcss"` — core utilities
-  2. `@import "@lab-ui/tokens/tailwind"` — Lab UI preset (theme mapping)
-  3. `@import "@lab-ui/tokens/css"` — the actual variable values
-  4. `@source inline("{bg,text,border}-{brand,red,...,pink}")` —
-     safelist for dynamically composed accent utilities (Tailwind v4's
-     content scanner only reads statically-written class names; the
-     preview's `bg-${accent}` needs a safelist).
-- UI: sticky mode/contrast toggles + 4 sections — primitives
-  (13 neutrals, 11 accents), backgrounds (3 tiers), labels
-  (6 families × 4 tiers), Tailwind-utility-vs-raw-var pairs.
-- Playwright config at `apps/preview/playwright.config.ts`. Chromium
-  only, retains traces on failure, auto-launches `vite dev` unless
-  `PW_BASE_URL` is set (used in CI against `vite preview`).
-- Specs at `apps/preview/tests/e2e/tokens.spec.ts`:
-  - **R1** — every expected token resolves in every sector
-    (light/normal, light/ic, dark/normal, dark/ic). 4 tests.
-  - **R2** — `data-mode` light↔dark flips `--bg-primary` and
-    `--label-neutral-primary`. 1 test.
-  - **R3** — `data-contrast` normal↔ic shifts primitives; yellow
-    and orange specifically must change (IC brown/earth-tone
-    replacement, per Figma). 1 test.
-  - **R4** — `bg-{accent}` Tailwind utility `getComputedStyle` equals
-    raw `var(--{accent})` verbatim. 1 test × 11 accents.
-- CI: `.github/workflows/preview-ci.yml`. Runs on `apps/preview/**`,
-  `packages/tokens/**`, or the workflow itself. Uses pnpm + Node 22 +
-  Bun 1.1.38; builds tokens, builds preview, installs Playwright
-  chromium, runs the suite. Uploads the HTML report on failure.
-- No change to `packages/tokens/**` or the snapshot guards.
+- Adds WCAG 2.x ratio floor to label tiers alongside APCA Lc target.
+  Config (`tier_targets[primary|secondary|tertiary|quaternary][normal|ic]`)
+  now declares both `{ apca, wcag }` per the plan §5.3.2; the
+  resolver pipeline runs `apcaInverse(target_apca)` **and**
+  `wcagInverse(target_wcag)` and picks the stricter L (smaller when
+  `dir === 'darker'`, larger when `dir === 'lighter'`) — so text
+  is smoothly compensated down to the WCAG readability threshold.
+- New utility `src/utils/wcag.ts` — `wcagContrast(fg, bg)` and
+  `wcagInverse(target_ratio, bg, build, orientation)` mirroring
+  `apca-inverse.ts`.
+- Generator: `semantic-colors.ts` emits
+  `diagnostic.target_wcag` / `measured_wcag` alongside APCA for tiers
+  that declare a `wcag` floor (fills/borders leave them undefined).
+- Validator: `src/validators/apca.ts` now checks both APCA *and* WCAG
+  per-token, with `STRICT_TIERS` (primary/secondary/border_strong)
+  promoting failures to errors.
+- Test: `tests/L4-semantic/wcag-floor.test.ts` (L4.5) asserts every
+  label with a declared WCAG floor meets it across all four outputs
+  within 0.05 tolerance (25 tokens × 4 sectors).
+- Snapshot regeneration in this PR (per §4.2 policy):
+  `apca-baseline.json` (G7), `snapshot-css.test.ts.snap` (G1). ESM
+  and Tailwind snapshots unaffected (they expose CSS var names, not
+  values).
+- `snapshot-lock.test.ts` anchor renamed — `label-brand-primary`
+  light/normal no longer converges to Lc 60 because the WCAG 4.5
+  floor binds for blue-on-white; assertion now checks APCA ≥ 58 **and**
+  WCAG ≥ 4.4.
+- Tokens byte-level impact: every `label-*-{primary..quaternary}`
+  shifts slightly in the "darker" direction on light/normal + light/ic
+  (and mirror on dark), magnitude 0.02–0.08 L depending on tier +
+  hue. `neutral-*` tokens and all fills/borders are byte-identical.
 
 **PR-H** (`devin/1776936429-semantic-diff`) — merged as #25:
 
@@ -200,7 +201,7 @@ test guarding it.
 - No `dist/` churn, no snapshot updates.
 - Not wired to CI yet — see PR-K below.
 
-### Queued after PR-I
+### Queued after PR-M
 
 | PR | scope | rationale |
 |---|---|---|

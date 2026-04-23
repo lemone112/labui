@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 41 test files
+**Total:** 42 test files
 
 ## Cross-layer
 
@@ -211,6 +211,15 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Governs:** plan-v2 §5 · Semantic tree
 - **Invariant:** Every semantic has a value per OutputKey with L∈[0,1], C≥0, H∈[0,360), alpha∈[0,1], all finite.
 - **On fail:** inspect generator emitting NaN/∞; most common cause is spine validation bypass or chroma_curve with negative peak.
+
+## L4 (semantic) × Contrast
+
+### `tests/L4-semantic/wcag-floor.test.ts`
+
+- **Governs:** plan-v2 §5.3.2 · Tier targets (apca + wcag)
+- **Invariant:** For every label tier whose config declares `tier_targets[tier][contrast].wcag`, the measured WCAG contrast ratio on the tier's canonical bg is ≥ the target ratio, within tolerance. Tiers that do not declare a WCAG floor (fills, borders) are excluded from this assertion — §L4.4 (APCA) covers them.
+- **Why:** APCA alone is not enough for our design system's "readability floor" invariant: for some hues (notably blue label tiers on white), WCAG demands a darker L than the APCA target would produce. The resolver picks the stricter of the two; this test guards that behaviour.
+- **On fail:** Either the resolver regressed (no longer searches the WCAG axis), or the tier's spine can't physically reach the declared WCAG floor inside the chosen gamut. Inspect diagnostic.measured_wcag for the failing output key.
 
 ## L4 (semantic) × Emit
 
