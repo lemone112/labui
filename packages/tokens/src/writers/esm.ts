@@ -8,8 +8,10 @@
 import type {
   PrimitiveColorSet,
   ResolvedDimensions,
+  ResolvedMaterials,
   ResolvedTypography,
   ResolvedUnits,
+  ResolvedZIndex,
   SemanticColorSet,
 } from '../types'
 import { TYPOGRAPHY_KEYS } from '../generators/typography'
@@ -20,6 +22,8 @@ export function writeESM(
   units?: ResolvedUnits,
   dimensions?: ResolvedDimensions,
   typography?: ResolvedTypography,
+  zIndex?: ResolvedZIndex,
+  materials?: ResolvedMaterials,
 ): string {
   const lines: string[] = ['// Lab UI — generated ESM token barrel. DO NOT EDIT.\n']
 
@@ -90,6 +94,28 @@ export function writeESM(
     }
     for (const name of Object.keys(typography.semantics)) {
       lines.push(`export const ${camelCase(`text-${name}`)} = 'var(--text-${name})';`)
+    }
+    lines.push('')
+  }
+
+  if (zIndex) {
+    for (const name of Object.keys(zIndex)) {
+      lines.push(`export const ${camelCase(`z-${name}`)} = 'var(--z-${name})';`)
+    }
+    lines.push('')
+  }
+
+  if (materials) {
+    for (const level of materials.levels) {
+      lines.push(
+        `export const ${camelCase(`materials-${level.name}-bg`)} = 'var(--materials-${level.name}-bg)';`,
+      )
+      lines.push(
+        `export const ${camelCase(`materials-${level.name}-filter`)} = 'var(--materials-${level.name}-filter)';`,
+      )
+      lines.push(
+        `export const ${camelCase(`materials-${level.name}-backdrop-filter`)} = 'var(--materials-${level.name}-backdrop-filter)';`,
+      )
     }
     lines.push('')
   }

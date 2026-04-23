@@ -510,8 +510,65 @@ export interface TokensConfig {
   units: UnitsConfig
   dimensions: DimensionsConfig
   typography: TypographyConfig
-  z_index?: unknown
-  materials?: unknown
+  z_index: ZIndexConfig
+  materials: MaterialsConfig
+}
+
+// ─── Config: z-index (L6) ──────────────────────────────────────────────
+
+/**
+ * @governs plan-v2 §7 · Layer 6 Z-index
+ *
+ * Pure integer stacking context. No mode-dependence, no compositions.
+ */
+export type ZIndexConfig = Record<string, number>
+
+export type ResolvedZIndex = Record<string, number>
+
+// ─── Config: materials (L7) ────────────────────────────────────────────
+
+/**
+ * @governs plan-v2 §8 · Layer 7 Materials
+ *
+ * material_mode ∈ {solid, glass, backdrop} is orthogonal to the
+ * base mode (light/dark) and contrast (normal/ic). 3 parallel
+ * material renderings per base-mode × contrast combination.
+ *
+ *   solid    — opaque fill, no filter.
+ *   glass    — translucent fill; element gets `backdrop-filter: blur(…)`.
+ *   backdrop — opaque fill; the layer beneath is blurred via `filter`.
+ */
+export type MaterialMode = 'solid' | 'glass' | 'backdrop'
+
+export interface MaterialLevelCell {
+  /** Neutral primitive id (string key like '0', '1' or a full name). */
+  primitive: string
+  /** Opacity stop (0..100) used when material_mode='glass'. */
+  glass_opacity: number
+  /** Blur step name (must exist in dimensions.fx_blur) for glass backdrop-filter. */
+  glass_blur: string
+  /** Blur step name for backdrop-mode layer filter. */
+  backdrop_blur: string
+}
+
+export interface MaterialsConfig {
+  /** Default material_mode when no [data-material-mode] attribute present. */
+  default_mode: MaterialMode
+  /** Levels: elevated → base → muted → soft → subtle. */
+  levels: Record<string, MaterialLevelCell>
+}
+
+export interface ResolvedMaterialLevel {
+  name: string
+  primitive: string
+  glass_opacity: number
+  glass_blur: string
+  backdrop_blur: string
+}
+
+export interface ResolvedMaterials {
+  default_mode: MaterialMode
+  levels: ResolvedMaterialLevel[]
 }
 
 // ─── Config: typography (L5) ───────────────────────────────────────────
