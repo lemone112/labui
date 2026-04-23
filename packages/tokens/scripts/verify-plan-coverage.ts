@@ -167,8 +167,11 @@ async function main(): Promise<void> {
     process.exit(1)
   }
 
+  const coveredInvariantCount = [...invariantSections].filter((s) =>
+    coveredSections.has(s),
+  ).length
   console.log(
-    `✓ plan coverage ok — ${coveredSections.size}/${invariantSections.size} invariant sections covered, ` +
+    `✓ plan coverage ok — ${coveredInvariantCount}/${invariantSections.size} invariant sections covered, ` +
       `no unknown refs.`,
   )
 }
