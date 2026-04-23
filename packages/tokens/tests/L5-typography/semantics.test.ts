@@ -74,6 +74,33 @@ describe('Emit · CSS', () => {
     }
   })
 
+  test('headline-*/title-* aliases use headline line-height', () => {
+    for (const [name, key] of Object.entries(typography.semantics)) {
+      if (name.startsWith('headline-') || name.startsWith('title-')) {
+        expect(css).toContain(`--text-${name}-lh: var(--lh-headline-${key});`)
+      }
+    }
+  })
+
+  test('label-*/body-* aliases use body line-height', () => {
+    for (const [name, key] of Object.entries(typography.semantics)) {
+      if (name.startsWith('label-') || name.startsWith('body-')) {
+        expect(css).toContain(`--text-${name}-lh: var(--lh-body-${key});`)
+      }
+    }
+  })
+
+  test('no alias uses the wrong line-height tier', () => {
+    // Sanity: if the tier inference is ever reversed, the lh values
+    // diverge by ~36% at default density (1.5 vs 1.1).
+    for (const [name, key] of Object.entries(typography.semantics)) {
+      const isHeadlineTier =
+        name.startsWith('headline-') || name.startsWith('title-')
+      const wrongTier = isHeadlineTier ? 'body' : 'headline'
+      expect(css).not.toContain(`--text-${name}-lh: var(--lh-${wrongTier}-${key});`)
+    }
+  })
+
   test('tracking of 0 renders as bare 0 (no em)', () => {
     // 'xs' and smaller are body-sized at default config → tracking=0
     expect(css).toMatch(/--tracking-xs: 0;/)

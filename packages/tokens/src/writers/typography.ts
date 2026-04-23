@@ -36,9 +36,18 @@ export function writeTypographyCss(typo: ResolvedTypography): string {
   }
 
   // Semantic aliases — reference the scale vars.
+  //
+  // Line-height tier is inferred from the alias prefix:
+  //   - headline-*, title-* → tight headline line-height (density ~1.1)
+  //   - label-*, body-*, everything else → roomy body line-height (~1.5)
+  //
+  // Mixing them was the original bug: every alias used --lh-body-*,
+  // which gave headlines ~36% too much vertical space (14px excess at 3xl).
   for (const [name, key] of Object.entries(typo.semantics)) {
+    const isHeadlineTier = name.startsWith('headline-') || name.startsWith('title-')
+    const lhVar = isHeadlineTier ? `--lh-headline-${key}` : `--lh-body-${key}`
     lines.push(`  --text-${name}: var(--font-size-${key});`)
-    lines.push(`  --text-${name}-lh: var(--lh-body-${key});`)
+    lines.push(`  --text-${name}-lh: var(${lhVar});`)
     lines.push(`  --text-${name}-tracking: var(--tracking-${key});`)
   }
 
