@@ -453,21 +453,25 @@ export const config: TokensConfig = {
     // surface-contrast rules, not text-contrast rules, and APCA already
     // provides the correct decorative envelope.
     tier_targets: {
+      // Label tiers shifted one step up relative to plan-v2 §5.3.2 so
+      // that `primary.normal` hits the Apple HIG body-text envelope
+      // (APCA Lc 75 / WCAG 7:1), not the lax APCA "incidentally read"
+      // minimum. Each tier drops one step from the one above.
       primary: {
+        normal: { apca: 75, wcag: 7.0 },
+        ic: { apca: 90, wcag: 10.5 },
+      },
+      secondary: {
         normal: { apca: 60, wcag: 4.5 },
         ic: { apca: 75, wcag: 7.0 },
       },
-      secondary: {
+      tertiary: {
         normal: { apca: 45, wcag: 3.0 },
         ic: { apca: 60, wcag: 4.5 },
       },
-      tertiary: {
+      quaternary: {
         normal: { apca: 30, wcag: 2.0 },
         ic: { apca: 45, wcag: 3.0 },
-      },
-      quaternary: {
-        normal: { apca: 15, wcag: 1.5 },
-        ic: { apca: 30, wcag: 2.0 },
       },
       fill_primary: { normal: { apca: 30 }, ic: { apca: 45 } },
       fill_secondary: { normal: { apca: 20 }, ic: { apca: 30 } },

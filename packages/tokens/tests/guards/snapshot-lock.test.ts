@@ -26,16 +26,16 @@ describe('Snapshot lock · anchors', () => {
   })
 
   test('label-brand-primary light/normal meets APCA & WCAG floors', () => {
-    // Primary tier declares two targets: APCA Lc 60 AND WCAG 4.5:1.
-    // Blue text on white has a large APCA-vs-WCAG delta (APCA is more
-    // sensitive to short-wavelength energy), so the WCAG floor binds
-    // here — L ends up darker than APCA 60 alone would produce. We
-    // assert (a) APCA is at least its target, (b) WCAG floor met.
+    // Primary tier declares two targets: APCA Lc 75 AND WCAG 7.0:1
+    // (Apple HIG body-text envelope). Both must be met — blue text on
+    // white has a large APCA-vs-WCAG delta (APCA is more sensitive to
+    // short-wavelength energy), so the WCAG floor usually binds and
+    // pushes L darker than APCA 75 alone would require.
     const t = semantic.tokens.find((t) => t.name === 'label-brand-primary')!
     const apca = t.diagnostic!.measured_apca['light/normal']
     const wcag = t.diagnostic!.measured_wcag!['light/normal']
-    expect(apca).toBeGreaterThanOrEqual(58) // Lc 60 − 2 tolerance
-    expect(wcag).toBeGreaterThanOrEqual(4.4) // 4.5 − 0.1 tolerance
+    expect(apca).toBeGreaterThanOrEqual(73) // Lc 75 − 2 tolerance
+    expect(wcag).toBeGreaterThanOrEqual(6.9) // 7.0 − 0.1 tolerance
   })
 
   test('count: 13 neutrals + 11 accents + 2 statics + 29 opacity stops', () => {

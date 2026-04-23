@@ -146,11 +146,19 @@ test guarding it.
 
 - Adds WCAG 2.x ratio floor to label tiers alongside APCA Lc target.
   Config (`tier_targets[primary|secondary|tertiary|quaternary][normal|ic]`)
-  now declares both `{ apca, wcag }` per the plan §5.3.2; the
-  resolver pipeline runs `apcaInverse(target_apca)` **and**
-  `wcagInverse(target_wcag)` and picks the stricter L (smaller when
-  `dir === 'darker'`, larger when `dir === 'lighter'`) — so text
-  is smoothly compensated down to the WCAG readability threshold.
+  now declares both `{ apca, wcag }`; the resolver pipeline runs
+  `apcaInverse(target_apca)` **and** `wcagInverse(target_wcag)` and
+  picks the stricter L (smaller when `dir === 'darker'`, larger when
+  `dir === 'lighter'`) — so text is smoothly compensated down to the
+  WCAG readability threshold.
+- Tier targets are shifted **one step up** relative to plan-v2 §5.3.2
+  so `primary.normal` hits the Apple HIG body-text envelope
+  (APCA Lc 75 / WCAG 7:1) rather than the lax "incidentally read"
+  minimum. Full ladder:
+    - `primary`:    normal `Lc 75 / 7.0`, ic `Lc 90 / 10.5`
+    - `secondary`:  normal `Lc 60 / 4.5`, ic `Lc 75 / 7.0`
+    - `tertiary`:   normal `Lc 45 / 3.0`, ic `Lc 60 / 4.5`
+    - `quaternary`: normal `Lc 30 / 2.0`, ic `Lc 45 / 3.0`
 - New utility `src/utils/wcag.ts` — `wcagContrast(fg, bg)` and
   `wcagInverse(target_ratio, bg, build, orientation)` mirroring
   `apca-inverse.ts`.
@@ -168,13 +176,16 @@ test guarding it.
   and Tailwind snapshots unaffected (they expose CSS var names, not
   values).
 - `snapshot-lock.test.ts` anchor renamed — `label-brand-primary`
-  light/normal no longer converges to Lc 60 because the WCAG 4.5
-  floor binds for blue-on-white; assertion now checks APCA ≥ 58 **and**
-  WCAG ≥ 4.4.
+  light/normal now asserts APCA ≥ 73 **and** WCAG ≥ 6.9 (primary tier
+  target is Lc 75 / WCAG 7.0; blue-on-white makes the WCAG floor bind
+  and push L darker than APCA alone would require).
 - Tokens byte-level impact: every `label-*-{primary..quaternary}`
-  shifts slightly in the "darker" direction on light/normal + light/ic
-  (and mirror on dark), magnitude 0.02–0.08 L depending on tier +
-  hue. `neutral-*` tokens and all fills/borders are byte-identical.
+  shifts in the "darker" direction on light/*, mirrored on dark/*.
+  Magnitude 0.05–0.18 L depending on tier + hue (primary moves most,
+  quaternary least — the top of the ladder climbs furthest because
+  its target rose from Lc 60→75 and its WCAG floor from 4.5→7.0).
+  Fills and borders are byte-identical; neutral primitives untouched
+  (their values are semantic-consumer-invariant).
 
 **PR-H** (`devin/1776936429-semantic-diff`) — merged as #25:
 
