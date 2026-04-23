@@ -312,3 +312,4 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 
 - **Governs:** plan/test-strategy.md §10 Parity · PT3
 - **Invariant:** `parseCss` extracts the four canonical `:root` blocks and ignores unrelated selectors. `diff` classifies every differing `(scope, --var)` cell, computes ΔE2000 on colours, skips sub-threshold colour drift, and leaves non-colour cells untouched.
+- **On fail:** Investigate whether the CSS format of `dist/tokens.css` changed (new scope selectors, different declaration shape) or whether the diff semantics drifted. Both cases warrant updating `parseCss` / `diff` and keeping the tests green in the same PR.
