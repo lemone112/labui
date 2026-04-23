@@ -46,7 +46,7 @@ dist/
 
 ```bash
 bun run build      # regenerate dist/
-bun test           # 174 tests across 27 files (< 200 ms)
+bun test           # full suite (< 200 ms)
 bun run coverage   # verify every plan invariant has a @governs test
 bun run catalog    # regenerate docs/test-catalog.md
 ```

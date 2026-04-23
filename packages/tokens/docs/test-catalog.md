@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 27 test files
+**Total:** 23 test files
 
 ## Cross-layer
 
@@ -181,35 +181,3 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Invariant:** generatePrimitiveColors + generateSemanticColors is a pure function. No randomness, no IO, deterministic output.
 - **Why:** If generation drifted, CI snapshot would constantly fail.
 - **On fail:** find non-pure operations (Date.now, Math.random, env-dependent).
-
-## L5 (typography)
-
-### `tests/L5-typography/scale.test.ts`
-
-- **Governs:** plan-v2 §6.2 · Генерация · §6.3 · Constraint
-- **Invariant:** Sizes ascend monotonically and sit on a base_px/2 grid (§02 rule 1). 'm' equals base_size_step × base_px × scaling.
-- **On fail:** if a step collapses onto its predecessor, either raise scale_ratio or lower base_size_step; generator enforces strict monotonic by bumping +1 grid unit when needed.
-
-## L5 (typography) × Emit
-
-### `tests/L5-typography/semantics.test.ts`
-
-- **Governs:** plan-v2 §6.5 · Semantic aliases
-- **Invariant:** Every declared alias maps to a real scale key, and the emitted CSS references --font-size-<key> (not raw px).
-- **On fail:** check config.typography.semantics for typos; check writers/typography.ts alias emit.
-
-## L6 (z-index)
-
-### `tests/L6-z-index/values.test.ts`
-
-- **Governs:** plan-v2 §7 · Layer 6 Z-index
-- **Invariant:** Every --z-* value is a finite integer. Layer is mode-invariant (single :root block).
-- **On fail:** non-integer → browsers implementation-define behavior; adjust config to integer values or check for typos.
-
-## L7 (materials)
-
-### `tests/L7-materials/modes.test.ts`
-
-- **Governs:** plan-v2 §8 · Layer 7 Materials
-- **Invariant:** material_mode ∈ {solid, glass, backdrop}. Each level emits --materials-<name>-bg, --materials-<name>-filter, --materials-<name>-backdrop-filter. Default block uses default_mode; the two other modes live in [data-material-mode="…"] overrides.
-- **On fail:** if glass_blur / backdrop_blur references a blur step that does not exist in dimensions.fx_blur, the generator emits a warning pointing at the offending level.
