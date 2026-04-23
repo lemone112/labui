@@ -32,6 +32,7 @@ export function generateMaterials(
   const warnings: string[] = []
   const validBlur = new Set(Object.keys(dimensions.fx_blur))
   const validNeutralIds = new Set(primitive.neutrals.map((n) => n.id))
+  const validOpacityStops = new Set<number>(primitive.opacityStops)
 
   const levels = Object.entries(cfg.levels).map(([name, cell]) => {
     if (!validNeutralIds.has(cell.primitive)) {
@@ -53,6 +54,12 @@ export function generateMaterials(
     if (cell.glass_opacity < 0 || cell.glass_opacity > 100) {
       warnings.push(
         `materials.${name}: glass_opacity=${cell.glass_opacity} is outside [0,100].`,
+      )
+    } else if (!validOpacityStops.has(cell.glass_opacity)) {
+      warnings.push(
+        `materials.${name}: glass_opacity=${cell.glass_opacity} is not a defined opacity stop. ` +
+          `Writer emits var(--neutral-${cell.primitive}-a${cell.glass_opacity}) which ` +
+          `would not resolve. Valid stops: ${[...validOpacityStops].join(', ')}.`,
       )
     }
 
