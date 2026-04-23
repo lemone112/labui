@@ -302,8 +302,11 @@ function build(): HTMLElement {
         /* the DOM re-reads CSS vars automatically, nothing to rerender */
       }),
       legend(),
-      section('Primitives · neutrals (13 steps) & accents (11 families)', primitives()),
-      section('Backgrounds · 4 tiers', backgrounds()),
+      section(
+        'Primitives · neutrals (13 steps) & accents (11 families)',
+        primitives(),
+      ),
+      section('Backgrounds · 3 tiers', backgrounds()),
       section('Labels · 6 families × 4 tiers', labels()),
       section(
         'Tailwind utility vs raw var · should render identically',

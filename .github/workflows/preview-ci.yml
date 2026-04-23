@@ -50,10 +50,16 @@ jobs:
       - name: Build preview
         run: pnpm --filter @lab-ui/preview build
 
+      # PW_USE_PREVIEW=1 tells playwright.config.ts to boot
+      # `vite preview --port 4173` (serving the production bundle
+      # built in the previous step) instead of `vite dev`. R1-R4 now
+      # exercise the same artifact that would ship, not the dev-only
+      # transform pipeline.
       - name: Run R1-R4
         working-directory: apps/preview
         env:
           CI: '1'
+          PW_USE_PREVIEW: '1'
         run: pnpm exec playwright test
 
       - name: Upload Playwright report on failure

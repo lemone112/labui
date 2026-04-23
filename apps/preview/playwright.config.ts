@@ -8,9 +8,17 @@ import { defineConfig, devices } from '@playwright/test'
  * - R3 (contrast toggle)   — normal/ic swap changes IC-specific vars
  * - R4 (tailwind == raw)   — `.bg-accent` computed color equals `var(--accent)`
  *
- * Dev server is launched by Playwright (vite on :5173) unless one is
- * already listening. In CI we build once then `vite preview` on :4173.
+ * Two ways to drive the app:
+ *   - Local dev (default)   — Playwright launches `vite` on :5173.
+ *   - Against a prod build  — set `PW_USE_PREVIEW=1` (CI path). Playwright
+ *     runs `vite preview --port 4173` so R1–R4 exercise the same artifact
+ *     that would ship, not the dev-only transform pipeline.
  */
+const usePreview = !!process.env.PW_USE_PREVIEW
+const port = usePreview ? 4173 : 5173
+const baseURL =
+  process.env.PW_BASE_URL ?? `http://localhost:${port}`
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -18,7 +26,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: 'list',
   use: {
-    baseURL: process.env.PW_BASE_URL ?? 'http://localhost:5173',
+    baseURL,
     trace: 'retain-on-failure',
   },
   projects: [
@@ -30,8 +38,10 @@ export default defineConfig({
   webServer: process.env.PW_BASE_URL
     ? undefined
     : {
-        command: 'pnpm dev',
-        url: 'http://localhost:5173',
+        command: usePreview
+          ? 'pnpm exec vite preview --port 4173 --strictPort'
+          : 'pnpm dev',
+        url: baseURL,
         reuseExistingServer: !process.env.CI,
         stdout: 'pipe',
         stderr: 'pipe',
