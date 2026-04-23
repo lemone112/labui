@@ -76,6 +76,36 @@ export const config: TokensConfig = {
           0.287, 0.2405, 0.1966, 0.0,
         ],
       },
+      // Chroma ladder — transcribed from Figma neutral anchors via OKLCH.
+      // Normal mode holds ≈0.013 across mid-range (steps 2-8) then relaxes
+      // toward the achromatic endpoints. IC mode peaks narrower at step 7.
+      // See `tests/parity/fixtures/figma-anchors.json` for source.
+      C_ladder: {
+        normal: [
+          0.0, 0.0029, 0.0134, 0.0124, 0.0127, 0.0132, 0.0121, 0.0128, 0.012,
+          0.0071, 0.0037, 0.0038, 0.0041,
+        ],
+        ic: [
+          0.0, 0.0041, 0.0094, 0.0109, 0.0111, 0.0118, 0.0122, 0.0129, 0.0122,
+          0.009, 0.0057, 0.004, 0.0,
+        ],
+      },
+      // Hue ladder — Figma neutrals sit at ≈286° purple-violet, not the
+      // older 247° blue-violet the curve-based config carried. Step 0 (pure
+      // white) and step 12 (pure black) have undefined hue when C≈0; we
+      // pin them to 286° so the downstream OKLCH value is well-defined
+      // even if chroma rounds to non-zero. IC mid-range drifts cooler
+      // (≈280°) around steps 2-4 per Figma.
+      H_ladder: {
+        normal: [
+          286.0, 264.54, 286.14, 286.13, 286.09, 286.04, 286.01, 285.89,
+          285.78, 285.98, 286.14, 286.09, 285.97,
+        ],
+        ic: [
+          286.0, 271.37, 279.69, 280.46, 280.44, 286.06, 285.99, 285.87,
+          285.71, 285.82, 285.97, 286.03, 286.0,
+        ],
+      },
     },
 
     // ─── Accents (spines) ─────────────────────────────────────────────

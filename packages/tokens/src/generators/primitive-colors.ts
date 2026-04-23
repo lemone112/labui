@@ -71,17 +71,25 @@ function generateNeutrals(
   for (const contrast of CONTRASTS) {
     const endpoints =
       contrast === 'ic' ? n.endpoints_ic : n.endpoints_normal
-    const ladder = n.L_ladder?.[contrast]
-    if (ladder && ladder.length !== n.steps) {
-      throw new Error(
-        `neutrals.L_ladder.${contrast} has ${ladder.length} entries, expected ${n.steps}`,
-      )
+    const lLadder = n.L_ladder?.[contrast]
+    const cLadder = n.C_ladder?.[contrast]
+    const hLadder = n.H_ladder?.[contrast]
+    for (const [name, ladder] of [
+      ['L_ladder', lLadder],
+      ['C_ladder', cLadder],
+      ['H_ladder', hLadder],
+    ] as const) {
+      if (ladder && ladder.length !== n.steps) {
+        throw new Error(
+          `neutrals.${name}.${contrast} has ${ladder.length} entries, expected ${n.steps}`,
+        )
+      }
     }
     for (let step = 0; step < n.steps; step++) {
       const t = n.steps > 1 ? step / (n.steps - 1) : 0
       let L: number
-      if (ladder) {
-        L = ladder[step]
+      if (lLadder) {
+        L = lLadder[step]
       } else if (n.lightness_curve === 'linear') {
         L = endpoints.L0 + (endpoints.L12 - endpoints.L0) * t
       } else {
@@ -95,18 +103,29 @@ function generateNeutrals(
         const k = contrast === 'ic' ? quinticSmootherstep(t) : smootherstep(t)
         L = endpoints.L0 + (endpoints.L12 - endpoints.L0) * k
       }
-      const C = neutralChromaAt(n.chroma_curve, step, n.steps)
-      const H = driftedHue(
-        n.hue_drift.start_H,
-        n.hue_drift.end_H,
-        step,
-        n.steps,
-        n.hue_drift.easing,
-      )
+      const C = cLadder
+        ? cLadder[step]
+        : neutralChromaAt(n.chroma_curve, step, n.steps)
+      const H = hLadder
+        ? hLadder[step]
+        : driftedHue(
+            n.hue_drift.start_H,
+            n.hue_drift.end_H,
+            step,
+            n.steps,
+            n.hue_drift.easing,
+          )
       physical[contrast].push({ L, C, H })
     }
   }
 
+  // When explicit ladders are configured the neutrals are already
+  // calibrated per mode (via pivot-mirror of the physical ladder), so
+  // layering perceptual compensation on top would double-adjust and
+  // drift away from the reference palette. Keep comp for the curve-
+  // driven fallback path where it still helps uniformity between
+  // neutrals and accents.
+  const skipComp = Boolean(n.L_ladder || n.C_ladder || n.H_ladder)
   for (let step = 0; step < n.steps; step++) {
     const values: Partial<Record<OutputKey, OklchValue>> = {}
     for (const mode of BASE_MODES) {
@@ -114,10 +133,9 @@ function generateNeutrals(
         const key = outputKey(mode, contrast)
         const physIdx = mode === 'dark' ? n.steps - 1 - step : step
         let v = physical[contrast][physIdx]
-        // Neutrals are achromatic-ish — perceptual comp effect is minimal,
-        // but we apply it uniformly so label-on-neutral and label-on-accent
-        // participate in the same pipeline.
-        v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        if (!skipComp) {
+          v = applyPerceptualComp(v, mode, colors.perceptual_comp)
+        }
         v = fitGamut(v, colors.gamut)
         values[key] = roundOklch(v)
       }

@@ -1,21 +1,29 @@
 /**
- * Pivot-mirror invariant — neutral[i] in light == neutral[steps-1-i] in dark
- * (modulo perceptual compensation shift).
+ * Pivot-mirror invariant — neutral[i] in light == neutral[steps-1-i] in dark.
  *
  * @layer L3 (primitive)
  * @governs plan-v2 §4.1 · Neutrals
  * @invariant Neutral scale is generated once; dark mode is a pivot-mirror
- *            (index reverse) of light mode physical L values.
+ *            (index reverse) of light mode physical L values. When the
+ *            neutrals are fully ladder-driven (`L/C/H_ladder` set) the
+ *            mirror is exact because perceptual-comp is bypassed — see
+ *            `generatePrimitiveColors`. Otherwise the `-0.02` dark HK
+ *            shift applies and is subtracted before comparison.
  * @why Pivot-mirror gives consistent perceptual stepping on both modes
  *      without a second ladder to maintain.
- * @on-fail inspect generatePrimitiveColors neutral loop. The comp shift
- *          (-0.02 in dark) is expected; reject only larger deltas.
+ * @on-fail inspect generatePrimitiveColors neutral loop. Check whether
+ *          ladder skip-comp path and curve-path still produce the same
+ *          physical L reference.
  */
 
 import { describe, expect, test } from 'bun:test'
 import { primitive, config } from '../_helpers/fixtures'
 
-const HK_SHIFT = config.colors.perceptual_comp.dark.lightness_shift // -0.02
+const n = config.colors.neutrals
+const LADDER_DRIVEN = Boolean(n.L_ladder || n.C_ladder || n.H_ladder)
+const HK_SHIFT = LADDER_DRIVEN
+  ? 0
+  : config.colors.perceptual_comp.dark.lightness_shift
 
 describe('Neutral · pivot-mirror', () => {
   const steps = primitive.neutrals.length

@@ -12,7 +12,7 @@
  */
 
 import { describe, expect, test } from 'bun:test'
-import { primitive, semantic, css } from './_helpers/fixtures'
+import { primitive, semantic, css, config } from './_helpers/fixtures'
 
 describe('Primitive snapshot', () => {
   test('neutral scale has 13 steps', () => {
@@ -42,8 +42,15 @@ describe('Primitive snapshot', () => {
   test('pivot mirror: N0 dark == N12 light (physical L), within comp shift', () => {
     const n0Dark = primitive.neutrals[0].values['dark/normal']
     const n12Light = primitive.neutrals[12].values['light/normal']
-    // dark applies -0.02 HK shift → n0Dark.L ≈ n12Light.L - 0.02
-    expect(Math.abs(n0Dark.L - (n12Light.L - 0.02))).toBeLessThan(0.01)
+    // Ladder-driven neutrals bypass perceptual-comp (see
+    // `generatePrimitiveColors`) so the mirror is exact; curve-driven
+    // neutrals apply the dark HK shift.
+    const n = config.colors.neutrals
+    const ladderDriven = Boolean(n.L_ladder || n.C_ladder || n.H_ladder)
+    const hkShift = ladderDriven
+      ? 0
+      : config.colors.perceptual_comp.dark.lightness_shift
+    expect(Math.abs(n0Dark.L - (n12Light.L - hkShift))).toBeLessThan(0.01)
   })
 
   test('11 accents are present', () => {

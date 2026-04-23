@@ -184,15 +184,34 @@ export interface NeutralsConfig {
   /**
    * Optional explicit per-step physical L ladder overriding the curve +
    * endpoints. When set, `endpoints_*` and `lightness_curve` are ignored
-   * for lightness (chroma + hue still come from their curves). Arrays
-   * are physical (step 0 = lightest, step `steps-1` = darkest); dark
-   * modes mirror via `physIdx = steps-1-step` just like the curve path.
+   * for lightness (chroma + hue still come from their curves unless
+   * overridden by {@link C_ladder} / {@link H_ladder}). Arrays are
+   * physical (step 0 = lightest, step `steps-1` = darkest); dark modes
+   * mirror via `physIdx = steps-1-step` just like the curve path.
    *
    * Used to calibrate directly against a reference palette (e.g. the
    * Figma / Apple system-gray ladder) where no closed-form curve fits
    * the asymmetric hand-tuned anchors within ΔE2000 ≤ 2.
    */
   L_ladder?: { normal: number[]; ic: number[] }
+  /**
+   * Optional explicit per-step chroma ladder, same shape as
+   * {@link L_ladder}. When set, overrides {@link chroma_curve} for the
+   * given contrast. Follow-up to `L_ladder` once lightness residuals are
+   * exhausted — Figma chroma is asymmetric between IC and normal and
+   * peaks broader than a single Gaussian can fit. Leave undefined to
+   * keep the parametric curve.
+   */
+  C_ladder?: { normal: number[]; ic: number[] }
+  /**
+   * Optional explicit per-step hue ladder, same shape as
+   * {@link L_ladder}. When set, overrides {@link hue_drift} for the
+   * given contrast. Figma neutral hue is near-constant (~286°) across
+   * mid-range for normal, drifts to ~280° in IC mid-range. Pure endpoints
+   * (C≈0) should carry a plausible hue anyway so downstream code never
+   * sees NaN — use the mid-range value as the sentinel.
+   */
+  H_ladder?: { normal: number[]; ic: number[] }
 }
 
 // ─── Config: accents (spines) ───────────────────────────────────────────
