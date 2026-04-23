@@ -182,9 +182,15 @@ function generateAccents(
       for (const contrast of CONTRASTS) {
         const key = outputKey(mode, contrast)
         let v: OklchValue
-        if (def.primitive_per_mode) {
+        const perOutputPin = def.primitive_per_output?.[key]
+        if (perOutputPin) {
+          // Pinned per-output primitive (4-sector, Figma-driven):
+          // honor the IC variant as a distinct primitive value. Takes
+          // precedence over the mode-only shorthand below.
+          v = perOutputPin
+        } else if (def.primitive_per_mode) {
           // Pinned per-mode primitive: same value for normal and ic
-          // contrast (IC lives on the semantic tier, not the primitive).
+          // contrast (IC collapses onto `mode` for this accent).
           v = def.primitive_per_mode[mode]
         } else {
           v = { L: anchor.L, C: anchorC, H: anchor.H }

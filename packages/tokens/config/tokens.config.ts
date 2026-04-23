@@ -139,13 +139,19 @@ export const config: TokensConfig = {
     // Spine: drives tier-aware semantic output (APCA-targeted labels,
     //   backgrounds, …). Kept from the first-draft calibration; touch
     //   only if tier contrast targets regress.
-    // primitive_per_mode: pins the `--{accent}` primitive var directly
-    //   against the Figma light/normal + dark/normal anchor HEX. IC
-    //   sectors are NOT calibrated here — primitive is a mode-only
-    //   axis (plan §4.2); IC lives on the semantic tier (§5.1).
+    // primitive_per_output: pins the `--{accent}` primitive var
+    //   directly against Figma's 4-sector anchor for each of
+    //   light/normal, light/ic, dark/ic, dark/normal. When set, it
+    //   bypasses spine sampling AND perceptual-comp for that accent.
+    //   Figma's Color Guides draw each accent as 4 distinct swatches
+    //   (e.g. Yellow light/ic is a brownish #B25000, far from the
+    //   #FFD000 light/normal) — honouring that requires primitive to
+    //   be a full (mode × contrast) axis, not mode-only.
+    // primitive_per_mode: legacy 2-sector shorthand. Still honoured
+    //   when primitive_per_output is absent.
     accents: {
       // `brand` shares blue's spine (so tier-aware semantics line up) but
-      // pins its own primitive per mode against Figma. Figma shows
+      // pins its own primitive per output against Figma. Figma shows
       // brand ≠ blue at the primitive layer (#007AFF vs #3E87FF), even
       // though they share a hue family.
       brand: {
@@ -163,9 +169,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
-        primitive_per_mode: {
-          light: { L: 0.6028, C: 0.2177, H: 257.42 }, // #007AFF
-          dark: { L: 0.6612, C: 0.1806, H: 259.65 }, // #4A8FFF
+        primitive_per_output: {
+          'light/normal': { L: 0.603, C: 0.218, H: 257.4 }, // #007AFF
+          'light/ic':     { L: 0.464, C: 0.242, H: 263.3 }, // #0040DD
+          'dark/ic':      { L: 0.685, C: 0.17,  H: 253.0 }, // #409CFF
+          'dark/normal':  { L: 0.661, C: 0.181, H: 259.6 }, // #4A8FFF
         },
       },
 
@@ -184,9 +192,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
-        primitive_per_mode: {
-          light: { L: 0.6405, C: 0.1931, H: 259.89 }, // #3E87FF
-          dark: { L: 0.6805, C: 0.169, H: 259.79 }, // #5696FF
+        primitive_per_output: {
+          'light/normal': { L: 0.64,  C: 0.193, H: 259.9 }, // #3E87FF
+          'light/ic':     { L: 0.479, C: 0.207, H: 261.0 }, // #0050CF
+          'dark/ic':      { L: 0.801, C: 0.101, H: 257.8 }, // #95C0FF
+          'dark/normal':  { L: 0.681, C: 0.169, H: 259.8 }, // #5696FF
         },
       },
 
@@ -204,9 +214,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.12,
-        primitive_per_mode: {
-          light: { L: 0.6542, C: 0.2321, H: 28.66 }, // #FF3B30
-          dark: { L: 0.6544, C: 0.2317, H: 26.47 }, // #FF3A3A
+        primitive_per_output: {
+          'light/normal': { L: 0.654, C: 0.232, H: 28.7 }, // #FF3B30
+          'light/ic':     { L: 0.553, C: 0.225, H: 27.3 }, // #D70015
+          'dark/ic':      { L: 0.698, C: 0.193, H: 23.5 }, // #FF6161
+          'dark/normal':  { L: 0.654, C: 0.232, H: 26.5 }, // #FF3A3A
         },
       },
 
@@ -224,9 +236,11 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.15,
-        primitive_per_mode: {
-          light: { L: 0.7857, C: 0.1717, H: 68.61 }, // #FFA100
-          dark: { L: 0.7571, C: 0.1764, H: 59.82 }, // #FF9008
+        primitive_per_output: {
+          'light/normal': { L: 0.786, C: 0.172, H: 68.6 }, // #FFA100
+          'light/ic':     { L: 0.552, C: 0.192, H: 35.3 }, // #C93400
+          'dark/ic':      { L: 0.802, C: 0.153, H: 67.2 }, // #FFA940
+          'dark/normal':  { L: 0.757, C: 0.176, H: 59.8 }, // #FF9008
         },
       },
 
@@ -247,9 +261,15 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.25,
-        primitive_per_mode: {
-          light: { L: 0.873, C: 0.1786, H: 92.23 }, // #FFD000
-          dark: { L: 0.8849, C: 0.1805, H: 94.78 }, // #FFD60A
+        primitive_per_output: {
+          'light/normal': { L: 0.873, C: 0.179, H: 92.2 }, // #FFD000
+          // Figma light/ic yellow is a *brown* (#B25000, H≈49) —
+          // not desaturated yellow. Honouring Figma here makes the
+          // primitive visibly shift colour family under IC, which
+          // is intentional in the reference palette.
+          'light/ic':     { L: 0.547, C: 0.147, H: 48.9 }, // #B25000
+          'dark/ic':      { L: 0.882, C: 0.173, H: 93.2 }, // #FFD426
+          'dark/normal':  { L: 0.885, C: 0.181, H: 94.8 }, // #FFD60A
         },
       },
 
@@ -267,9 +287,11 @@ export const config: TokensConfig = {
           floor: 0.05,
         },
         chroma_boost_per_dL: 0.12,
-        primitive_per_mode: {
-          light: { L: 0.7303, C: 0.1944, H: 147.44 }, // #34C759
-          dark: { L: 0.7556, C: 0.2082, H: 146.98 }, // #30D158
+        primitive_per_output: {
+          'light/normal': { L: 0.73,  C: 0.194, H: 147.4 }, // #34C759
+          'light/ic':     { L: 0.558, C: 0.146, H: 147.5 }, // #248A3D
+          'dark/ic':      { L: 0.782, C: 0.218, H: 146.9 }, // #30DB5B
+          'dark/normal':  { L: 0.756, C: 0.208, H: 147.0 }, // #30D158
         },
       },
 
@@ -287,11 +309,13 @@ export const config: TokensConfig = {
           floor: 0.04,
         },
         chroma_boost_per_dL: 0.12,
-        primitive_per_mode: {
+        primitive_per_output: {
           // Figma labels this 'Teal' but the HEX is Apple's system-teal
           // which sits at H≈231 (sky-blue), not a traditional teal.
-          light: { L: 0.7886, C: 0.1225, H: 230.83 }, // #5AC8FA
-          dark: { L: 0.8166, C: 0.1185, H: 227.75 }, // #64D2FF
+          'light/normal': { L: 0.789, C: 0.122, H: 230.8 }, // #5AC8FA
+          'light/ic':     { L: 0.521, C: 0.116, H: 238.4 }, // #0071A4
+          'dark/ic':      { L: 0.832, C: 0.111, H: 225.9 }, // #70D7FF
+          'dark/normal':  { L: 0.817, C: 0.119, H: 227.7 }, // #64D2FF
         },
       },
 
@@ -309,9 +333,11 @@ export const config: TokensConfig = {
           floor: 0.04,
         },
         chroma_boost_per_dL: 0.15,
-        primitive_per_mode: {
-          light: { L: 0.7481, C: 0.1296, H: 189.03 }, // #00C7BE
-          dark: { L: 0.8514, C: 0.1149, H: 192.44 }, // #63E6E2
+        primitive_per_output: {
+          'light/normal': { L: 0.748, C: 0.13,  H: 189.0 }, // #00C7BE
+          'light/ic':     { L: 0.545, C: 0.092, H: 189.0 }, // #0C817B
+          'dark/ic':      { L: 0.868, C: 0.113, H: 192.5 }, // #6CEBE7
+          'dark/normal':  { L: 0.851, C: 0.115, H: 192.4 }, // #63E6E2
         },
       },
 
@@ -329,9 +355,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
-        primitive_per_mode: {
-          light: { L: 0.5295, C: 0.191, H: 278.34 }, // #5856D6
-          dark: { L: 0.5564, C: 0.2032, H: 278.15 }, // #5E5CE6
+        primitive_per_output: {
+          'light/normal': { L: 0.529, C: 0.191, H: 278.3 }, // #5856D6
+          'light/ic':     { L: 0.404, C: 0.173, H: 276.2 }, // #3634A3
+          'dark/ic':      { L: 0.648, C: 0.192, H: 280.6 }, // #7D7AFF
+          'dark/normal':  { L: 0.556, C: 0.203, H: 278.1 }, // #5E5CE6
         },
       },
 
@@ -349,9 +377,11 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
-        primitive_per_mode: {
-          light: { L: 0.6149, C: 0.2129, H: 312.41 }, // #AF52DE
-          dark: { L: 0.656, C: 0.2274, H: 312.42 }, // #BF5AF2
+        primitive_per_output: {
+          'light/normal': { L: 0.615, C: 0.213, H: 312.4 }, // #AF52DE
+          'light/ic':     { L: 0.519, C: 0.166, H: 313.0 }, // #8944AB
+          'dark/ic':      { L: 0.767, C: 0.172, H: 313.8 }, // #DA8FFF
+          'dark/normal':  { L: 0.656, C: 0.227, H: 312.4 }, // #BF5AF2
         },
       },
 
@@ -369,10 +399,13 @@ export const config: TokensConfig = {
           floor: 0.06,
         },
         chroma_boost_per_dL: 0.1,
-        primitive_per_mode: {
-          // Figma has pink identical in light/normal and dark/normal.
-          light: { L: 0.6497, C: 0.2383, H: 17.9 }, // #FF2D55
-          dark: { L: 0.6497, C: 0.2383, H: 17.9 }, // #FF2D55
+        primitive_per_output: {
+          // Figma has pink identical in light/normal and dark/normal;
+          // IC sectors shift to #D30F45 / #FF6482 respectively.
+          'light/normal': { L: 0.65,  C: 0.238, H: 17.9 }, // #FF2D55
+          'light/ic':     { L: 0.554, C: 0.216, H: 16.1 }, // #D30F45
+          'dark/ic':      { L: 0.708, C: 0.189, H: 11.6 }, // #FF6482
+          'dark/normal':  { L: 0.65,  C: 0.238, H: 17.9 }, // #FF2D55
         },
       },
     },
