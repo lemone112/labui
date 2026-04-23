@@ -38,6 +38,27 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Why:** If generation explodes, dev loop suffers and CI queues back up.
 - **On fail:** profile with Bun.nanoseconds(); usual culprit = apca_inverse with too many iterations (max 24), or excessive spine sampling.
 
+### `tests/guards/size-budget.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G5 dist size budget
+- **Invariant:** `dist/tokens.css` gzipped stays under 30 KB. ESM bundle (`dist/index.js`) under 10 KB gzipped; type declarations (`dist/index.d.ts`) under 6 KB gzipped. Budgets are deliberately slightly above the current baseline so routine edits are free but runaway growth is caught.
+- **Why:** If the emit layer balloons without anyone noticing, downstream consumers (Tailwind preset, app bundles) pay the cost silently. Guarding here forces intentional conversations.
+- **On fail:** (a) new tokens pushed an output past budget → raise the budget here with a one-line rationale; (b) emit regressed (duplicated rules, verbose selectors, lost deduping) → investigate the writer that grew fastest.
+
+### `tests/guards/snapshot-css.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G1 snapshot CSS stable
+- **Invariant:** `dist/tokens.css` matches the committed snapshot byte-for-byte. Routine edits that touch the emit layer surface here as an obvious diff in CI.
+- **Why:** Without a full-output lock, small writer tweaks (e.g. a stray space, a reordered family) slip through and break downstream consumers' own snapshot tests silently.
+- **On fail:** (a) intentional change → rerun with `bun test -u` to update the snapshot, and note the user-visible change in the PR body; (b) unintended → bisect recent commits to the emit layer (writers/*, generators/*).
+
+### `tests/guards/snapshot-esm.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G2 snapshot ESM stable
+- **Invariant:** `dist/index.js` and `dist/index.d.ts` match their committed snapshots byte-for-byte.
+- **Why:** The ESM + DTS pair is the JS/TS consumer API surface. Silent drift here breaks type inference in downstream apps and Tailwind presets that import token maps directly.
+- **On fail:** (a) intentional change (new token, renamed export) → rerun with `bun test -u` and document the API change in the PR; (b) unintended → bisect writers/esm.ts or writers/dts.ts.
+
 ### `tests/guards/snapshot-lock.test.ts`
 
 - **Governs:** plan-v2 §9 · Invariants
