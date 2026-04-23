@@ -129,9 +129,9 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L3-primitives/neutral-mirror.test.ts`
 
 - **Governs:** plan-v2 §4.1 · Neutrals
-- **Invariant:** Neutral scale is generated once; dark mode is a pivot-mirror (index reverse) of light mode physical L values.
+- **Invariant:** Neutral scale is generated once; dark mode is a pivot-mirror (index reverse) of light mode physical L values. When the neutrals are fully ladder-driven (`L/C/H_ladder` set) the mirror is exact because perceptual-comp is bypassed — see `generatePrimitiveColors`. Otherwise the `-0.02` dark HK shift applies and is subtracted before comparison.
 - **Why:** Pivot-mirror gives consistent perceptual stepping on both modes without a second ladder to maintain.
-- **On fail:** inspect generatePrimitiveColors neutral loop. The comp shift (-0.02 in dark) is expected; reject only larger deltas.
+- **On fail:** inspect generatePrimitiveColors neutral loop. Check whether ladder skip-comp path and curve-path still produce the same physical L reference.
 
 ### `tests/L3-primitives/opacity-primitive.test.ts`
 
@@ -282,5 +282,5 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/parity/neutral-anchors.test.ts`
 
 - **Governs:** plan/test-strategy.md §10 Parity · PT2 (plan target ΔE ≤ 2)
-- **Invariant:** 13 neutral steps × 4 modes stay within the drift-guard threshold of the Figma Color Guides swatch sectors. The full delta table is logged on every run; shrinking the threshold down to the plan target (≤ 2) is tracked as the dedicated neutral-spine calibration PR driven off this data.
-- **On fail:** Neutral curve in `config.colors.neutrals` drifted from the Figma reference, OR the white/black seal offsets were re-tuned. Inspect the printed table to identify which step/mode regressed; update the config anchor, regenerate, rerun. * Drift-guard rationale: today the neutral spine is calibrated for APCA label contrast, not Figma parity — current max ΔE is ≈ 16 (neutral-8 dark/ic). The guard is set slightly above that to catch regressions without failing on known pre-existing deltas.
+- **Invariant:** 13 neutral steps × 4 modes match Figma within ΔE2000 ≤ 1. Threshold is tighter than the plan target because the L/C/H ladders in `neutrals` are pinned directly against the Figma fixture — any non-zero ΔE signals either a rounding regression, a gamut-clamp change, or a Figma fixture update.
+- **On fail:** Either a rounding / perceptual-comp / gamut path re-entered the neutrals pipeline, or the fixture was updated. Inspect the printed delta table to identify which step/mode regressed and adjust either the generator or the ladder in `config.colors.neutrals.{L,C,H}_ladder`.
