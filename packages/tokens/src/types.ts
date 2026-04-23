@@ -604,9 +604,12 @@ export interface TokensConfig {
    */
   schema_version: SchemaVersion
   /**
-   * Deprecated token paths, keyed by the old cell path (e.g.
-   * `labels.accent.primary`). Emitted to `dist/` with a warning
-   * comment until `removed_in`; absent after.
+   * Deprecated CSS custom properties, keyed by the literal emitted
+   * CSS variable name (e.g. `--label-accent-primary`) — NOT a dotted
+   * config path. See {@link DeprecationEntry} for the full rationale
+   * (the semantic tree uses hand-crafted abbreviations that can't be
+   * derived mechanically). Emitted to `dist/` with a warning comment
+   * until `removed_in`; absent after.
    */
   deprecated: DeprecationsConfig
   colors: ColorsConfig
