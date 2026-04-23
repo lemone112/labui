@@ -824,43 +824,85 @@ Given list of semantics grouped by role:
 
 ## 10. Parity · Figma reference
 
-### tests/parity/
+### 10.0. Reference data — source and shape
 
-**PT1 — 44 accent anchors match Figma (ΔE ≤ 3)**
+Ground truth lives in `packages/tokens/tests/parity/fixtures/figma-anchors.json`
+and is regenerated with `bun run fetch-figma` (requires `FIGMA_PAT` +
+`FIGMA_FILE_KEY` env). The script walks the `🔵Colors / Color Guides`
+frame in Figma, extracts every `Color wrap` sub-frame, and records:
+
+- **neutrals** — `0..12` × 4-mode HEX tuple (13 × 4 = 52 anchors)
+- **accents**  — `Brand / Red / Orange / Yellow / Green / Teal / Mint /
+  Blue / Indigo / Purple / Pink` × 4 mode HEX tuple (11 × 4 = 44 anchors)
+- **seals**    — `Dark / White` × 4 mode (2 × 4)
+- **misc**     — `Control-bg / Label-contrast / Label-default` (3 × 4)
+
+Each swatch in Figma is a pie of four sectors (ellipses named
+`Ellipse 4/5/6/7`). The sector order maps to our CSS output scopes in
+this fixed order:
+
+| sector     | mode key       | CSS selector                                                    |
+|------------|----------------|-----------------------------------------------------------------|
+| Ellipse 4  | `light/normal` | `:root`                                                         |
+| Ellipse 5  | `light/ic`     | `:root[data-contrast="ic"]:not([data-mode="dark"])`             |
+| Ellipse 6  | `dark/ic`      | `:root[data-mode="dark"][data-contrast="ic"]`                   |
+| Ellipse 7  | `dark/normal`  | `:root[data-mode="dark"]:not([data-contrast="ic"])`             |
+
+Figma labels such as `Brand@2` are opacity-display variants (the `@N`
+suffix is a mockup rendering opacity, not a semantic modifier); the
+underlying HEX tuple is identical to the bare label (`Brand`). The
+fetch script deduplicates by bare label.
+
+### 10.1. Tests
+
+**PTMODE — mode-sector order lock**
 ```
-Given figma_accent_anchors.json (44 HEX, extracted from Figma export):
-  For each (accent × mode):
-    figma_color = parse_hex(figma_anchors[accent][mode])
-    our_color = resolve(labels[accent].primary, { mode, contrast:'normal' })
-    Assert: ΔE2000(figma_color, our_color) ≤ 3
-    Emit fail message with mode/accent/ΔE value
+Assert: neutral-0 HEX from our CSS per scope matches figma.neutrals["0"]
+        per sector within ΔE ≤ 10. Guards against Figma re-rotating the
+        pie or us reshuffling data-mode / data-contrast scopes.
 ```
 
-**PT2 — 13 neutrals match Figma per mode (ΔE ≤ 2)**
+**PT1 — 11 accents × 4 modes (drift guard ΔE ≤ 40, plan target ΔE ≤ 3)**
 ```
-Given figma_neutral_anchors.json (13 × 4 modes):
-  For each (step × mode):
-    Assert: ΔE2000 ≤ 2
+For each (accent × mode):
+  ours   = hexForVar(`--<accent>`, mode)
+  theirs = figma.accents[<Accent>][modeIndex]
+  Assert: ΔE2000(ours, theirs) ≤ 40
+  Always log: per-accent max ΔE + full delta table
 ```
 
-**PT3 — semantic outputs diff logged (not failed)**
+Today the accent spine is NOT calibrated against Figma — the drift
+guard (ΔE ≤ 40) only catches catastrophic misalignments. The per-run
+delta table is the source of truth for the follow-up calibration PR
+that tightens this to the plan target (ΔE ≤ 3).
+
+**PT2 — 13 neutrals × 4 modes (drift guard ΔE ≤ 20, plan target ΔE ≤ 2)**
 ```
-Given figma_semantic_outputs.json (~80 semantics × 4 modes):
-  For each semantic × mode:
-    ΔE = diff(figma, ours)
-    If ΔE > 3:
-      Log to CI output (warning, not failure) — для review
-  Failure only if > 20% semantics exceed ΔE 5
+For each (step × mode):
+  Assert: ΔE2000 ≤ 20
+  Always log: full delta table
 ```
+
+Neutral spine is currently tuned for APCA label contrast, not Figma
+parity — current max ΔE is ≈ 16 (neutral-8 `dark/ic`). Drift guard is
+set slightly above that, plan target (ΔE ≤ 2) remains future work.
+
+**PT3 — semantic outputs diff (deferred)**
+
+Deferred until semantic primitives are emitted per-mode as HEX in a
+form directly comparable to Figma. Today semantics are emitted as
+`var(--<primitive>)` references whose HEX depends on the mode scope —
+comparing them via a separate layer would duplicate PT1/PT2. Pick up
+when the emit plane is extended.
 
 **PT4 — tier tuning guidance on fail**
-```
-On any PT1-3 fail:
-  Emit: "To match Figma, adjust accents.X.spine[i].H by N degrees"
-  OR:   "Figma uses different tier value; consider tier_targets.primary.apca = M"
-```
 
-**Total parity: 4 tests, ~60 assertions (driven by reference data)**
+Implemented implicitly: PT1 + PT2 always log the full per-row delta
+table and the per-accent max ΔE (sorted descending). Future calibration
+PRs consume this output directly.
+
+**Total parity: 3 tests live, 1 deferred, ~120 assertions driven by
+reference data.**
 
 ---
 

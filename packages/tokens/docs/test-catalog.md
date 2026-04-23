@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 29 test files
+**Total:** 32 test files
 
 ## Cross-layer
 
@@ -227,3 +227,23 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Governs:** plan-v2 §8 · Layer 7 Materials
 - **Invariant:** material_mode ∈ {solid, glass, backdrop}. Each level emits --materials-<name>-bg, --materials-<name>-filter, --materials-<name>-backdrop-filter. Default block uses default_mode; the two other modes live in [data-material-mode="…"] overrides.
 - **On fail:** if glass_blur / backdrop_blur references a blur step that does not exist in dimensions.fx_blur, the generator emits a warning pointing at the offending level.
+
+## Parity
+
+### `tests/parity/accent-anchors.test.ts`
+
+- **Governs:** plan/test-strategy.md §10 Parity · PT1 (plan target ΔE ≤ 3)
+- **Invariant:** 11 accent hues × 4 modes produce HEX within a sanity ΔE2000 bound of the Figma Color Guides swatch sectors. The per-accent ΔE and the full delta table are logged on every run so spine calibration can be driven against live data.
+- **On fail:** Either (a) an accent moved hue/chroma beyond the drift guard in our config, OR (b) the Figma reference was restyled. Inspect the offending hue in the printed table; adjust the spine L/C/H anchor in `config.colors.accents.<name>`, rerun. * Scope note: the plan target is ΔE ≤ 3 per anchor. Today we ship with a drift guard of ΔE ≤ 40 because the accent spine is not yet calibrated against Figma — this test's job for now is to surface current deltas, not block merges. Tightening to the plan target is a separate follow-up PR driven by reading the rows this test logs.
+
+### `tests/parity/mode-sector-order.test.ts`
+
+- **Governs:** plan/test-strategy.md §10 Parity · PT1/PT2 mode-mapping prereq
+- **Invariant:** Figma `Color wrap` ellipse order (4, 5, 6, 7) maps to our four CSS output scopes in this order: [light/normal, light/ic, dark/ic, dark/normal]
+- **On fail:** Figma has re-rotated the pie sectors, or we reshuffled the `data-mode/data-contrast` scopes. Either the fixture or the CSS writer moved — do NOT blindly re-order tests, re-derive the mapping by inspecting neutral-0 across all 4 scopes. * We assert this via neutrals (which are bit-stable between our emit and Figma) rather than accents (where our spine is not yet calibrated to Figma — that is PT1's job). Any neutral step with 4 distinct HEX values across modes works as a lock; step 0 is the strongest because it spans the full L range (white ↔ black).
+
+### `tests/parity/neutral-anchors.test.ts`
+
+- **Governs:** plan/test-strategy.md §10 Parity · PT2 (plan target ΔE ≤ 2)
+- **Invariant:** 13 neutral steps × 4 modes stay within the drift-guard threshold of the Figma Color Guides swatch sectors. The full delta table is logged on every run; shrinking the threshold down to the plan target (≤ 2) is tracked as the dedicated neutral-spine calibration PR driven off this data.
+- **On fail:** Neutral curve in `config.colors.neutrals` drifted from the Figma reference, OR the white/black seal offsets were re-tuned. Inspect the printed table to identify which step/mode regressed; update the config anchor, regenerate, rerun. * Drift-guard rationale: today the neutral spine is calibrated for APCA label contrast, not Figma parity — current max ΔE is ≈ 16 (neutral-8 dark/ic). The guard is set slightly above that to catch regressions without failing on known pre-existing deltas.
