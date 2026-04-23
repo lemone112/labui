@@ -59,7 +59,23 @@ export const config: TokensConfig = {
         end_H: 247,
         easing: 'linear',
       },
-      lightness_curve: 'linear',
+      lightness_curve: 'apple',
+      // Calibrated against Figma Lab UI Color Guides (13 neutrals × 4
+      // modes). Values are OKLCH L for the physical ladder in each
+      // contrast; dark modes mirror automatically via `physIdx = steps-1-step`.
+      // When this ladder is present the closed-form curve above is
+      // ignored for L (chroma + hue still come from `chroma_curve` /
+      // `hue_drift`). Drops PT2 max ΔE2000 from 16.3 (linear) to ~2.
+      L_ladder: {
+        normal: [
+          1.0, 0.9789, 0.943, 0.851, 0.76, 0.6661, 0.5753, 0.4668, 0.3588,
+          0.3107, 0.2611, 0.2273, 0.1739,
+        ],
+        ic: [
+          1.0, 0.9762, 0.9564, 0.8899, 0.825, 0.636, 0.5548, 0.4488, 0.3317,
+          0.287, 0.2405, 0.1966, 0.0,
+        ],
+      },
     },
 
     // ─── Accents (spines) ─────────────────────────────────────────────

@@ -181,6 +181,18 @@ export interface NeutralsConfig {
    * biased so mid-values feel balanced perceptually.
    */
   lightness_curve: 'linear' | 'apple'
+  /**
+   * Optional explicit per-step physical L ladder overriding the curve +
+   * endpoints. When set, `endpoints_*` and `lightness_curve` are ignored
+   * for lightness (chroma + hue still come from their curves). Arrays
+   * are physical (step 0 = lightest, step `steps-1` = darkest); dark
+   * modes mirror via `physIdx = steps-1-step` just like the curve path.
+   *
+   * Used to calibrate directly against a reference palette (e.g. the
+   * Figma / Apple system-gray ladder) where no closed-form curve fits
+   * the asymmetric hand-tuned anchors within ΔE2000 ≤ 2.
+   */
+  L_ladder?: { normal: number[]; ic: number[] }
 }
 
 // ─── Config: accents (spines) ───────────────────────────────────────────

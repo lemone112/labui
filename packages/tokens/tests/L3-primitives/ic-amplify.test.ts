@@ -21,19 +21,17 @@ describe('IC amplification', () => {
   })
 
   test('neutral endpoints match config', () => {
+    const n = config.colors.neutrals
     const n0 = primitive.neutrals[0]
     const n12 = primitive.neutrals[12]
-    expect(n0.values['light/normal'].L).toBeCloseTo(
-      config.colors.neutrals.endpoints_normal.L0,
-      2,
-    )
-    expect(n12.values['light/normal'].L).toBeCloseTo(
-      config.colors.neutrals.endpoints_normal.L12,
-      2,
-    )
-    expect(n12.values['light/ic'].L).toBeCloseTo(
-      config.colors.neutrals.endpoints_ic.L12,
-      2,
-    )
+    // Prefer `L_ladder` when present (Figma-calibrated), otherwise
+    // fall back to the closed-form `endpoints_*` anchors.
+    const L0Normal = n.L_ladder?.normal[0] ?? n.endpoints_normal.L0
+    const L12Normal =
+      n.L_ladder?.normal[n.steps - 1] ?? n.endpoints_normal.L12
+    const L12Ic = n.L_ladder?.ic[n.steps - 1] ?? n.endpoints_ic.L12
+    expect(n0.values['light/normal'].L).toBeCloseTo(L0Normal, 2)
+    expect(n12.values['light/normal'].L).toBeCloseTo(L12Normal, 2)
+    expect(n12.values['light/ic'].L).toBeCloseTo(L12Ic, 2)
   })
 })
