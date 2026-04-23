@@ -5,11 +5,18 @@
  * to the `var(--…)` string. Tree-shakable via named exports.
  */
 
-import type { PrimitiveColorSet, SemanticColorSet } from '../types'
+import type {
+  PrimitiveColorSet,
+  ResolvedDimensions,
+  ResolvedUnits,
+  SemanticColorSet,
+} from '../types'
 
 export function writeESM(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
+  units?: ResolvedUnits,
+  dimensions?: ResolvedDimensions,
 ): string {
   const lines: string[] = ['// Lab UI — generated ESM token barrel. DO NOT EDIT.\n']
 
@@ -36,6 +43,38 @@ export function writeESM(
     lines.push(`export const ${camelCase(name)} = 'var(--${name})';`)
   }
   lines.push('')
+
+  if (units) {
+    for (const name of Object.keys(units.px)) {
+      const slug = name.replace(/\//g, '-')
+      lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
+    }
+    for (const name of Object.keys(units.pt)) {
+      const slug = name.replace(/\//g, '-')
+      lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
+    }
+    lines.push('')
+  }
+
+  if (dimensions) {
+    const families: Array<[string, Record<string, number>]> = [
+      ['adaptive', dimensions.adaptives],
+      ['padding', dimensions.spacing_padding],
+      ['margin', dimensions.spacing_margin],
+      ['radius', dimensions.radius],
+      ['size', dimensions.size],
+      ['blur', dimensions.fx_blur],
+      ['shift', dimensions.fx_shift],
+      ['spread', dimensions.fx_spread],
+    ]
+    for (const [prefix, map] of families) {
+      for (const name of Object.keys(map)) {
+        const slug = `${prefix}-${name.replace(/\//g, '-')}`
+        lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
+      }
+    }
+    lines.push('')
+  }
 
   return lines.join('\n')
 }

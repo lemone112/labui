@@ -57,18 +57,62 @@ export interface OklchWithAlpha extends OklchValue {
   alpha: number // 0..1
 }
 
-// ─── Config: units (L1) — stub until PR #5 ──────────────────────────────
+// ─── Config: units (L1) ────────────────────────────────────────────────
 
+/**
+ * Layer 1 — physical pixel scale.
+ *
+ * @governs plan-v2 §2 · Layer 1 Units
+ */
 export interface UnitsConfig {
-  base_px?: number
-  scaling?: number
+  /** Base increment, typically 4 (px). Must produce integer px-1. */
+  base_px: number
+  /** Continuous float; recommended presets {0.75, 1.0, 1.166, 1.333}. */
+  scaling: number
+  /** px-N range — inclusive. Negative lower allowed. */
+  px_range: { min: number; max: number }
+  /** pt-N range. pt = half-pixel. */
+  pt_range: { min: number; max: number }
 }
 
-// ─── Config: dimensions (L2) — stub until PR #5 ─────────────────────────
+export interface ResolvedUnits {
+  px: Record<string, number> // 'px/-7' → -28 (raw number, unit added at emit)
+  pt: Record<string, number> // 'pt/0' → 0
+}
+
+// ─── Config: dimensions (L2) ───────────────────────────────────────────
+
+/**
+ * Named step-map: semantic name → base index in px scale.
+ * Airiness shifts final_step = base_step + log2(airiness) * step.
+ *
+ * @governs plan-v2 §3 · Layer 2 Dimensions
+ */
+export type StepMap = Record<string, number>
 
 export interface DimensionsConfig {
-  airiness?: number
-  opacity?: OpacityConfig
+  /** Multiplier for index shift (1.0 = identity, 1.25 ≈ +0.32 step). */
+  airiness: number
+  /** Layout/adaptive dimensions — px-step indices. */
+  adaptives: StepMap
+  spacing_padding: StepMap
+  spacing_margin: StepMap
+  radius: StepMap
+  size: StepMap
+  fx_blur: StepMap
+  fx_shift: StepMap
+  fx_spread: StepMap
+}
+
+export interface ResolvedDimensions {
+  adaptives: Record<string, number>
+  spacing_padding: Record<string, number>
+  spacing_margin: Record<string, number>
+  radius: Record<string, number>
+  size: Record<string, number>
+  fx_blur: Record<string, number>
+  fx_shift: Record<string, number>
+  fx_spread: Record<string, number>
 }
 
 // ─── Config: opacity stops (L2 primitive) ───────────────────────────────
@@ -463,8 +507,8 @@ export interface SemanticsConfig {
 export interface TokensConfig {
   colors: ColorsConfig
   semantics: SemanticsConfig
-  units?: UnitsConfig
-  dimensions?: DimensionsConfig
+  units: UnitsConfig
+  dimensions: DimensionsConfig
   typography?: unknown
   z_index?: unknown
   materials?: unknown
