@@ -5,7 +5,7 @@
  *
  * Resolves semantic name → px value via step-maps + airiness shift.
  * Each family (spacing_padding, radius, …) maps semantic name to a
- * **px-step index**. Airiness multiplies that index via log2 shift.
+ * **unit-step index**. Airiness multiplies that index via log2 shift.
  */
 
 import type {

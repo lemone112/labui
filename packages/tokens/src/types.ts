@@ -99,7 +99,7 @@ export type StepMap = Record<string, number>
 export interface DimensionsConfig {
   /** Multiplier for index shift (1.0 = identity, 1.25 ≈ +0.32 step). */
   airiness: number
-  /** Layout/adaptive dimensions — px-step indices. */
+  /** Layout/adaptive dimensions — unit-step indices. */
   adaptives: StepMap
   spacing_padding: StepMap
   spacing_margin: StepMap
@@ -454,7 +454,7 @@ export interface BordersConfig {
 // ─── FX (glow, focus, skeleton, shadow) ─────────────────────────────────
 
 export interface ShadowLayerDef {
-  /** L1 reference, e.g. 'px/2'. For PR#4 we accept raw pixel numbers. */
+  /** L1 reference, e.g. 'unit/2'. For PR#4 we accept raw pixel numbers. */
   y: number
   blur: number
   spread: number
@@ -591,7 +591,7 @@ export interface ResolvedMaterials {
 export interface TypographyConfig {
   font_family: string
   font_family_mono: string
-  /** Index into units.px. base_size_step=4 → 16px at scaling=1.0. */
+  /** Index into units.values. base_size_step=4 → 16px at scaling=1.0. */
   base_size_step: number
   /** Multiplicative ratio per step. 1.125 ≈ major second. */
   scale_ratio: number
