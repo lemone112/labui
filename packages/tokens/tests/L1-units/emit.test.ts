@@ -3,8 +3,9 @@
  *
  * @layer L1/L2 × Emit
  * @governs plan-v2 §2.4 · Units output · §3 · Dimensions
- * @invariant Emitted tokens.css contains --px-*, --pt-*, --padding-*,
- *            --radius-*, --size-* in a mode-invariant :root block.
+ * @invariant Emitted tokens.css contains --unit-*, --padding-*, --radius-*,
+ *            --size-* in a mode-invariant :root block. Values are in `rem`
+ *            (except --radius-full, which stays 9999px as pill sentinel).
  * @on-fail check writers/dimensions.ts slugs and iteration.
  */
 
@@ -23,33 +24,43 @@ describe('L1/L2 CSS emit', () => {
     expect(css).toMatch(/:root \{/)
   })
 
-  test('core px vars emitted with px unit', () => {
-    expect(css).toContain('--px-0: 0px;')
-    expect(css).toContain('--px-1: 4px;')
-    expect(css).toContain('--px--1: -4px;')
+  test('core unit vars emitted in rem (zero is bare, non-zero has rem suffix)', () => {
+    expect(css).toContain('--unit-0: 0;')
+    expect(css).toContain('--unit-1: 0.25rem;') // 4px / 16
+    expect(css).toContain('--unit-4: 1rem;') //    16px / 16
+    expect(css).toContain('--unit--1: -0.25rem;') // negative
   })
 
-  test('pt vars emitted with pt unit', () => {
-    expect(css).toContain('--pt-0: 0pt;')
-    expect(css).toContain('--pt-1: 2pt;')
+  test('no legacy --px-* or --pt-* vars remain', () => {
+    expect(css).not.toMatch(/--px-\d/)
+    expect(css).not.toMatch(/--pt-\d/)
   })
 
-  test('padding / radius / size families emitted', () => {
-    expect(css).toContain('--padding-m:')
-    expect(css).toContain('--padding-2xl:')
-    expect(css).toContain('--radius-m:')
+  test('padding / radius / size families emitted in rem', () => {
+    expect(css).toContain('--padding-m: 1rem;') //   step 4 × 4 / 16
+    expect(css).toContain('--padding-2xl: 2.5rem;') // step 10 × 4 / 16
+    expect(css).toContain('--radius-m: 0.5rem;') //  step 2 × 4 / 16
+    expect(css).toContain('--size-m: 2rem;') //      step 8 × 4 / 16
+  })
+
+  test('radius-full stays density-immune at 9999px (pill sentinel)', () => {
     expect(css).toContain('--radius-full: 9999px;')
-    expect(css).toContain('--size-m:')
   })
 
-  test('margin negatives emitted', () => {
-    expect(css).toContain('--margin-neg-xs:')
-    expect(css).toContain('--margin-neg-l:')
+  test('margin negatives emitted in rem', () => {
+    expect(css).toContain('--margin-neg-xs: -0.25rem;')
+    expect(css).toContain('--margin-neg-l: -1rem;')
   })
 
   test('fx families emitted', () => {
     expect(css).toContain('--blur-m:')
     expect(css).toContain('--shift-m:')
     expect(css).toContain('--spread-s:')
+  })
+
+  test('no raw `px` unit slipped through (except radius-full sentinel)', () => {
+    // Only one legitimate `px` occurrence in the output: the full-radius pill.
+    const pxMatches = css.match(/: -?[\d.]+px;/g) ?? []
+    expect(pxMatches).toEqual([': 9999px;'])
   })
 })

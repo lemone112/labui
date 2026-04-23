@@ -65,19 +65,25 @@ export interface OklchWithAlpha extends OklchValue {
  * @governs plan-v2 §2 · Layer 1 Units
  */
 export interface UnitsConfig {
-  /** Base increment, typically 4 (px). Must produce integer px-1. */
+  /**
+   * Base increment in px at root font-size = 16. Typically 4.
+   * `base_px × scaling` must be integer for unit-1 to land on a whole pixel.
+   */
   base_px: number
   /** Continuous float; recommended presets {0.75, 1.0, 1.166, 1.333}. */
   scaling: number
-  /** px-N range — inclusive. Negative lower allowed. */
-  px_range: { min: number; max: number }
-  /** pt-N range. pt = half-pixel. */
-  pt_range: { min: number; max: number }
+  /** --unit-N integer index range, inclusive. Negative lower allowed. */
+  range: { min: number; max: number }
 }
 
 export interface ResolvedUnits {
-  px: Record<string, number> // 'px/-7' → -28 (raw number, unit added at emit)
-  pt: Record<string, number> // 'pt/0' → 0
+  /**
+   * name → px value (raw number).
+   * CSS writer converts to rem via `value / 16` at emit time;
+   * internal consumers (dimensions generator, integer invariant tests)
+   * operate on these px values directly.
+   */
+  values: Record<string, number> // 'unit/-7' → -28
 }
 
 // ─── Config: dimensions (L2) ───────────────────────────────────────────

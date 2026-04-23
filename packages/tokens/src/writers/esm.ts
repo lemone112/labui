@@ -52,11 +52,7 @@ export function writeESM(
   lines.push('')
 
   if (units) {
-    for (const name of Object.keys(units.px)) {
-      const slug = name.replace(/\//g, '-')
-      lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
-    }
-    for (const name of Object.keys(units.pt)) {
+    for (const name of Object.keys(units.values)) {
       const slug = name.replace(/\//g, '-')
       lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
     }

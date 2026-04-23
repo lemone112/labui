@@ -47,10 +47,7 @@ export function writeDTS(
   lines.push('')
 
   if (units) {
-    for (const name of Object.keys(units.px)) {
-      lines.push(`export declare const ${camelCase(name.replace(/\//g, '-'))}: string;`)
-    }
-    for (const name of Object.keys(units.pt)) {
+    for (const name of Object.keys(units.values)) {
       lines.push(`export declare const ${camelCase(name.replace(/\//g, '-'))}: string;`)
     }
     lines.push('')
