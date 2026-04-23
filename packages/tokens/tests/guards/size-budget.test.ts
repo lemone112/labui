@@ -34,6 +34,7 @@ const BUDGETS_GZ_KB: Record<string, number> = {
   'dist/tokens.css': 30,
   'dist/index.js': 10,
   'dist/index.d.ts': 6,
+  'dist/tailwind-preset.css': 8,
 }
 
 function gzBytes(path: string): number {

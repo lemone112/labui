@@ -23,6 +23,7 @@ import {
   writeDTS,
   writeESM,
   writeMaterialsCss,
+  writeTailwindPreset,
   writeTypographyCss,
   writeUnitsDimensionsCss,
   writeZIndexCss,
@@ -82,11 +83,19 @@ const dts = writeDTS(
   materialsResult.materials,
 )
 
+const tailwindPreset = writeTailwindPreset(
+  primitive,
+  semantic,
+  dimsResult.dimensions,
+  typoResult.typography,
+)
+
 await mkdir(distDir, { recursive: true })
 await Promise.all([
   writeFile(resolve(distDir, 'tokens.css'), css),
   writeFile(resolve(distDir, 'index.js'), esm),
   writeFile(resolve(distDir, 'index.d.ts'), dts),
+  writeFile(resolve(distDir, 'tailwind-preset.css'), tailwindPreset),
 ])
 
 const t1 = performance.now()
