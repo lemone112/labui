@@ -2,8 +2,7 @@
  * Deprecated-tokens guard (G6).
  *
  * @layer Guard
- * @governs plan/test-strategy.md §11 · G6 no deprecated tokens in dist ·
- *          §15.3 Deprecation lifecycle
+ * @governs plan/test-strategy.md §11 · G6 no deprecated tokens in dist
  * @invariant For every entry in `config.deprecated`:
  *            - If the current `schema_version` < `removed_in`, the old
  *              token path is still emitted in `dist/tokens.css` and a
