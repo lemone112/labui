@@ -5,15 +5,18 @@
 import type {
   PrimitiveColorSet,
   ResolvedDimensions,
+  ResolvedTypography,
   ResolvedUnits,
   SemanticColorSet,
 } from '../types'
+import { TYPOGRAPHY_KEYS } from '../generators/typography'
 
 export function writeDTS(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
   units?: ResolvedUnits,
   dimensions?: ResolvedDimensions,
+  typography?: ResolvedTypography,
 ): string {
   const lines: string[] = ['// Lab UI — generated type declarations. DO NOT EDIT.\n']
 
@@ -65,6 +68,21 @@ export function writeDTS(
         const slug = `${prefix}-${name.replace(/\//g, '-')}`
         lines.push(`export declare const ${camelCase(slug)}: string;`)
       }
+    }
+    lines.push('')
+  }
+
+  if (typography) {
+    lines.push(`export declare const fontFamily: string;`)
+    lines.push(`export declare const fontFamilyMono: string;`)
+    for (const key of TYPOGRAPHY_KEYS) {
+      lines.push(`export declare const ${camelCase(`font-size-${key}`)}: string;`)
+      lines.push(`export declare const ${camelCase(`lh-body-${key}`)}: string;`)
+      lines.push(`export declare const ${camelCase(`lh-headline-${key}`)}: string;`)
+      lines.push(`export declare const ${camelCase(`tracking-${key}`)}: string;`)
+    }
+    for (const name of Object.keys(typography.semantics)) {
+      lines.push(`export declare const ${camelCase(`text-${name}`)}: string;`)
     }
     lines.push('')
   }
