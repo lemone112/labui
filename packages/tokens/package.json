@@ -10,7 +10,8 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./css": "./dist/tokens.css"
+    "./css": "./dist/tokens.css",
+    "./tailwind": "./dist/tailwind-preset.css"
   },
   "files": [
     "dist/",
