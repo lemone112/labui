@@ -86,14 +86,17 @@ describe('Tailwind preset · structure', () => {
     expect(css).toContain('--radius-full: var(--radius-full);')
   })
 
-  test('maps shadow primitives + presets onto Tailwind shadow scale', () => {
-    expect(css).toContain('--shadow-xs: var(--fx-shadow-minor);')
-    expect(css).toContain('--shadow-sm: var(--fx-shadow-ambient);')
-    expect(css).toContain('--shadow-md: var(--fx-shadow-penumbra);')
-    expect(css).toContain('--shadow-lg: var(--fx-shadow-major);')
-    for (const size of ['xs', 's', 'm', 'l', 'xl']) {
-      expect(css).toContain(`--shadow-preset-${size}: var(--fx-shadow-${size});`)
-    }
+  test('maps multi-layer shadow presets onto Tailwind shadow scale', () => {
+    // Tailwind `--shadow-*` must carry full box-shadow strings, which
+    // only the multi-layer presets provide. Tint primitives stay in the
+    // `--color-*` namespace (via the semantic roles loop).
+    expect(css).toContain('--shadow-xs: var(--fx-shadow-xs);')
+    expect(css).toContain('--shadow-sm: var(--fx-shadow-s);')
+    expect(css).toContain('--shadow-md: var(--fx-shadow-m);')
+    expect(css).toContain('--shadow-lg: var(--fx-shadow-l);')
+    expect(css).toContain('--shadow-xl: var(--fx-shadow-xl);')
+    expect(css).not.toContain('--shadow-xs: var(--fx-shadow-minor)')
+    expect(css).not.toContain('--shadow-preset-')
   })
 
   test('maps blur rungs onto --blur-* namespace', () => {

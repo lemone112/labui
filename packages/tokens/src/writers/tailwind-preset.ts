@@ -6,7 +6,7 @@
  *
  *   `--brand`, `--red`, …                          → `--color-*`
  *   `--bg-primary`, `--label-*`, `--fill-*`, …     → `--color-*`
- *   `--fx-shadow-{minor,ambient,…}`                → `--shadow-*`
+ *   `--fx-shadow-{xs,s,m,l,xl}`                    → `--shadow-{xs,sm,md,lg,xl}`
  *   `--unit-1` (as the dynamic base)               → `--spacing`
  *   `--radius-{min,base,max,full}`                 → `--radius-{sm,md,lg,full}`
  *   `--font-size-*`                                → `--text-*`
@@ -72,23 +72,24 @@ export function writeTailwindPreset(
   if (hasRadius('full')) lines.push('  --radius-full: var(--radius-full);')
   lines.push('')
 
-  lines.push('  /* Shadows — from semantic shadow primitives */')
-  const shadowMap: ReadonlyArray<readonly [string, string]> = [
-    ['minor', 'xs'],
-    ['ambient', 'sm'],
-    ['penumbra', 'md'],
-    ['major', 'lg'],
-  ]
-  const shadowSource = new Set(
-    semantic.tokens.map((t) => t.name).filter((n) => n.startsWith('fx-shadow-')),
-  )
-  for (const [role, tw] of shadowMap) {
-    if (shadowSource.has(`fx-shadow-${role}`)) {
-      lines.push(`  --shadow-${tw}: var(--fx-shadow-${role});`)
-    }
+  lines.push('  /* Shadows — from multi-layer presets */')
+  // Tailwind v4's `--shadow-*` utilities expect complete `box-shadow`
+  // values (offsets + blur + spread + color). The Lab UI shadow presets
+  // (`--fx-shadow-{xs,s,m,l,xl}`) are the full box-shadow strings; the
+  // tint primitives (`--fx-shadow-{minor,ambient,penumbra,major}`) are
+  // colors that live inside those strings, so they stay exposed as
+  // `--color-fx-shadow-*` from the semantic roles section above, not
+  // as `--shadow-*`.
+  const presetToTw: Record<string, string> = {
+    xs: 'xs',
+    s: 'sm',
+    m: 'md',
+    l: 'lg',
+    xl: 'xl',
   }
   for (const preset of semantic.shadow_presets) {
-    lines.push(`  --shadow-preset-${preset.name}: var(--fx-shadow-${preset.name});`)
+    const tw = presetToTw[preset.name] ?? preset.name
+    lines.push(`  --shadow-${tw}: var(--fx-shadow-${preset.name});`)
   }
   lines.push('')
 

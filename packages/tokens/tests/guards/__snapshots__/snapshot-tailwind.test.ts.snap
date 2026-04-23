@@ -896,16 +896,12 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --radius-lg: var(--radius-max);
   --radius-full: var(--radius-full);
 
-  /* Shadows — from semantic shadow primitives */
-  --shadow-xs: var(--fx-shadow-minor);
-  --shadow-sm: var(--fx-shadow-ambient);
-  --shadow-md: var(--fx-shadow-penumbra);
-  --shadow-lg: var(--fx-shadow-major);
-  --shadow-preset-xs: var(--fx-shadow-xs);
-  --shadow-preset-s: var(--fx-shadow-s);
-  --shadow-preset-m: var(--fx-shadow-m);
-  --shadow-preset-l: var(--fx-shadow-l);
-  --shadow-preset-xl: var(--fx-shadow-xl);
+  /* Shadows — from multi-layer presets */
+  --shadow-xs: var(--fx-shadow-xs);
+  --shadow-sm: var(--fx-shadow-s);
+  --shadow-md: var(--fx-shadow-m);
+  --shadow-lg: var(--fx-shadow-l);
+  --shadow-xl: var(--fx-shadow-xl);
 
   /* Blur — named rungs */
   --blur-none: var(--blur-none);
