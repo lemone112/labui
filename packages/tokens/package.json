@@ -21,6 +21,7 @@
     "README.md"
   ],
   "scripts": {
+    "apca-baseline": "bun run scripts/generate-apca-baseline.ts",
     "build": "bun run src/build.ts",
     "build:node": "tsx src/build.ts",
     "dev": "bun run --watch src/build.ts",

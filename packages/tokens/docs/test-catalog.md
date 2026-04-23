@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 37 test files
+**Total:** 38 test files
 
 ## Cross-layer
 
@@ -23,6 +23,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **On fail:** inspect writers/css.ts for hardcoded fallbacks.
 
 ## Guard
+
+### `tests/guards/apca-regression.test.ts`
+
+- **Governs:** plan/test-strategy.md §11 · G7 accessibility regression
+- **Invariant:** For every (fg, bg, tier, output) pair tracked in the baseline, the current |Lc| may not drop by more than `APCA_REGRESSION_TOLERANCE` Lc. Intentional accessibility changes must regenerate the baseline via `bun run apca-baseline` and land in the same PR.
+- **Why:** Spine tweaks, gamut changes, or pivot-mirror edits can unintentionally dim a tier just enough to slip under the APCA target while the tier-assertion test still passes (because the measured value is still within per-token `APCA_TOLERANCE=1.0` of the target). This guard catches *trend* regressions across the whole token surface, not just per-token compliance.
+- **On fail:** Inspect the printed delta table to find which tiers dropped. If the drop was intentional (e.g. relaxing a tier target or recalibrating neutrals), rerun `bun run apca-baseline` and commit the new JSON alongside the code change. If unintentional, revert the regressing commit and re-plan.
 
 ### `tests/guards/header-lint.test.ts`
 
