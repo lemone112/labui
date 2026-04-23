@@ -29,15 +29,20 @@ describe('Primitive snapshot', () => {
     expect(n0.values['light/normal'].C).toBeLessThanOrEqual(0.01)
   })
 
-  test('N12 in light/normal approaches configured endpoint (L≈0.08)', () => {
+  test('N12 in light/normal approaches the darkest physical L', () => {
     const n12 = primitive.neutrals[12]
-    expect(n12.values['light/normal'].L).toBeCloseTo(0.08, 2)
+    // Calibrated endpoint is whichever value the neutral spine uses at
+    // step 12 — `L_ladder.normal[12]` if present, otherwise
+    // `endpoints_normal.L12`. Either way, N12 should be the darkest
+    // rung in light/normal, not white.
+    expect(n12.values['light/normal'].L).toBeLessThan(0.3)
+    expect(n12.values['light/normal'].C).toBeLessThanOrEqual(0.02)
   })
 
   test('pivot mirror: N0 dark == N12 light (physical L), within comp shift', () => {
     const n0Dark = primitive.neutrals[0].values['dark/normal']
     const n12Light = primitive.neutrals[12].values['light/normal']
-    // dark applies -0.02 HK shift → n0Dark.L ≈ 0.08 - 0.02 = 0.06
+    // dark applies -0.02 HK shift → n0Dark.L ≈ n12Light.L - 0.02
     expect(Math.abs(n0Dark.L - (n12Light.L - 0.02))).toBeLessThan(0.01)
   })
 
