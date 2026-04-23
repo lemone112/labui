@@ -16,6 +16,22 @@ import type {
 } from '../types'
 import { TYPOGRAPHY_KEYS } from '../generators/typography'
 
+/**
+ * Concentric radius helpers (plan §3.4). Both are pure string formatters
+ * producing CSS expressions for nested geometries. Reused in the ESM
+ * barrel via `.toString()` so there is a single source of truth.
+ *
+ * Floor is always `--radius-min` (never 0) so nested elements can't go
+ * sharp in a soft system. Ceiling is always `--radius-max` (never
+ * `--radius-full`) so the pill sentinel is only ever opt-in.
+ */
+export function innerOf(outer: string, padding: string): string {
+  return `clamp(var(--radius-min), calc(${outer} - ${padding}), var(--radius-max))`
+}
+export function outerOf(inner: string, padding: string): string {
+  return `min(var(--radius-max), calc(${inner} + ${padding}))`
+}
+
 export function writeESM(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
@@ -76,6 +92,13 @@ export function writeESM(
         lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
       }
     }
+    lines.push('')
+
+    // Concentric-radius helpers (plan §3.4 / §3.5). Emitted via
+    // `.toString()` from the real exported functions above so the ESM
+    // barrel and the test-facing module share a single source of truth.
+    lines.push(`export ${innerOf.toString()}`)
+    lines.push(`export ${outerOf.toString()}`)
     lines.push('')
   }
 

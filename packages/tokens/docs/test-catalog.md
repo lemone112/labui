@@ -57,7 +57,7 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 ### `tests/L1-units/emit.test.ts`
 
 - **Governs:** plan-v2 §2.4 · Units output · §3 · Dimensions
-- **Invariant:** Emitted tokens.css contains --unit-*, --padding-*, --radius-*, --size-* in a mode-invariant :root block. Values are in `rem` (except --radius-full, which stays 9999px as pill sentinel).
+- **Invariant:** Emitted tokens.css contains --unit-*, --padding-*, --radius-*, --size-* in a mode-invariant :root block. Values are in `rem` (except --radius-full, which uses calc(infinity * 1rem)).
 - **On fail:** check writers/dimensions.ts slugs and iteration.
 
 ## L2 (dimensions · radius)
@@ -66,13 +66,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 
 - **Governs:** plan-v2 §3.2 Radius · §3.5 Output · §3.6 Invariants
 - **Invariant:** Radius family emits exactly 5 anchors (none/min/base/max/full); `--radius-full` emits as `calc(infinity * 1rem)`; monotonic ordering `0 = none < min < base < max < full`.
-- **On fail:** check generators/dimensions.ts radius resolution and writers/dimensions.ts emitRadius — anchor set must match plan §3.2 R1 Hybrid exactly; no legacy t-shirt steps. * PR-N target: replace the 12-step t-shirt radius scale (none/xxs/xs/s/m/l/xl/2xl/3xl/4xl/5xl/full) with a 5-anchor parametric set (none / min / base / max / full) where intermediate values are derived in place via `clamp()` (see radius-concentric.test.ts). * Tests are currently `test.skip` because PR-N implementation (config/generator/writer changes) is not yet landed. They describe the target state — flip `skip` → `test` once PR-N code is in place.
+- **On fail:** check generators/dimensions.ts radius resolution and writers/dimensions.ts emitRadius — anchor set must match plan §3.2 R1 Hybrid exactly; no legacy t-shirt steps.
 
 ### `tests/L2-dimensions/radius-concentric.test.ts`
 
-- **Governs:** plan-v2 §3.4 Concentric radius pattern
+- **Governs:** plan-v2 §3.4 Concentric radius pattern · §3.5 ESM helpers
 - **Invariant:** `innerOf(outer, pad)` returns `clamp(var(--radius-min), calc(outer - pad), var(--radius-max))`; `outerOf(inner, pad)` returns `min(var(--radius-max), calc(inner + pad))`; floor = radius-min (never 0), ceiling = radius-max (never radius-full/infinity).
-- **On fail:** update writers/esm.ts helpers to emit the exact clamp/min string shape from plan §3.4; confirm neither helper leaks the pill sentinel (radius-full) into auto-computed nesting. * PR-N target: add two ESM helpers that produce CSS `clamp()` / `min()` expressions for concentric nesting, and verify their output shape matches the pattern documented in the plan. * Tests are currently `test.skip` because the helpers (`innerOf`, `outerOf`) do not yet exist in the ESM output. Flip skip → test when PR-N implementation lands.
+- **On fail:** update writers/esm.ts helpers to emit the exact clamp/min string shape from plan §3.4; confirm neither helper leaks the pill sentinel (radius-full) into auto-computed nesting.
 
 ## L2 (dimensions)
 

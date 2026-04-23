@@ -5,7 +5,7 @@
  * @governs plan-v2 §2.4 · Units output · §3 · Dimensions
  * @invariant Emitted tokens.css contains --unit-*, --padding-*, --radius-*,
  *            --size-* in a mode-invariant :root block. Values are in `rem`
- *            (except --radius-full, which stays 9999px as pill sentinel).
+ *            (except --radius-full, which uses calc(infinity * 1rem)).
  * @on-fail check writers/dimensions.ts slugs and iteration.
  */
 
@@ -39,12 +39,12 @@ describe('L1/L2 CSS emit', () => {
   test('padding / radius / size families emitted in rem', () => {
     expect(css).toContain('--padding-m: 1rem;') //   step 4 × 4 / 16
     expect(css).toContain('--padding-2xl: 2.5rem;') // step 10 × 4 / 16
-    expect(css).toContain('--radius-m: 0.5rem;') //  step 2 × 4 / 16
+    expect(css).toContain('--radius-base: 0.75rem;') // R1 Hybrid: step 3 × 4 / 16
     expect(css).toContain('--size-m: 2rem;') //      step 8 × 4 / 16
   })
 
-  test('radius-full stays density-immune at 9999px (pill sentinel)', () => {
-    expect(css).toContain('--radius-full: 9999px;')
+  test('radius-full uses calc(infinity * 1rem) sentinel (plan §3.5)', () => {
+    expect(css).toContain('--radius-full: calc(infinity * 1rem);')
   })
 
   test('margin negatives emitted in rem', () => {
@@ -58,9 +58,9 @@ describe('L1/L2 CSS emit', () => {
     expect(css).toContain('--spread-s:')
   })
 
-  test('no raw `px` unit slipped through (except radius-full sentinel)', () => {
-    // Only one legitimate `px` occurrence in the output: the full-radius pill.
+  test('no raw `px` unit slipped through — everything in rem or infinity sentinel', () => {
+    // Post-PR-N: the pill sentinel is `calc(infinity * 1rem)`; no bare `px`.
     const pxMatches = css.match(/: -?[\d.]+px;/g) ?? []
-    expect(pxMatches).toEqual([': 9999px;'])
+    expect(pxMatches).toEqual([])
   })
 })

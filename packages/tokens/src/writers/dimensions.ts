@@ -6,9 +6,10 @@
  * Emits a single mode-invariant :root block. Units and dimensions do not
  * participate in the 4 output keys; scaling/airiness are build-time cells.
  *
- * Everything is emitted in `rem` (except the `radius-full` pill sentinel,
- * which stays 9999px to keep pill shapes density-immune). Internal values
- * are stored as raw px numbers — `toRem` divides by 16 at emit time.
+ * Everything is emitted in `rem`. The `radius-full` pill anchor is the sole
+ * exception — it uses the CSS Values 4 `calc(infinity * 1rem)` sentinel so
+ * the pill shape survives container widths > 9999px and stays stylistically
+ * consistent with the rest of the rem-based system.
  */
 
 import type { ResolvedDimensions, ResolvedUnits } from '../types'
@@ -62,10 +63,11 @@ function emitRadius(
   values: Record<string, number>,
 ): void {
   for (const [name, v] of Object.entries(values)) {
-    // `full` (9999) stays in absolute px — pill shape must not scale
-    // with root font-size; it's a shape sentinel, not a size.
-    if (v === 9999) {
-      lines.push(`  --radius-${slug(name)}: 9999px;`)
+    if (!Number.isFinite(v)) {
+      // Pill sentinel — `calc(infinity * 1rem)` is the CSS Values 4 way to
+      // express an unbounded length. `border-radius` clamps to half-side at
+      // render time; the sentinel just means "always round to capsule".
+      lines.push(`  --radius-${slug(name)}: calc(infinity * 1rem);`)
     } else {
       lines.push(`  --radius-${slug(name)}: ${toRem(v)};`)
     }

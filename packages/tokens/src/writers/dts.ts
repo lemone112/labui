@@ -71,6 +71,11 @@ export function writeDTS(
       }
     }
     lines.push('')
+
+    // Concentric-radius helpers (see plan §3.4 / §3.5, writers/esm.ts).
+    lines.push('export declare function innerOf(outer: string, padding: string): string;')
+    lines.push('export declare function outerOf(inner: string, padding: string): string;')
+    lines.push('')
   }
 
   if (typography) {
