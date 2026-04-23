@@ -35,9 +35,14 @@ const css = readFileSync(
 )
 
 describe('Tailwind preset · structure', () => {
-  test('is a single @theme block', () => {
-    const themes = css.match(/@theme\s*{/g) ?? []
+  test('is a single @theme inline block', () => {
+    // `inline` tells Tailwind v4 to inline the var() into utility
+    // definitions rather than emit redeclared custom properties — this
+    // avoids `--blur-m: var(--blur-m)`-style self-references when the
+    // Tailwind namespace name collides with the Lab UI namespace name.
+    const themes = css.match(/@theme\s+inline\s*{/g) ?? []
     expect(themes.length).toBe(1)
+    expect(css.match(/@theme\s*{/g) ?? []).toHaveLength(0)
     expect(css.trimEnd().endsWith('}')).toBe(true)
   })
 

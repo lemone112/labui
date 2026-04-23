@@ -19,8 +19,14 @@
  *   @import "@lab-ui/tokens/tailwind";
  *   @import "@lab-ui/tokens/css";   // the actual variable values
  *
- * Everything is `var(--…)` pass-through — no values are duplicated.
- * When a token value changes the preset automatically picks it up.
+ * The block uses `@theme inline` so Tailwind v4 inlines the `var(--…)`
+ * references directly into the generated utility rules rather than
+ * emitting redeclared custom properties. This keeps the preset a pure
+ * mapping layer — no values are duplicated, no self-referential
+ * custom properties are produced (e.g. `--blur-m` in Lab UI and
+ * `--blur-m` in Tailwind would otherwise produce `--blur-m: var(--blur-m)`
+ * which is circular per CSS). When a token value changes the preset
+ * automatically picks it up.
  */
 
 import type {
@@ -39,7 +45,7 @@ export function writeTailwindPreset(
   const lines: string[] = [
     '/* Lab UI — generated Tailwind v4 preset. DO NOT EDIT. */',
     '',
-    '@theme {',
+    '@theme inline {',
   ]
 
   lines.push('  /* Colors — primitive hues */')
