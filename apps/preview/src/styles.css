@@ -1,0 +1,30 @@
+/* Lab UI · preview app stylesheet.
+ *
+ * Import order matters for Tailwind v4:
+ *   1. tailwindcss core
+ *   2. the Lab UI preset (maps `--color-*`, `--radius-*`, … to our vars)
+ *   3. the raw token CSS (actual `--brand: oklch(…)` values, scoped by
+ *      `data-mode` / `data-contrast` on :root)
+ */
+@import "tailwindcss";
+@import "@lab-ui/tokens/tailwind";
+@import "@lab-ui/tokens/css";
+
+/* Tailwind v4's content scanner reads only statically written class
+ * names. The preview composes `bg-${accent}` dynamically, so list the
+ * accent utilities up front to ensure they end up in the generated
+ * stylesheet. Extend if new accents are added. */
+@source inline("{bg,text,border}-{brand,red,orange,yellow,green,teal,mint,blue,indigo,purple,pink}");
+
+/* Make the app fill the viewport so demo backgrounds read cleanly. */
+html,
+body,
+#app {
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-primary);
+  color: var(--label-neutral-primary);
+}

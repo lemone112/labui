@@ -5,9 +5,11 @@
 > that a fresh agent (or a human) can pick up mid-stream without losing
 > context.
 
-Last PR opened against this doc: **PR-H · PT3 semantic-diff tooling** (`devin/1776936429-semantic-diff`).
+Last PR opened against this doc: **PR-I · preview app + R1-R4 Playwright** (`devin/1776939031-preview-app`).
 
-Any new agent: your `bun test` output should show **247 pass, 0 fail**.
+Any new agent: your `bun test` output (under `packages/tokens`) should show
+**247 pass, 0 fail**; your `pnpm --filter @lab-ui/preview exec playwright test`
+should show **7 pass** across R1-R4.
 If PT1 max ΔE prints anything above 1.0, something regressed — start
 with `tests/parity/accent-anchors.test.ts`.
 
@@ -28,9 +30,12 @@ The output covers four orthogonal axes:
   (APCA-targeted within each semantic family)
 - **Family** — backgrounds / labels / fills / borders / fx / misc
 
-There is **no application code.** No UI, no browser runtime here. All
-verification is Bun unit tests (`bun test`). Do not try to enter
-test-mode for UI testing on this repo — there is nothing to click.
+The headless generator lives at `packages/tokens`; verification there is
+Bun unit tests (`bun test`). As of PR-I there is **also a browser
+application** at `apps/preview/` — a Vite app that imports the generator's
+Tailwind v4 preset and raw CSS vars, lets a human toggle the four
+sectors, and is driven by Playwright R1-R4 specs. That's the only
+visible code in the repo.
 
 Governing documents:
 
@@ -132,12 +137,47 @@ test guarding it.
 | #22 | G6 + G8 guards + living handoff | — |
 | #23 | `TokensConfig.deprecated` JSDoc fix (PR-F follow-up) | — |
 | #24 | `primitive_per_output` · 4-sector Figma pinning | PT1 all sectors: 27.90 → **0.11** ΔE |
+| #25 | PT3 semantic-diff tooling · `bun run semantic-diff` | — |
 
 ### In flight
 
-**PR-H** (`devin/1776936429-semantic-diff`) — this PR:
+**PR-I** (`devin/1776939031-preview-app`) — this PR:
 
-- Adds `packages/tokens/scripts/semantic-diff.ts` — CLI that builds
+- Adds `apps/preview/` as a Vite + Tailwind v4 + TS workspace app.
+  Depends on `@lab-ui/tokens` via `workspace:*`.
+- Imports in `apps/preview/src/styles.css`:
+  1. `@import "tailwindcss"` — core utilities
+  2. `@import "@lab-ui/tokens/tailwind"` — Lab UI preset (theme mapping)
+  3. `@import "@lab-ui/tokens/css"` — the actual variable values
+  4. `@source inline("{bg,text,border}-{brand,red,...,pink}")` —
+     safelist for dynamically composed accent utilities (Tailwind v4's
+     content scanner only reads statically-written class names; the
+     preview's `bg-${accent}` needs a safelist).
+- UI: sticky mode/contrast toggles + 4 sections — primitives
+  (13 neutrals, 11 accents), backgrounds (3 tiers), labels
+  (6 families × 4 tiers), Tailwind-utility-vs-raw-var pairs.
+- Playwright config at `apps/preview/playwright.config.ts`. Chromium
+  only, retains traces on failure, auto-launches `vite dev` unless
+  `PW_BASE_URL` is set (used in CI against `vite preview`).
+- Specs at `apps/preview/tests/e2e/tokens.spec.ts`:
+  - **R1** — every expected token resolves in every sector
+    (light/normal, light/ic, dark/normal, dark/ic). 4 tests.
+  - **R2** — `data-mode` light↔dark flips `--bg-primary` and
+    `--label-neutral-primary`. 1 test.
+  - **R3** — `data-contrast` normal↔ic shifts primitives; yellow
+    and orange specifically must change (IC brown/earth-tone
+    replacement, per Figma). 1 test.
+  - **R4** — `bg-{accent}` Tailwind utility `getComputedStyle` equals
+    raw `var(--{accent})` verbatim. 1 test × 11 accents.
+- CI: `.github/workflows/preview-ci.yml`. Runs on `apps/preview/**`,
+  `packages/tokens/**`, or the workflow itself. Uses pnpm + Node 22 +
+  Bun 1.1.38; builds tokens, builds preview, installs Playwright
+  chromium, runs the suite. Uploads the HTML report on failure.
+- No change to `packages/tokens/**` or the snapshot guards.
+
+**PR-H** (`devin/1776936429-semantic-diff`) — merged as #25:
+
+- Added `packages/tokens/scripts/semantic-diff.ts` — CLI that builds
   `dist/tokens.css` at two git refs (via `git worktree` into
   `/tmp`), parses the four `:root` blocks brace-aware, and emits a
   structured diff per `(scope, --var)` cell.
@@ -157,20 +197,16 @@ test guarding it.
 - Tests: `tests/scripts/semantic-diff.test.ts` (14 cases) covering
   parser, diff classification, alpha-fold heuristic, threshold
   behaviour, and markdown rendering.
-- No `dist/` churn. No snapshot updates needed.
-- Not wired to CI yet — a follow-up PR will add
-  `.github/workflows/semantic-diff.yml` to post the comment
-  automatically on config-touching PRs. Doing it separately keeps
-  this PR surgical and lets the CI workflow go through review on
-  its own.
+- No `dist/` churn, no snapshot updates.
+- Not wired to CI yet — see PR-K below.
 
-### Queued after PR-H
+### Queued after PR-I
 
 | PR | scope | rationale |
 |---|---|---|
-| **PR-I** | `apps/preview/` + R4 Tailwind integration | The biggest. Vite app that imports `@lab-ui/tokens/tailwind`, Playwright R1-R4 checks (CSS var resolution, mode/contrast toggling, real Tailwind compilation). Unblocks breakpoints/z-index/materials wiring in the preset. |
-| **PR-J** | Prettier + ESLint + EditorConfig | Lock the informal style (kebab-case files, single-quote, no semicolons, PascalCase types) with tooling. Add `bun run lint` + CI step. Do _after_ PR-I to avoid mass-rewriting new code. |
+| **PR-J** | Prettier + ESLint + EditorConfig | Lock the informal style (kebab-case files, single-quote, no semicolons, PascalCase types) with tooling. Add `pnpm lint` + CI step. Do _after_ PR-I to avoid mass-rewriting new code. |
 | **PR-K** *(optional)* | `semantic-diff` CI workflow | Wire PR-H's script into GitHub Actions to post a PR comment automatically when `packages/tokens/config/**` or `packages/tokens/src/**` changes. |
+| **PR-L** *(roadmap)* | breakpoints / z-index / materials wiring in preset | Now that there's a live preview, these previously-abstract concerns have a place to be verified. Extend the Tailwind writer + preview page. |
 
 ---
 
@@ -228,9 +264,15 @@ the calibration vs the tightening.
 ### 4.4. Commands reference
 
 ```bash
-# everyday loop
+# tokens package (cd packages/tokens)
 bun run build                              # emits dist/*
 bun test                                   # all guards + parity + generators
+
+# preview app (cd apps/preview)
+pnpm dev                                   # http://localhost:5173
+pnpm build                                 # dist/ bundle
+pnpm exec playwright test                  # R1-R4 (7 cases)
+pnpm exec playwright install --with-deps chromium   # one-time setup
 
 # regen (use sparingly, always commit result)
 bun test -u                                # snapshot refresh
@@ -274,6 +316,20 @@ bun run semantic-diff --include-alpha                    # don't fold alpha stop
 
 ## 5. What "done" looks like for the queued PRs
 
+### PR-J · Prettier + ESLint + EditorConfig
+
+Exit criteria:
+
+- `.prettierrc` with `singleQuote: true`, `semi: false`, `printWidth: 100`,
+  `arrowParens: 'avoid'`, `trailingComma: 'all'`.
+- `.editorconfig` with `end_of_line = lf`, `insert_final_newline = true`,
+  `indent_style = space`, `indent_size = 2`.
+- `eslint.config.ts` with TypeScript + import rules, no formatting rules
+  (Prettier owns formatting).
+- `pnpm lint` runs across the workspace (turbo repo-wide). Fails CI on
+  any violation.
+- Autofix run once against the whole tree so CI starts clean.
+
 ### PR-I · `apps/preview/` + R4
 
 Exit criteria:
@@ -299,8 +355,11 @@ plan/handoff.md
 
 ## 6. Test catalog snapshot
 
-As of this PR (PR-H): **41 test files, 247 pass, 0 fail.** See
-`packages/tokens/docs/test-catalog.md` for the auto-generated index.
+As of this PR (PR-I):
+- `packages/tokens`: **41 test files, 247 pass, 0 fail.** See
+  `packages/tokens/docs/test-catalog.md` for the auto-generated index.
+- `apps/preview`: **7 Playwright tests pass** across R1 (4 sectors),
+  R2 (mode toggle), R3 (contrast toggle), R4 (Tailwind utility == raw).
 
 ---
 
