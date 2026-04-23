@@ -1,13 +1,27 @@
 # @lab-ui/tokens
 
-Tier-1 design tokens for Lab UI — **OKLCH + Display-P3** colour, **APCA** contrast, **parametric cells**, **4 modes** (`light`, `dark`, `light_ic`, `dark_ic`).
+Tier-1 design tokens for Lab UI — **OKLCH + Display-P3** colour, **APCA** contrast, **parametric cells**, **4 modes** (`light`, `dark`, `light_ic`, `dark_ic`) × **3 material modes** (`solid`, `glass`, `backdrop`).
 
 - Single source of truth: [`config/tokens.config.ts`](./config/tokens.config.ts)
-- Frozen architectural spec: [`spec.md`](./spec.md) (v1)
+- Architectural spec: [`../../plan/implementation-plan-v2.md`](../../plan/implementation-plan-v2.md) (v2, active)
+- Test strategy: [`../../plan/test-strategy.md`](../../plan/test-strategy.md)
+- Auto-generated test catalog: [`docs/test-catalog.md`](./docs/test-catalog.md)
 - Framework-agnostic output: CSS custom properties + tree-shakable ESM + `.d.ts`
-- No runtime JS. No client-side theme engine. Mode switching = a single `data-mode` attribute flip.
+- No runtime JS. No client-side theme engine. Mode switching = a single `data-mode` / `data-material-mode` attribute flip.
 
-> **Phase 1** (colours) is what this README covers. Scales, typography, Tailwind v4 preset, and materials ship in phases 2–4 per `spec.md` §13.
+## Layers shipped
+
+| Layer | Scope | Location |
+|---|---|---|
+| L1 | Units (`px/*`, `pt/*`) | §2 |
+| L2 | Dimensions (spacing, radius, size, fx) | §3 |
+| L3 | Primitive colors (13 neutrals + 11 accent spines + 2 statics + 29 opacity stops) | §4 |
+| L4 | Semantic colors + progressive shadows | §5 |
+| L5 | Typography (11-step scale + aliases) | §6 |
+| L6 | Z-index | §7 |
+| L7 | Materials (3-mode axis) | §8 |
+
+See [`../../plan/implementation-plan-v2.md`](../../plan/implementation-plan-v2.md) for the full architecture.
 
 ## Install
 
@@ -23,10 +37,21 @@ Running `bun run build` produces:
 
 ```
 dist/
-  tokens.css      # all primitives + semantic vars, 4 modes
+  tokens.css      # L1/L2 + typography + z-index + colors (4 modes) + materials (3 modes)
   index.js        # tree-shakable ESM barrel of token names
   index.d.ts      # typed autocomplete for every var
 ```
+
+## Scripts
+
+```bash
+bun run build      # regenerate dist/
+bun test           # 174 tests across 27 files (< 200 ms)
+bun run coverage   # verify every plan invariant has a @governs test
+bun run catalog    # regenerate docs/test-catalog.md
+```
+
+Every test file carries a `@layer / @governs / @invariant / @on-fail` JSDoc header. CI fails if a file is missing any of those tags or references an unknown plan section, keeping the plan and the tests bidirectionally linked.
 
 Import CSS once, globally:
 

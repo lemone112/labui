@@ -26,7 +26,9 @@
     "test": "bun test",
     "test:node": "node --import tsx --test tests/*.test.ts",
     "clean": "rm -rf dist",
-    "lint": "bun run src/build.ts"
+    "lint": "bun run src/build.ts",
+    "catalog": "bun run scripts/generate-test-catalog.ts",
+    "coverage": "bun run scripts/verify-plan-coverage.ts"
   },
   "dependencies": {
     "apca-w3": "^0.1.9",

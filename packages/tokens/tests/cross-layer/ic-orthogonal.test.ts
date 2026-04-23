@@ -2,7 +2,7 @@
  * IC is orthogonal to BaseMode.
  *
  * @layer Cross-layer
- * @governs plan-v2 §1.5 · Two-axis rendering
+ * @governs plan-v2 §1.5 · Two-axis rendering; plan-v2 §9.2 · Integration tests
  * @invariant IC mode amplifies contrast in BOTH light and dark; it does
  *            not require a particular base mode. The 4 outputs are real.
  * @why A user can opt-in to IC in either light or dark; they should both
