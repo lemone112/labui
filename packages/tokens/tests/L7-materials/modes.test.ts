@@ -80,6 +80,28 @@ describe('Materials · validation', () => {
     ).toBe(true)
   })
 
+  test('glass_opacity not in opacity stops triggers warning', () => {
+    const bad = generateMaterials(
+      {
+        default_mode: 'solid',
+        levels: {
+          lvl: {
+            primitive: '0',
+            // 55 is in [0,100] but not a declared stop in the ladder.
+            glass_opacity: 55,
+            glass_blur: 'm',
+            backdrop_blur: 's',
+          },
+        },
+      },
+      primitive,
+      config.dimensions,
+    )
+    expect(
+      bad.warnings.some((w) => w.includes('not a defined opacity stop')),
+    ).toBe(true)
+  })
+
   test('out-of-range glass_opacity triggers warning', () => {
     const bad = generateMaterials(
       {
