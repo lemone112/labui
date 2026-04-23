@@ -554,24 +554,36 @@ export interface SemanticsConfig {
 // ─── Top-level config ───────────────────────────────────────────────────
 
 /**
- * Deprecation entry for a single token / cell path.
+ * Deprecation entry for a single emitted CSS custom property.
  *
- * @governs plan/test-strategy.md §11 · G6 deprecated-tokens guard ·
- *          §15.3 Deprecation lifecycle
+ * @governs plan/test-strategy.md §11 · G6 deprecated-tokens guard
+ *          (lifecycle spec in §15.3 of the same doc)
  * @why A structured lifecycle (current emit + warning → removal after
  *      `removed_in`) lets downstream consumers migrate without silent
  *      breakage. The G6 guard enforces this contract.
+ *
+ * Keys in {@link DeprecationsConfig} and the `replacement` field are
+ * the literal CSS variable names (e.g. `--label-accent-primary`) as
+ * they appear in `dist/tokens.css`, NOT dotted config paths. The
+ * semantic tree uses hand-crafted abbreviations (`bg-*` vs
+ * `backgrounds.*`, `badge-label-contrast` vs `misc.badge.label_contrast`,
+ * etc., see `generators/semantic-colors.ts::collectEntries`) that
+ * cannot be derived mechanically from the config path — using the
+ * emitted name directly avoids the mismatch entirely.
  */
 export interface DeprecationEntry {
-  /** Preferred new token path. */
+  /** Literal CSS variable name that supersedes the deprecated one. */
   replacement: string
-  /** Semver at which the old token is fully removed from `dist`. */
+  /** Semver at which the old var is fully removed from `dist`. */
   removed_in: string
   /** Short human-readable reason (shown in CSS warning comment). */
   reason: string
 }
 
-/** Map of deprecated source paths → lifecycle metadata. */
+/**
+ * Map of deprecated CSS variable names → lifecycle metadata. Keys must
+ * start with `--` and contain only `[a-z0-9-]` characters.
+ */
 export type DeprecationsConfig = Record<string, DeprecationEntry>
 
 /**

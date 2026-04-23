@@ -40,10 +40,21 @@ export const config: TokensConfig = {
   // Guard G8 asserts (schema_major, schema_minor) == (pkg_major, pkg_minor).
   schema_version: '0.2.0',
 
-  // Deprecation registry. Each entry keeps an old token path emitting
-  // (with a CSS warning comment near the declaration) until `removed_in`
-  // ships, at which point the G6 guard flips to asserting absence.
+  // Deprecation registry. Keys are the literal CSS custom property
+  // names (e.g. `--label-accent-primary`) that appear in `dist/tokens.css`
+  // — NOT dotted config paths, because the semantic tree uses
+  // hand-crafted abbreviations that cannot be derived mechanically
+  // (see `src/types.ts::DeprecationEntry`). Each entry keeps the
+  // var emitting with a CSS warning comment until `removed_in`, at
+  // which point the G6 guard flips to asserting absence.
   // Empty today — lifecycle scaffolding for future renames.
+  //
+  // Example of a future entry:
+  //   '--label-accent-primary': {
+  //     replacement: '--label-brand-primary',
+  //     removed_in: '0.3.0',
+  //     reason: 'Renamed for sentiment consistency',
+  //   },
   deprecated: {},
 
   colors: {

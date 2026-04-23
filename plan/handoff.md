@@ -89,6 +89,17 @@ test guarding it.
    Tests: `tests/guards/schema-version.test.ts` (G8),
    `tests/guards/deprecations.test.ts` (G6).
 
+9. **`config.deprecated` keys are emitted CSS var names, not config
+   paths.** The semantic tree uses hand-crafted abbreviations (`bg-*`
+   vs `backgrounds.*`, `badge-label-contrast` vs
+   `misc.badge.label_contrast`, underscores → hyphens, mixed-case →
+   lowercase — see `generators/semantic-colors.ts::collectEntries`)
+   that cannot be derived mechanically from the config path. The
+   registry intentionally uses the literal `--var-name` string so the
+   writer + guard don't need a mapping function that would drift out
+   of sync with `collectEntries`. See `DeprecationEntry` doc in
+   `src/types.ts` for the full rationale.
+
 ---
 
 ## 3. Where we are right now (as of PR-F)

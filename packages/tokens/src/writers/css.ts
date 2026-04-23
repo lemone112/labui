@@ -36,18 +36,6 @@ import { formatOklchCss } from '../utils/oklch'
 
 const HEADER = '/* Lab UI — generated design tokens. DO NOT EDIT. */\n'
 
-/**
- * Convert a dotted cell path (e.g. `labels.brand.primary`) to a CSS
- * custom property name (`--label-brand-primary`). Matches the convention
- * in `writePrimitivesForOutput` / `writeSemanticsForOutput`: the leading
- * group segment is singularised (labels → label, backgrounds → background).
- */
-function cssVarFor(path: string): string {
-  const parts = path.split('.')
-  if (parts[0].endsWith('s')) parts[0] = parts[0].slice(0, -1)
-  return '--' + parts.join('-')
-}
-
 export function writeCSS(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
@@ -111,12 +99,12 @@ function formatDeprecationBanner(deps: DeprecationsConfig): string[] {
   const entries = Object.entries(deps)
   if (entries.length === 0) return []
   const lines: string[] = ['/* ─── DEPRECATED TOKENS ─── */']
-  for (const [path, entry] of entries) {
-    const oldVar = cssVarFor(path)
-    const newVar = cssVarFor(entry.replacement)
+  for (const [oldVar, entry] of entries) {
+    // Keys are the literal `--` CSS var names (see `DeprecationEntry`
+    // doc in types.ts) — use them directly, do not try to derive them.
     // Exact format asserted by the G6 guard.
     lines.push(
-      `/* DEPRECATED: ${oldVar} → ${newVar} (removed in ${entry.removed_in}): ${entry.reason} */`,
+      `/* DEPRECATED: ${oldVar} → ${entry.replacement} (removed in ${entry.removed_in}): ${entry.reason} */`,
     )
   }
   return lines
