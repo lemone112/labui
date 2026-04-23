@@ -8,15 +8,18 @@
 import type {
   PrimitiveColorSet,
   ResolvedDimensions,
+  ResolvedTypography,
   ResolvedUnits,
   SemanticColorSet,
 } from '../types'
+import { TYPOGRAPHY_KEYS } from '../generators/typography'
 
 export function writeESM(
   primitive: PrimitiveColorSet,
   semantic: SemanticColorSet,
   units?: ResolvedUnits,
   dimensions?: ResolvedDimensions,
+  typography?: ResolvedTypography,
 ): string {
   const lines: string[] = ['// Lab UI — generated ESM token barrel. DO NOT EDIT.\n']
 
@@ -72,6 +75,21 @@ export function writeESM(
         const slug = `${prefix}-${name.replace(/\//g, '-')}`
         lines.push(`export const ${camelCase(slug)} = 'var(--${slug})';`)
       }
+    }
+    lines.push('')
+  }
+
+  if (typography) {
+    lines.push(`export const fontFamily = 'var(--font-family)';`)
+    lines.push(`export const fontFamilyMono = 'var(--font-family-mono)';`)
+    for (const key of TYPOGRAPHY_KEYS) {
+      lines.push(`export const ${camelCase(`font-size-${key}`)} = 'var(--font-size-${key})';`)
+      lines.push(`export const ${camelCase(`lh-body-${key}`)} = 'var(--lh-body-${key})';`)
+      lines.push(`export const ${camelCase(`lh-headline-${key}`)} = 'var(--lh-headline-${key})';`)
+      lines.push(`export const ${camelCase(`tracking-${key}`)} = 'var(--tracking-${key})';`)
+    }
+    for (const name of Object.keys(typography.semantics)) {
+      lines.push(`export const ${camelCase(`text-${name}`)} = 'var(--text-${name})';`)
     }
     lines.push('')
   }

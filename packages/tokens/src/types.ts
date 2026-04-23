@@ -509,9 +509,72 @@ export interface TokensConfig {
   semantics: SemanticsConfig
   units: UnitsConfig
   dimensions: DimensionsConfig
-  typography?: unknown
+  typography: TypographyConfig
   z_index?: unknown
   materials?: unknown
+}
+
+// ─── Config: typography (L5) ───────────────────────────────────────────
+
+/**
+ * @governs plan-v2 §6 · Layer 5 Typography
+ *
+ * Generated scale: xxs, xs, s, m, l, xl, 2xl, 3xl, 4xl, 5xl, 6xl.
+ * 'm' is the base (exponent 0). Sizes are derived as
+ *   base * scale_ratio^(index(key) - index('m'))
+ * then snapped to multiples of base_px/2 for grid correctness
+ * (course §02 rule 1).
+ */
+export interface TypographyConfig {
+  font_family: string
+  font_family_mono: string
+  /** Index into units.px. base_size_step=4 → 16px at scaling=1.0. */
+  base_size_step: number
+  /** Multiplicative ratio per step. 1.125 ≈ major second. */
+  scale_ratio: number
+  /** Body line-height as fraction of size. 1.5 default. */
+  lh_body_density: number
+  /** Headline line-height, typically tighter than body. 0.95..1.1. */
+  lh_headline_density: number
+  /** Tracking (letter-spacing, em) controls. */
+  tracking: {
+    /** Base body tracking em. */
+    body: number
+    /** Em shift per log2(size/base). Negative tightens headlines. */
+    headline_per_log_size: number
+    /** Extra em boost for ALL CAPS contexts (documented, not applied). */
+    caps_boost: number
+  }
+  /** Semantic aliases → scale key. */
+  semantics: Record<string, TypographyKey>
+}
+
+export type TypographyKey =
+  | 'xxs'
+  | 'xs'
+  | 's'
+  | 'm'
+  | 'l'
+  | 'xl'
+  | '2xl'
+  | '3xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+
+export interface ResolvedTypography {
+  font_family: string
+  font_family_mono: string
+  /** size[key] in px (integer or half-pixel). */
+  size: Record<TypographyKey, number>
+  /** body line-height in px. */
+  lh_body: Record<TypographyKey, number>
+  /** headline line-height in px. */
+  lh_headline: Record<TypographyKey, number>
+  /** tracking in em (negative tightens). */
+  tracking: Record<TypographyKey, number>
+  /** semantic → key lookup. */
+  semantics: Record<string, TypographyKey>
 }
 
 // ─── Generated IR ───────────────────────────────────────────────────────
