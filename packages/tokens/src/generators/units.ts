@@ -46,7 +46,9 @@ export function generateUnits(cfg: UnitsConfig): GenerateUnitsResult {
   if (Math.abs(product - Math.round(product)) > 1e-6) {
     warnings.push(
       `units: base_px (${cfg.base_px}) × scaling (${cfg.scaling}) = ${product.toFixed(4)} ` +
-        `— not integer. Sub-pixel rendering may drift. Consider scaling ∈ {0.75, 1.0, 1.25}.`,
+        `— not integer. px values are still rounded to integers, but the grid ` +
+        `drifts from a regular N·base_px step. Plan §2.3 presets: ` +
+        `{0.75, 1.0, 1.166, 1.333} (rounded-grid) or {0.75, 1.0, 1.25} (strict-grid).`,
     )
   }
 
