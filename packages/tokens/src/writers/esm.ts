@@ -143,5 +143,12 @@ export function writeESM(
 }
 
 function camelCase(s: string): string {
-  return s.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
+  // A `--N` run in the slug is always a negative unit index (CSS var
+  // `--unit--N` → slug `unit--N`). Rewrite as `-negN` so the JS
+  // identifier stays unique and valid (otherwise `unit/-7` and
+  // `unit/7` both camelCase to `unit7` and the export statement
+  // becomes `export const unit-7 = …`, which is invalid JS).
+  return s
+    .replace(/--(\d)/g, '-neg$1')
+    .replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
 }

@@ -113,5 +113,12 @@ export function writeDTS(
 }
 
 function camelCase(s: string): string {
-  return s.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
+  // A `--N` run in the slug is always a negative unit index (CSS var
+  // `--unit--N` → slug `unit--N`). Rewrite as `-negN` so the TS
+  // identifier stays unique and valid (otherwise `unit/-7` and
+  // `unit/7` both camelCase to `unit7` and the declaration becomes
+  // `export declare const unit-7: string;`, which is invalid TS).
+  return s
+    .replace(/--(\d)/g, '-neg$1')
+    .replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
 }
