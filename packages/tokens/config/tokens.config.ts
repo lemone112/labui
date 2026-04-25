@@ -958,8 +958,13 @@ function buildFills() {
 }
 
 function buildBorders() {
-  // Borders: strong uses pipeline (solid spine), base/soft/ghost use
-  // opacity (translucent on bg). Strong border = visible, pipeline-based.
+  // Borders: strong uses pipeline (solid spine), base/soft use opacity
+  // (translucent on bg). See SPEC §5.4.
+  //
+  // Drift D1 (closed): accent borders dropped `ghost` tier (Figma never had
+  // it; designer confirmed «1. Ошибочно добавлено» 2026-04-23).
+  // Drift D2 (closed): neutral border gained `inverted` tier (Figma has it;
+  // mode-flipping border for inverted backgrounds; SPEC §10.D2).
   const strongPipeline = (accent: import('../src/types').AccentName): SemDef => ({
     kind: 'pipeline',
     primitive: { family: 'accent', id: accent },
@@ -972,11 +977,14 @@ function buildBorders() {
     ref: { family: 'accent', id: accent, opacity_stop: stop },
   })
 
-  const border = (accent: import('../src/types').AccentName) => ({
+  const border = (accent: import('../src/types').AccentName): {
+    strong: SemDef
+    base: SemDef
+    soft: SemDef
+  } => ({
     strong: strongPipeline(accent),
     base: soft(accent, 20),
     soft: soft(accent, 12),
-    ghost: soft(accent, 0),
   })
 
   const neutralBorder = (): {
@@ -984,6 +992,7 @@ function buildBorders() {
     base: SemDef
     soft: SemDef
     ghost: SemDef
+    inverted: SemDef
   } => ({
     strong: {
       kind: 'pipeline',
@@ -1000,9 +1009,19 @@ function buildBorders() {
       kind: 'direct',
       ref: { family: 'neutral', id: '6', opacity_stop: 12 },
     },
+    // Ghost: 0% alpha structural slot. Component default-state existence
+    // (e.g. button border = ghost in default, soft in hover). NOT for
+    // drawing. SPEC §5.4.2.
     ghost: {
       kind: 'direct',
       ref: { family: 'neutral', id: '6', opacity_stop: 0 },
+    },
+    // Inverted: mode-flipping. Light theme → white border (on dark bg);
+    // dark theme → dark border (on light bg). Same encoding as
+    // labels.inverted: gray.0 mirror-flips automatically. SPEC §10.D2.
+    inverted: {
+      kind: 'direct',
+      ref: { family: 'neutral', id: '0' },
     },
   })
 

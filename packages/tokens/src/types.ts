@@ -480,7 +480,23 @@ export interface BackgroundsConfig {
 }
 
 export type TierSet4 = Record<'primary' | 'secondary' | 'tertiary' | 'quaternary', SemanticDef>
-export type BorderTierSet = Record<'strong' | 'base' | 'soft' | 'ghost', SemanticDef>
+
+/**
+ * Accent border tiers (Brand/Danger/Warning/Success/Info).
+ * No `ghost` (Figma doesn't carry it; per SPEC §10.D1 / drift D1).
+ * No `inverted` (only Neutral has Inverted; per SPEC §5.4).
+ */
+export type BorderAccentTierSet = Record<'strong' | 'base' | 'soft', SemanticDef>
+
+/**
+ * Neutral border tiers.
+ * `ghost` = 0% opacity structural slot (component default-state existence; SPEC §5.4.2).
+ * `inverted` = mode-flipping border for inverted backgrounds (SPEC §10.D2 / drift D2).
+ */
+export type BorderNeutralTierSet = Record<'strong' | 'base' | 'soft' | 'ghost' | 'inverted', SemanticDef>
+
+/** @deprecated Use `BorderAccentTierSet` or `BorderNeutralTierSet`. Retained for one release for downstream compat. */
+export type BorderTierSet = BorderNeutralTierSet
 
 export interface LabelsConfig {
   neutral: TierSet4
@@ -504,12 +520,12 @@ export interface FillsConfig {
 }
 
 export interface BordersConfig {
-  neutral: BorderTierSet
-  brand: BorderTierSet
-  danger: BorderTierSet
-  warning: BorderTierSet
-  success: BorderTierSet
-  info: BorderTierSet
+  neutral: BorderNeutralTierSet
+  brand: BorderAccentTierSet
+  danger: BorderAccentTierSet
+  warning: BorderAccentTierSet
+  success: BorderAccentTierSet
+  info: BorderAccentTierSet
   static: { light: SemanticDef; dark: SemanticDef }
 }
 
