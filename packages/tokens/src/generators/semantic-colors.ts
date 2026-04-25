@@ -326,7 +326,10 @@ function pushBorder(
 }
 
 const BORDER_TIERS_NEUTRAL = ['strong', 'base', 'soft', 'ghost', 'inverted'] as const
-const BORDER_TIERS_ACCENT = ['strong', 'base', 'soft'] as const
+// `ghost` here is deprecated (SPEC §10.D1) and removed in 0.3.0; entries
+// in `config.deprecated` add the warning banner. Until then we emit the
+// var so consumers don't break.
+const BORDER_TIERS_ACCENT = ['strong', 'base', 'soft', 'ghost'] as const
 
 // ─── Shadow presets ─────────────────────────────────────────────────────
 

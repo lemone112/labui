@@ -483,10 +483,16 @@ export type TierSet4 = Record<'primary' | 'secondary' | 'tertiary' | 'quaternary
 
 /**
  * Accent border tiers (Brand/Danger/Warning/Success/Info).
- * No `ghost` (Figma doesn't carry it; per SPEC §10.D1 / drift D1).
+ *
+ * `ghost` is currently emitted but **deprecated** per SPEC §10.D1 / drift D1
+ * (Figma never carried it; designer confirmed «Ошибочно добавлено» 2026-04-23).
+ * Removal scheduled for schema_version 0.3.0 — see `config.deprecated`
+ * entries for `--border-{accent}-ghost`. Consumers should migrate to
+ * `--border-neutral-ghost` (the canonical structural slot).
+ *
  * No `inverted` (only Neutral has Inverted; per SPEC §5.4).
  */
-export type BorderAccentTierSet = Record<'strong' | 'base' | 'soft', SemanticDef>
+export type BorderAccentTierSet = Record<'strong' | 'base' | 'soft' | 'ghost', SemanticDef>
 
 /**
  * Neutral border tiers.

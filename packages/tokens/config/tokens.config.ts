@@ -47,15 +47,40 @@ export const config: TokensConfig = {
   // (see `src/types.ts::DeprecationEntry`). Each entry keeps the
   // var emitting with a CSS warning comment until `removed_in`, at
   // which point the G6 guard flips to asserting absence.
-  // Empty today — lifecycle scaffolding for future renames.
-  //
-  // Example of a future entry:
-  //   '--label-accent-primary': {
-  //     replacement: '--label-brand-primary',
-  //     removed_in: '0.3.0',
-  //     reason: 'Renamed for sentiment consistency',
-  //   },
-  deprecated: {},
+  // SPEC §10.D1 (drift D1): accent border `ghost` tiers were added by
+  // mistake — Figma never carried them. Designer confirmed «Ошибочно
+  // добавлено» 2026-04-23. Vars continue to emit until schema 0.3.0 to
+  // give consumers a grace period; the canonical replacement is
+  // `--border-neutral-ghost` (the structural-slot token that does
+  // exist in Figma and was always the design intent for "invisible
+  // border for component default state").
+  deprecated: {
+    '--border-brand-ghost': {
+      replacement: '--border-neutral-ghost',
+      removed_in: '0.3.0',
+      reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
+    },
+    '--border-danger-ghost': {
+      replacement: '--border-neutral-ghost',
+      removed_in: '0.3.0',
+      reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
+    },
+    '--border-warning-ghost': {
+      replacement: '--border-neutral-ghost',
+      removed_in: '0.3.0',
+      reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
+    },
+    '--border-success-ghost': {
+      replacement: '--border-neutral-ghost',
+      removed_in: '0.3.0',
+      reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
+    },
+    '--border-info-ghost': {
+      replacement: '--border-neutral-ghost',
+      removed_in: '0.3.0',
+      reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
+    },
+  },
 
   colors: {
     gamut: 'p3',
@@ -958,11 +983,14 @@ function buildFills() {
 }
 
 function buildBorders() {
-  // Borders: strong uses pipeline (solid spine), base/soft use opacity
+  // Borders: strong uses pipeline (solid spine), base/soft/ghost use opacity
   // (translucent on bg). See SPEC §5.4.
   //
-  // Drift D1 (closed): accent borders dropped `ghost` tier (Figma never had
-  // it; designer confirmed «1. Ошибочно добавлено» 2026-04-23).
+  // Drift D1 (announced): accent borders carry a `ghost` tier that Figma
+  // never had (designer confirmed «Ошибочно добавлено» 2026-04-23). It
+  // continues to emit through schema 0.2.x with a deprecation banner per
+  // G6 protocol; full removal scheduled for 0.3.0. See `config.deprecated`
+  // entries `--border-{accent}-ghost`.
   // Drift D2 (closed): neutral border gained `inverted` tier (Figma has it;
   // mode-flipping border for inverted backgrounds; SPEC §10.D2).
   const strongPipeline = (accent: import('../src/types').AccentName): SemDef => ({
@@ -981,10 +1009,13 @@ function buildBorders() {
     strong: SemDef
     base: SemDef
     soft: SemDef
+    ghost: SemDef
   } => ({
     strong: strongPipeline(accent),
     base: soft(accent, 20),
     soft: soft(accent, 12),
+    // DEPRECATED: removed_in 0.3.0. See `config.deprecated`. SPEC §10.D1.
+    ghost: soft(accent, 0),
   })
 
   const neutralBorder = (): {
