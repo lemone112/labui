@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+// Bun Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committed snapshot 1`] = `
 "/* Lab UI — generated Tailwind v4 preset. DO NOT EDIT. */
@@ -65,6 +65,36 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --color-static-dark-a96: var(--static-dark-a96);
   --color-static-dark-a98: var(--static-dark-a98);
   --color-static-dark-a99: var(--static-dark-a99);
+  --color-static-skeleton-mid: var(--static-skeleton-mid);
+  --color-static-skeleton-mid-a0: var(--static-skeleton-mid-a0);
+  --color-static-skeleton-mid-a1: var(--static-skeleton-mid-a1);
+  --color-static-skeleton-mid-a2: var(--static-skeleton-mid-a2);
+  --color-static-skeleton-mid-a4: var(--static-skeleton-mid-a4);
+  --color-static-skeleton-mid-a8: var(--static-skeleton-mid-a8);
+  --color-static-skeleton-mid-a12: var(--static-skeleton-mid-a12);
+  --color-static-skeleton-mid-a16: var(--static-skeleton-mid-a16);
+  --color-static-skeleton-mid-a20: var(--static-skeleton-mid-a20);
+  --color-static-skeleton-mid-a24: var(--static-skeleton-mid-a24);
+  --color-static-skeleton-mid-a28: var(--static-skeleton-mid-a28);
+  --color-static-skeleton-mid-a32: var(--static-skeleton-mid-a32);
+  --color-static-skeleton-mid-a36: var(--static-skeleton-mid-a36);
+  --color-static-skeleton-mid-a40: var(--static-skeleton-mid-a40);
+  --color-static-skeleton-mid-a44: var(--static-skeleton-mid-a44);
+  --color-static-skeleton-mid-a48: var(--static-skeleton-mid-a48);
+  --color-static-skeleton-mid-a52: var(--static-skeleton-mid-a52);
+  --color-static-skeleton-mid-a56: var(--static-skeleton-mid-a56);
+  --color-static-skeleton-mid-a60: var(--static-skeleton-mid-a60);
+  --color-static-skeleton-mid-a64: var(--static-skeleton-mid-a64);
+  --color-static-skeleton-mid-a68: var(--static-skeleton-mid-a68);
+  --color-static-skeleton-mid-a72: var(--static-skeleton-mid-a72);
+  --color-static-skeleton-mid-a76: var(--static-skeleton-mid-a76);
+  --color-static-skeleton-mid-a80: var(--static-skeleton-mid-a80);
+  --color-static-skeleton-mid-a84: var(--static-skeleton-mid-a84);
+  --color-static-skeleton-mid-a88: var(--static-skeleton-mid-a88);
+  --color-static-skeleton-mid-a92: var(--static-skeleton-mid-a92);
+  --color-static-skeleton-mid-a96: var(--static-skeleton-mid-a96);
+  --color-static-skeleton-mid-a98: var(--static-skeleton-mid-a98);
+  --color-static-skeleton-mid-a99: var(--static-skeleton-mid-a99);
   --color-neutral-0: var(--neutral-0);
   --color-neutral-0-a0: var(--neutral-0-a0);
   --color-neutral-0-a1: var(--neutral-0-a1);
@@ -882,12 +912,20 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --color-border-info-ghost: var(--border-info-ghost);
   --color-border-static-light: var(--border-static-light);
   --color-border-static-dark: var(--border-static-dark);
+  --color-fx-glow-neutral: var(--fx-glow-neutral);
+  --color-fx-glow-inverted: var(--fx-glow-inverted);
   --color-fx-glow-brand: var(--fx-glow-brand);
   --color-fx-glow-danger: var(--fx-glow-danger);
   --color-fx-glow-warning: var(--fx-glow-warning);
   --color-fx-glow-success: var(--fx-glow-success);
   --color-fx-glow-info: var(--fx-glow-info);
+  --color-fx-focus-ring-neutral: var(--fx-focus-ring-neutral);
+  --color-fx-focus-ring-brand: var(--fx-focus-ring-brand);
+  --color-fx-focus-ring-danger: var(--fx-focus-ring-danger);
+  --color-fx-focus-ring-warning: var(--fx-focus-ring-warning);
   --color-fx-focus-ring: var(--fx-focus-ring);
+  --color-fx-skeleton-base: var(--fx-skeleton-base);
+  --color-fx-skeleton-highlight: var(--fx-skeleton-highlight);
   --color-fx-skeleton: var(--fx-skeleton);
   --color-fx-shadow-minor: var(--fx-shadow-minor);
   --color-fx-shadow-ambient: var(--fx-shadow-ambient);

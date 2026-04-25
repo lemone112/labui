@@ -3,7 +3,7 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 42 test files
+**Total:** 43 test files
 
 ## Calibration
 
@@ -213,6 +213,13 @@ Auto-generated from `@layer` / `@governs` / `@invariant` headers in every
 - **Invariant:** All label tiers (primary..quaternary) have alpha=1. They are solid spine-points, not opacity-composed. Opacity is reserved for overlays, fills, borders-soft, fx.
 - **Why:** Unified spine model — tiers are solid colors at distinct L targets, not opacity-washes of a single anchor.
 - **On fail:** inspect SemanticsConfig — labels must use kind=pipeline without opacity_stop.
+
+### `tests/L4-semantic/fx-contract.test.ts`
+
+- **Governs:** plan-v2 §5.5 · FX
+- **Invariant:** FX emits the Figma slot skeleton: Glow has Neutral/Inverted/Brand/Danger/Warning only as canonical slots, Focus-ring is split by neutral/brand/danger/warning, Skeleton is split into base/highlight, and Shadow tint alpha is sector-aware.
+- **Why:** Button halo, focus, loading, and shadow recipes are consumed directly by components; collapsed or invented cells break the public contract.
+- **On fail:** inspect config.semantics.fx and collectEntries() emission order.
 
 ### `tests/references.test.ts`
 

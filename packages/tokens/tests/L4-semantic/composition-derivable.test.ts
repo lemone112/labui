@@ -48,7 +48,19 @@ describe('Composition derivability · fills use opacity', () => {
     }
   })
 
-  test('fx-skeleton has alpha < 1', () => {
+  test('fx-skeleton-base and highlight have alpha < 1', () => {
+    const tokens = ['fx-skeleton-base', 'fx-skeleton-highlight'].map((name) =>
+      semantic.tokens.find((t) => t.name === name),
+    )
+    for (const token of tokens) {
+      expect(token).toBeDefined()
+      for (const output of OUTPUTS) {
+        expect(token!.values[output].alpha).toBeLessThan(1)
+      }
+    }
+  })
+
+  test('legacy fx-skeleton alias has alpha < 1', () => {
     const token = semantic.tokens.find((t) => t.name === 'fx-skeleton')!
     for (const output of OUTPUTS) {
       expect(token.values[output].alpha).toBeLessThan(1)

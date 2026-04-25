@@ -80,6 +80,26 @@ export const config: TokensConfig = {
       removed_in: '0.3.0',
       reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
     },
+    '--fx-glow-success': {
+      replacement: '--fx-glow-brand',
+      removed_in: '0.3.0',
+      reason: 'FX.Glow.Success is not present in Figma Variables.',
+    },
+    '--fx-glow-info': {
+      replacement: '--fx-glow-brand',
+      removed_in: '0.3.0',
+      reason: 'FX.Glow.Info is not present in Figma Variables.',
+    },
+    '--fx-focus-ring': {
+      replacement: '--fx-focus-ring-brand',
+      removed_in: '0.3.0',
+      reason: 'FX.Focus-ring is split by Figma slot.',
+    },
+    '--fx-skeleton': {
+      replacement: '--fx-skeleton-base',
+      removed_in: '0.3.0',
+      reason: 'FX.Skeleton is split into Base and Highlight.',
+    },
   },
 
   colors: {
@@ -438,6 +458,7 @@ export const config: TokensConfig = {
     statics: {
       white: { L: 1.0, C: 0, H: 0 },
       dark: { L: 0.08, C: 0, H: 0 }, // non-pure black for shadows
+      skeleton_mid: { L: 0.575, C: 0.012, H: 286 },
     },
 
     // ─── Opacity primitive (29 stops) ────────────────────────────────
@@ -600,40 +621,125 @@ export const config: TokensConfig = {
 
     fx: {
       glow: {
+        Neutral: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 52 },
+        },
+        Inverted: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '4' },
+        },
         Brand: {
           kind: 'direct',
-          ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
+          ref: { family: 'accent', id: 'brand', opacity_stop: 52 },
         },
         Danger: {
           kind: 'direct',
-          ref: { family: 'accent', id: 'red', opacity_stop: 40 },
+          ref: { family: 'accent', id: 'red', opacity_stop: 52 },
         },
         Warning: {
           kind: 'direct',
-          ref: { family: 'accent', id: 'orange', opacity_stop: 40 },
+          ref: { family: 'accent', id: 'orange', opacity_stop: 52 },
         },
+      },
+      legacy_glow: {
         Success: {
           kind: 'direct',
-          ref: { family: 'accent', id: 'green', opacity_stop: 40 },
+          ref: { family: 'accent', id: 'green', opacity_stop: 52 },
         },
         Info: {
           kind: 'direct',
-          ref: { family: 'accent', id: 'blue', opacity_stop: 40 },
+          ref: { family: 'accent', id: 'blue', opacity_stop: 52 },
         },
       },
       focus_ring: {
+        Neutral: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'dark' },
+            'light/ic': { family: 'static', id: 'dark' },
+            'dark/normal': { family: 'static', id: 'white' },
+            'dark/ic': { family: 'static', id: 'white' },
+          },
+        },
+        Brand: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'brand' },
+        },
+        Danger: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'red' },
+        },
+        Warning: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'orange' },
+        },
+      },
+      focus_ring_legacy: {
         kind: 'direct',
-        ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
+        ref: { family: 'accent', id: 'brand' },
       },
       skeleton: {
-        kind: 'direct',
-        ref: { family: 'neutral', id: '6', opacity_stop: 16 },
+        base: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'skeleton_mid', opacity_stop: 8 },
+            'light/ic': { family: 'static', id: 'skeleton_mid', opacity_stop: 12 },
+            'dark/normal': { family: 'static', id: 'skeleton_mid', opacity_stop: 12 },
+            'dark/ic': { family: 'static', id: 'skeleton_mid', opacity_stop: 16 },
+          },
+        },
+        highlight: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'skeleton_mid', opacity_stop: 4 },
+        },
+        legacy: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'skeleton_mid', opacity_stop: 8 },
+            'light/ic': { family: 'static', id: 'skeleton_mid', opacity_stop: 12 },
+            'dark/normal': { family: 'static', id: 'skeleton_mid', opacity_stop: 12 },
+            'dark/ic': { family: 'static', id: 'skeleton_mid', opacity_stop: 16 },
+          },
+        },
       },
       shadow_tints: {
-        minor: { family: 'static', id: 'dark', opacity_stop: 1 },
-        ambient: { family: 'static', id: 'dark', opacity_stop: 2 },
-        penumbra: { family: 'static', id: 'dark', opacity_stop: 4 },
-        major: { family: 'static', id: 'dark', opacity_stop: 12 },
+        minor: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'dark', opacity_stop: 1 },
+            'light/ic': { family: 'static', id: 'dark', opacity_stop: 1 },
+            'dark/normal': { family: 'static', id: 'dark', opacity_stop: 2 },
+            'dark/ic': { family: 'static', id: 'dark', opacity_stop: 2 },
+          },
+        },
+        ambient: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'dark', opacity_stop: 2 },
+            'light/ic': { family: 'static', id: 'dark', opacity_stop: 2 },
+            'dark/normal': { family: 'static', id: 'dark', opacity_stop: 4 },
+            'dark/ic': { family: 'static', id: 'dark', opacity_stop: 4 },
+          },
+        },
+        penumbra: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'dark', opacity_stop: 4 },
+            'light/ic': { family: 'static', id: 'dark', opacity_stop: 4 },
+            'dark/normal': { family: 'static', id: 'dark', opacity_stop: 12 },
+            'dark/ic': { family: 'static', id: 'dark', opacity_stop: 12 },
+          },
+        },
+        major: {
+          kind: 'mode-branch',
+          branches: {
+            'light/normal': { family: 'static', id: 'dark', opacity_stop: 12 },
+            'light/ic': { family: 'static', id: 'dark', opacity_stop: 12 },
+            'dark/normal': { family: 'static', id: 'dark', opacity_stop: 20 },
+            'dark/ic': { family: 'static', id: 'dark', opacity_stop: 20 },
+          },
+        },
       },
       shadow_presets: {
         xs: [{ y: 1, blur: 2, spread: 0, tint: 'minor' }],

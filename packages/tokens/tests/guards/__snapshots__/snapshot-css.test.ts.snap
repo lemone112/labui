@@ -1,4 +1,4 @@
-// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+// Bun Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
 ":root {
@@ -227,6 +227,10 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
 /* DEPRECATED: --border-warning-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
 /* DEPRECATED: --border-success-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
 /* DEPRECATED: --border-info-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --fx-glow-success → --fx-glow-brand (removed in 0.3.0): FX.Glow.Success is not present in Figma Variables. */
+/* DEPRECATED: --fx-glow-info → --fx-glow-brand (removed in 0.3.0): FX.Glow.Info is not present in Figma Variables. */
+/* DEPRECATED: --fx-focus-ring → --fx-focus-ring-brand (removed in 0.3.0): FX.Focus-ring is split by Figma slot. */
+/* DEPRECATED: --fx-skeleton → --fx-skeleton-base (removed in 0.3.0): FX.Skeleton is split into Base and Highlight. */
 
 :root {
   --opacity-0: 0.00;
@@ -321,6 +325,36 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --static-dark-a96: oklch(0.08 0 0 / 0.96);
   --static-dark-a98: oklch(0.08 0 0 / 0.98);
   --static-dark-a99: oklch(0.08 0 0 / 0.99);
+  --static-skeleton-mid: oklch(0.575 0.012 286);
+  --static-skeleton-mid-a0: oklch(0.575 0.012 286 / 0);
+  --static-skeleton-mid-a1: oklch(0.575 0.012 286 / 0.01);
+  --static-skeleton-mid-a2: oklch(0.575 0.012 286 / 0.02);
+  --static-skeleton-mid-a4: oklch(0.575 0.012 286 / 0.04);
+  --static-skeleton-mid-a8: oklch(0.575 0.012 286 / 0.08);
+  --static-skeleton-mid-a12: oklch(0.575 0.012 286 / 0.12);
+  --static-skeleton-mid-a16: oklch(0.575 0.012 286 / 0.16);
+  --static-skeleton-mid-a20: oklch(0.575 0.012 286 / 0.2);
+  --static-skeleton-mid-a24: oklch(0.575 0.012 286 / 0.24);
+  --static-skeleton-mid-a28: oklch(0.575 0.012 286 / 0.28);
+  --static-skeleton-mid-a32: oklch(0.575 0.012 286 / 0.32);
+  --static-skeleton-mid-a36: oklch(0.575 0.012 286 / 0.36);
+  --static-skeleton-mid-a40: oklch(0.575 0.012 286 / 0.4);
+  --static-skeleton-mid-a44: oklch(0.575 0.012 286 / 0.44);
+  --static-skeleton-mid-a48: oklch(0.575 0.012 286 / 0.48);
+  --static-skeleton-mid-a52: oklch(0.575 0.012 286 / 0.52);
+  --static-skeleton-mid-a56: oklch(0.575 0.012 286 / 0.56);
+  --static-skeleton-mid-a60: oklch(0.575 0.012 286 / 0.6);
+  --static-skeleton-mid-a64: oklch(0.575 0.012 286 / 0.64);
+  --static-skeleton-mid-a68: oklch(0.575 0.012 286 / 0.68);
+  --static-skeleton-mid-a72: oklch(0.575 0.012 286 / 0.72);
+  --static-skeleton-mid-a76: oklch(0.575 0.012 286 / 0.76);
+  --static-skeleton-mid-a80: oklch(0.575 0.012 286 / 0.8);
+  --static-skeleton-mid-a84: oklch(0.575 0.012 286 / 0.84);
+  --static-skeleton-mid-a88: oklch(0.575 0.012 286 / 0.88);
+  --static-skeleton-mid-a92: oklch(0.575 0.012 286 / 0.92);
+  --static-skeleton-mid-a96: oklch(0.575 0.012 286 / 0.96);
+  --static-skeleton-mid-a98: oklch(0.575 0.012 286 / 0.98);
+  --static-skeleton-mid-a99: oklch(0.575 0.012 286 / 0.99);
 }
 
 :root {
@@ -1139,13 +1173,21 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-info-ghost: oklch(0.64 0.193 259.9 / 0);
   --border-static-light: oklch(1 0 0 / 0.4);
   --border-static-dark: oklch(0.08 0 0 / 0.4);
-  --fx-glow-brand: oklch(0.603 0.218 257.4 / 0.4);
-  --fx-glow-danger: oklch(0.654 0.232 28.7 / 0.4);
-  --fx-glow-warning: oklch(0.786 0.172 68.6 / 0.4);
-  --fx-glow-success: oklch(0.73 0.194 147.4 / 0.4);
-  --fx-glow-info: oklch(0.64 0.193 259.9 / 0.4);
-  --fx-focus-ring: oklch(0.603 0.218 257.4 / 0.4);
-  --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
+  --fx-glow-neutral: oklch(1 0 0 / 0.52);
+  --fx-glow-inverted: oklch(0.76 0.013 286.1);
+  --fx-glow-brand: oklch(0.603 0.218 257.4 / 0.52);
+  --fx-glow-danger: oklch(0.654 0.232 28.7 / 0.52);
+  --fx-glow-warning: oklch(0.786 0.172 68.6 / 0.52);
+  --fx-glow-success: oklch(0.73 0.194 147.4 / 0.52);
+  --fx-glow-info: oklch(0.64 0.193 259.9 / 0.52);
+  --fx-focus-ring-neutral: oklch(0.08 0 0);
+  --fx-focus-ring-brand: oklch(0.603 0.218 257.4);
+  --fx-focus-ring-danger: oklch(0.654 0.232 28.7);
+  --fx-focus-ring-warning: oklch(0.786 0.172 68.6);
+  --fx-focus-ring: oklch(0.603 0.218 257.4);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.08);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
+  --fx-skeleton: oklch(0.575 0.012 286 / 0.08);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -1976,13 +2018,21 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-info-ghost: oklch(0.479 0.207 261 / 0);
   --border-static-light: oklch(1 0 0 / 0.4);
   --border-static-dark: oklch(0.08 0 0 / 0.4);
-  --fx-glow-brand: oklch(0.464 0.242 263.3 / 0.4);
-  --fx-glow-danger: oklch(0.553 0.225 27.3 / 0.4);
-  --fx-glow-warning: oklch(0.552 0.192 35.3 / 0.4);
-  --fx-glow-success: oklch(0.558 0.146 147.5 / 0.4);
-  --fx-glow-info: oklch(0.479 0.207 261 / 0.4);
-  --fx-focus-ring: oklch(0.464 0.242 263.3 / 0.4);
-  --fx-skeleton: oklch(0.555 0.012 286 / 0.16);
+  --fx-glow-neutral: oklch(1 0 0 / 0.52);
+  --fx-glow-inverted: oklch(0.825 0.011 280.4);
+  --fx-glow-brand: oklch(0.464 0.242 263.3 / 0.52);
+  --fx-glow-danger: oklch(0.553 0.225 27.3 / 0.52);
+  --fx-glow-warning: oklch(0.552 0.192 35.3 / 0.52);
+  --fx-glow-success: oklch(0.558 0.146 147.5 / 0.52);
+  --fx-glow-info: oklch(0.479 0.207 261 / 0.52);
+  --fx-focus-ring-neutral: oklch(0.08 0 0);
+  --fx-focus-ring-brand: oklch(0.464 0.242 263.3);
+  --fx-focus-ring-danger: oklch(0.553 0.225 27.3);
+  --fx-focus-ring-warning: oklch(0.552 0.192 35.3);
+  --fx-focus-ring: oklch(0.464 0.242 263.3);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.12);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
+  --fx-skeleton: oklch(0.575 0.012 286 / 0.12);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -2813,17 +2863,25 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-info-ghost: oklch(0.681 0.169 259.8 / 0);
   --border-static-light: oklch(1 0 0 / 0.4);
   --border-static-dark: oklch(0.08 0 0 / 0.4);
-  --fx-glow-brand: oklch(0.661 0.181 259.6 / 0.4);
-  --fx-glow-danger: oklch(0.654 0.232 26.5 / 0.4);
-  --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.4);
-  --fx-glow-success: oklch(0.756 0.208 147 / 0.4);
-  --fx-glow-info: oklch(0.681 0.169 259.8 / 0.4);
-  --fx-focus-ring: oklch(0.661 0.181 259.6 / 0.4);
-  --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
-  --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
-  --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
-  --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
-  --fx-shadow-major: oklch(0.08 0 0 / 0.12);
+  --fx-glow-neutral: oklch(1 0 0 / 0.52);
+  --fx-glow-inverted: oklch(0.359 0.012 285.8);
+  --fx-glow-brand: oklch(0.661 0.181 259.6 / 0.52);
+  --fx-glow-danger: oklch(0.654 0.232 26.5 / 0.52);
+  --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.52);
+  --fx-glow-success: oklch(0.756 0.208 147 / 0.52);
+  --fx-glow-info: oklch(0.681 0.169 259.8 / 0.52);
+  --fx-focus-ring-neutral: oklch(1 0 0);
+  --fx-focus-ring-brand: oklch(0.661 0.181 259.6);
+  --fx-focus-ring-danger: oklch(0.654 0.232 26.5);
+  --fx-focus-ring-warning: oklch(0.757 0.176 59.8);
+  --fx-focus-ring: oklch(0.661 0.181 259.6);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.12);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
+  --fx-skeleton: oklch(0.575 0.012 286 / 0.12);
+  --fx-shadow-minor: oklch(0.08 0 0 / 0.02);
+  --fx-shadow-ambient: oklch(0.08 0 0 / 0.04);
+  --fx-shadow-penumbra: oklch(0.08 0 0 / 0.12);
+  --fx-shadow-major: oklch(0.08 0 0 / 0.2);
   --badge-label-contrast: oklch(1 0 0);
   --badge-label-default: oklch(0.08 0 0);
   --control-bg: oklch(0.575 0.012 286 / 0.36);
@@ -3650,17 +3708,25 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-info-ghost: oklch(0.801 0.101 257.8 / 0);
   --border-static-light: oklch(1 0 0 / 0.4);
   --border-static-dark: oklch(0.08 0 0 / 0.4);
-  --fx-glow-brand: oklch(0.685 0.17 253 / 0.4);
-  --fx-glow-danger: oklch(0.698 0.193 23.5 / 0.4);
-  --fx-glow-warning: oklch(0.802 0.153 67.2 / 0.4);
-  --fx-glow-success: oklch(0.782 0.218 146.9 / 0.4);
-  --fx-glow-info: oklch(0.801 0.101 257.8 / 0.4);
-  --fx-focus-ring: oklch(0.685 0.17 253 / 0.4);
-  --fx-skeleton: oklch(0.555 0.012 286 / 0.16);
-  --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
-  --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
-  --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
-  --fx-shadow-major: oklch(0.08 0 0 / 0.12);
+  --fx-glow-neutral: oklch(1 0 0 / 0.52);
+  --fx-glow-inverted: oklch(0.332 0.012 285.7);
+  --fx-glow-brand: oklch(0.685 0.17 253 / 0.52);
+  --fx-glow-danger: oklch(0.698 0.193 23.5 / 0.52);
+  --fx-glow-warning: oklch(0.802 0.153 67.2 / 0.52);
+  --fx-glow-success: oklch(0.782 0.218 146.9 / 0.52);
+  --fx-glow-info: oklch(0.801 0.101 257.8 / 0.52);
+  --fx-focus-ring-neutral: oklch(1 0 0);
+  --fx-focus-ring-brand: oklch(0.685 0.17 253);
+  --fx-focus-ring-danger: oklch(0.698 0.193 23.5);
+  --fx-focus-ring-warning: oklch(0.802 0.153 67.2);
+  --fx-focus-ring: oklch(0.685 0.17 253);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.16);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
+  --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
+  --fx-shadow-minor: oklch(0.08 0 0 / 0.02);
+  --fx-shadow-ambient: oklch(0.08 0 0 / 0.04);
+  --fx-shadow-penumbra: oklch(0.08 0 0 / 0.12);
+  --fx-shadow-major: oklch(0.08 0 0 / 0.2);
   --badge-label-contrast: oklch(1 0 0);
   --badge-label-default: oklch(0.08 0 0);
   --control-bg: oklch(0.555 0.012 286 / 0.44);
@@ -4488,17 +4554,25 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
     --border-info-ghost: oklch(0.681 0.169 259.8 / 0);
     --border-static-light: oklch(1 0 0 / 0.4);
     --border-static-dark: oklch(0.08 0 0 / 0.4);
-    --fx-glow-brand: oklch(0.661 0.181 259.6 / 0.4);
-    --fx-glow-danger: oklch(0.654 0.232 26.5 / 0.4);
-    --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.4);
-    --fx-glow-success: oklch(0.756 0.208 147 / 0.4);
-    --fx-glow-info: oklch(0.681 0.169 259.8 / 0.4);
-    --fx-focus-ring: oklch(0.661 0.181 259.6 / 0.4);
-    --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
-    --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
-    --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
-    --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
-    --fx-shadow-major: oklch(0.08 0 0 / 0.12);
+    --fx-glow-neutral: oklch(1 0 0 / 0.52);
+    --fx-glow-inverted: oklch(0.359 0.012 285.8);
+    --fx-glow-brand: oklch(0.661 0.181 259.6 / 0.52);
+    --fx-glow-danger: oklch(0.654 0.232 26.5 / 0.52);
+    --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.52);
+    --fx-glow-success: oklch(0.756 0.208 147 / 0.52);
+    --fx-glow-info: oklch(0.681 0.169 259.8 / 0.52);
+    --fx-focus-ring-neutral: oklch(1 0 0);
+    --fx-focus-ring-brand: oklch(0.661 0.181 259.6);
+    --fx-focus-ring-danger: oklch(0.654 0.232 26.5);
+    --fx-focus-ring-warning: oklch(0.757 0.176 59.8);
+    --fx-focus-ring: oklch(0.661 0.181 259.6);
+    --fx-skeleton-base: oklch(0.575 0.012 286 / 0.12);
+    --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
+    --fx-skeleton: oklch(0.575 0.012 286 / 0.12);
+    --fx-shadow-minor: oklch(0.08 0 0 / 0.02);
+    --fx-shadow-ambient: oklch(0.08 0 0 / 0.04);
+    --fx-shadow-penumbra: oklch(0.08 0 0 / 0.12);
+    --fx-shadow-major: oklch(0.08 0 0 / 0.2);
     --badge-label-contrast: oklch(1 0 0);
     --badge-label-default: oklch(0.08 0 0);
     --control-bg: oklch(0.575 0.012 286 / 0.36);
