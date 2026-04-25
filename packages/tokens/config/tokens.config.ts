@@ -518,14 +518,79 @@ export const config: TokensConfig = {
           kind: 'direct',
           ref: { family: 'neutral', id: '2' },
         },
+        // Mode-flipping background (SPEC §5.1). Light mode → dark, Dark mode →
+        // light. Achieved by referencing the opposite end of the neutral spine:
+        // neutral.12 in light = dark; pivot-mirror makes neutral.12 in dark = light.
+        inverted: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '12' },
+        },
+        // Nested-card hierarchy (Apple Settings.app pattern, SPEC §10.D7).
+        // Used inside a Grouped section where the outer surface is `primary`
+        // and inner cards alternate between Grouped.Primary and Grouped.Secondary.
+        // Tier values match Figma fixture per-mode (light: Gray.25/Gray.0/Gray.25;
+        // dark: Gray.25/Gray.50≈neutral.1+1/Gray.75≈neutral.2+1).
+        grouped: {
+          primary: {
+            kind: 'direct',
+            ref: { family: 'neutral', id: '1' },
+          },
+          secondary: {
+            kind: 'direct',
+            ref: { family: 'neutral', id: '0' },
+          },
+          tertiary: {
+            kind: 'direct',
+            ref: { family: 'neutral', id: '2' },
+          },
+        },
       },
+      // Legacy alias — matches the historical single-tier emission used by
+      // existing v0.2.x consumers. Effectively `overlay_tiers.base` at the
+      // legacy stop (40% dark scrim). Retained until next major bump.
       overlay: {
         kind: 'direct',
         ref: { family: 'static', id: 'dark', opacity_stop: 40 },
       },
+      // Full SPEC §5.1 overlay tier set — frosted-overlay scrims (Light
+      // sub-collection alpha-on-white). Use these for Modal scrims, Tooltip
+      // backgrounds, and Sheet overlays. Stops are clamped to the production
+      // opacity ladder; `base` sits at 48 (closest available to the 50% target).
+      overlay_tiers: {
+        ghost: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 1 },
+        },
+        soft: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 20 },
+        },
+        base: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 48 },
+        },
+        strong: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 80 },
+        },
+      },
+      // Legacy alias — single-tier emission for v0.2.x consumers.
       static: {
         kind: 'direct',
         ref: { family: 'static', id: 'white' },
+      },
+      // Mode-invariant statics. `light` is always #ffffff; `dark` is always
+      // ~#020203. Useful for surfaces that must NOT swap with theme (brand
+      // hero sections, splash screens, photography overlays).
+      static_tiers: {
+        light: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white' },
+        },
+        dark: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'dark' },
+        },
       },
     },
 
