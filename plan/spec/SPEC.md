@@ -669,7 +669,7 @@ Resolution per (family, mode, stop):
 
 **This is the pipeline for ALL accent cells (11 × 19 × 4 = 836).** No per-stop logic. No per-family branches. The only mode-conditional is the **derivation function** which is a pure function of mode (not of family). Lint `no-special-case-by-name` enforces.
 
-**Bootstrap mode (during calibration only):** if `tokens.config.ts:base_points[family]` is a `{ light_normal, light_ic, dark_normal, dark_ic }` quartet (instead of single triple), `deriveForMode` short-circuits to lookup. Each non-`light_normal` field in the quartet must carry an inline `[ASSUMED · calibration-bootstrap]` comment. Calibration test §7.6 reports `bootstrap_count`; v0.2 release requires `bootstrap_count == 0`.
+**Bootstrap mode (during calibration only):** if `tokens.config.ts:base_points[family]` is a `{ light_normal, light_ic, dark_normal, dark_ic }` quartet (instead of single triple), `deriveForMode` short-circuits to lookup. Each non-`light_normal` field in the quartet must carry an inline `[ASSUMED · calibration-bootstrap]` comment. Calibration test §7.6 reports `bootstrap_count`; **v0.3 release** requires `bootstrap_count == 0` (revised from v0.2 after spike `plan/spec/calibration-spike-2026-04-23.md` showed Bezold-Brücke modeling is required to bridge Yellow-IC ΔE).
 
 ### §6.3 `resolveGray(mode, stop)`
 
@@ -1168,7 +1168,7 @@ These were Open Unknowns (Q0–Q10) in v0.1. v0.2 locks them autonomously per de
 
 **Decision.** End-state contract: 1 OKLCH triple per accent family. The pipeline (§6) derives `dark/normal`, `light/ic`, `dark/ic` from `light/normal` via `applyPerceptualComp` + `apcaSearch`.
 
-**Bootstrap fallback during calibration** (§4.1, §6.2): up to 4 OKLCH per accent permitted, each non-`light_normal` entry MUST carry inline tag `[ASSUMED · calibration-bootstrap · §10.D0]`. L6-test counts `bootstrap_count`; v0.2 release gate (separate from this SPEC v0.2) requires `bootstrap_count == 0`.
+**Bootstrap fallback during calibration** (§4.1, §6.2): up to 4 OKLCH per accent permitted, each non-`light_normal` entry MUST carry inline tag `[ASSUMED · calibration-bootstrap · §10.D0]`. L6-test counts `bootstrap_count`; **v0.3 release** gate requires `bootstrap_count == 0` (originally targeted at v0.2 but deferred — see `plan/spec/calibration-spike-2026-04-23.md` for Yellow-IC ΔE 20.74 result demonstrating Bezold-Brücke modeling is needed).
 
 **Rationale.** G1 (rapid customization): consumer-brands change one hex → all 19 stops × 4 modes regenerate. G3 (clean & algorithmic): minimum hand-authored input. G7 (no magic): if formula matches Figma anchors at ΔE ≤ tolerance, end-state proven; otherwise calibration knobs surface the geometric truth.
 
