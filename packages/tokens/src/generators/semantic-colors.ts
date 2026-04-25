@@ -143,15 +143,71 @@ function collectEntries(semantics: SemanticsConfig): SemEntry[] {
     path: 'backgrounds.neutral.tertiary',
     def: semantics.backgrounds.neutral.tertiary,
   })
+  // SPEC §5.1: mode-flipping inverted background (always opposite of mode primary).
+  out.push({
+    name: 'bg-inverted',
+    path: 'backgrounds.neutral.inverted',
+    def: semantics.backgrounds.neutral.inverted,
+  })
+  // SPEC §5.1 / §10.D7: nested-card grouped hierarchy.
+  out.push({
+    name: 'bg-grouped-primary',
+    path: 'backgrounds.neutral.grouped.primary',
+    def: semantics.backgrounds.neutral.grouped.primary,
+  })
+  out.push({
+    name: 'bg-grouped-secondary',
+    path: 'backgrounds.neutral.grouped.secondary',
+    def: semantics.backgrounds.neutral.grouped.secondary,
+  })
+  out.push({
+    name: 'bg-grouped-tertiary',
+    path: 'backgrounds.neutral.grouped.tertiary',
+    def: semantics.backgrounds.neutral.grouped.tertiary,
+  })
+  // Legacy alias — kept for v0.2.x backward compat.
   out.push({
     name: 'bg-overlay',
     path: 'backgrounds.overlay',
     def: semantics.backgrounds.overlay,
   })
+  // SPEC §5.1: 4-tier overlay scrims for modals, tooltips, sheets.
+  out.push({
+    name: 'bg-overlay-ghost',
+    path: 'backgrounds.overlay_tiers.ghost',
+    def: semantics.backgrounds.overlay_tiers.ghost,
+  })
+  out.push({
+    name: 'bg-overlay-soft',
+    path: 'backgrounds.overlay_tiers.soft',
+    def: semantics.backgrounds.overlay_tiers.soft,
+  })
+  out.push({
+    name: 'bg-overlay-base',
+    path: 'backgrounds.overlay_tiers.base',
+    def: semantics.backgrounds.overlay_tiers.base,
+  })
+  out.push({
+    name: 'bg-overlay-strong',
+    path: 'backgrounds.overlay_tiers.strong',
+    def: semantics.backgrounds.overlay_tiers.strong,
+  })
+  // Legacy alias — kept for v0.2.x backward compat.
   out.push({
     name: 'bg-static',
     path: 'backgrounds.static',
     def: semantics.backgrounds.static,
+  })
+  // SPEC §5.1: mode-invariant statics (always white / always near-black).
+  out.push({
+    name: 'bg-static-light',
+    path: 'backgrounds.static_tiers.light',
+    def: semantics.backgrounds.static_tiers.light,
+  })
+  out.push({
+    name: 'bg-static-dark',
+    path: 'backgrounds.static_tiers.dark',
+    def: semantics.backgrounds.static_tiers.dark,
   })
 
   // Labels

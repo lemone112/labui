@@ -790,8 +790,18 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --color-bg-primary: var(--bg-primary);
   --color-bg-secondary: var(--bg-secondary);
   --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-inverted: var(--bg-inverted);
+  --color-bg-grouped-primary: var(--bg-grouped-primary);
+  --color-bg-grouped-secondary: var(--bg-grouped-secondary);
+  --color-bg-grouped-tertiary: var(--bg-grouped-tertiary);
   --color-bg-overlay: var(--bg-overlay);
+  --color-bg-overlay-ghost: var(--bg-overlay-ghost);
+  --color-bg-overlay-soft: var(--bg-overlay-soft);
+  --color-bg-overlay-base: var(--bg-overlay-base);
+  --color-bg-overlay-strong: var(--bg-overlay-strong);
   --color-bg-static: var(--bg-static);
+  --color-bg-static-light: var(--bg-static-light);
+  --color-bg-static-dark: var(--bg-static-dark);
   --color-label-neutral-primary: var(--label-neutral-primary);
   --color-label-neutral-secondary: var(--label-neutral-secondary);
   --color-label-neutral-tertiary: var(--label-neutral-tertiary);

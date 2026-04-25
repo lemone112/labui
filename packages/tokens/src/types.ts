@@ -469,14 +469,47 @@ export interface SemanticDefModeBranch {
 
 // ─── Semantic tree (config.semantics) ───────────────────────────────────
 
+/**
+ * Backgrounds — surface tokens. Per SPEC §5.1, the full skeleton has:
+ *   Neutral.{Primary, Secondary, Tertiary, Inverted}      — 4 base tiers
+ *   Neutral.Grouped.{Primary, Secondary, Tertiary}        — nested-card pattern (D7)
+ *   Overlay.{Ghost, Soft, Base, Strong}                   — scrim/frosted-overlay tiers
+ *   Static.{Light, Dark}                                  — mode-invariant whites/darks
+ *
+ * `overlay` and `static` are kept as **single-tier aliases** for backward compat
+ * with v0.2.x consumers (they collapse to `.base` / `.light` respectively).
+ * `overlay_tiers` and `static_tiers` carry the full SPEC-required tier sets.
+ */
 export interface BackgroundsConfig {
   neutral: {
     primary: SemanticDef
     secondary: SemanticDef
     tertiary: SemanticDef
+    /** Mode-flipping background — opposite end of the Gray ladder per mode (SPEC §5.1). */
+    inverted: SemanticDef
+    /** Nested-card hierarchy (Apple Settings.app pattern; SPEC §10.D7). */
+    grouped: {
+      primary: SemanticDef
+      secondary: SemanticDef
+      tertiary: SemanticDef
+    }
   }
+  /** Legacy single-tier alias (= overlay_tiers.base). Retained for v0.2.x backward compat. */
   overlay: SemanticDef
+  /** Full SPEC §5.1 overlay tiers — frosted-overlay scrims (Light sub-collection alpha-on-white). */
+  overlay_tiers: {
+    ghost: SemanticDef
+    soft: SemanticDef
+    base: SemanticDef
+    strong: SemanticDef
+  }
+  /** Legacy single-tier alias (= static_tiers.light). Retained for v0.2.x backward compat. */
   static: SemanticDef
+  /** Mode-invariant statics — always emit the same hex regardless of theme. */
+  static_tiers: {
+    light: SemanticDef
+    dark: SemanticDef
+  }
 }
 
 export type TierSet4 = Record<'primary' | 'secondary' | 'tertiary' | 'quaternary', SemanticDef>
