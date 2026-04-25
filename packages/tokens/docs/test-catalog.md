@@ -3,7 +3,15 @@
 Auto-generated from `@layer` / `@governs` / `@invariant` headers in every 
 `tests/**/*.test.ts` file. Run `bun run catalog` to regenerate.
 
-**Total:** 41 test files
+**Total:** 42 test files
+
+## Calibration
+
+### `tests/calibration/derive-mode-spike.test.ts`
+
+- **Governs:** SPEC §6.2 (deriveForMode), §6.6 (apcaSearch), §7.7.Y (Yellow IC), §10.D0 (single-base-point end-state)
+- **Invariant:** For every accent the `light/normal` derivation is identity (ΔE < 0.5 vs the Figma anchor). The other three modes are reported as a diagnostic ΔE matrix only — this spike does NOT yet gate `dark/normal`, `light/ic`, `dark/ic` because the calibration knobs (perceptual_comp, chroma curve under gamut clamp, possibly Bezold-Brücke) are still being tuned. Once knobs converge a follow-up `derive-mode-calibration.test.ts` will tighten thresholds (target ΔE ≤ 1.5 per SPEC §7.3) for the remaining modes. * @on-fail (a) `light/normal` ΔE > 0.5 → hex→OKLCH→hex round-trip is drifting. Inspect `culori` rounding in `src/utils/oklch.ts` (gamut safety constant) or culori version pin. (b) Test crash → check that `tests/parity/fixtures/figma-anchors.json` still has the 11 expected accents (Brand…Pink) and the four-element hex tuple ordered as FIGMA_MODE_ORDER. (c) Spike logs a regression in IC ΔE → before tightening thresholds, confirm via `bun test tests/calibration` that the knob change in `tokens.config.ts:perceptual_comp` was intentional and update SPEC §10.D0 calibration log.
+- **On fail:** (a) `light/normal` ΔE > 0.5 → hex→OKLCH→hex round-trip is drifting. Inspect `culori` rounding in `src/utils/oklch.ts` (gamut safety constant) or culori version pin. (b) Test crash → check that `tests/parity/fixtures/figma-anchors.json` still has the 11 expected accents (Brand…Pink) and the four-element hex tuple ordered as FIGMA_MODE_ORDER. (c) Spike logs a regression in IC ΔE → before tightening thresholds, confirm via `bun test tests/calibration` that the knob change in `tokens.config.ts:perceptual_comp` was intentional and update SPEC §10.D0 calibration log.
 
 ## Cross-layer
 
