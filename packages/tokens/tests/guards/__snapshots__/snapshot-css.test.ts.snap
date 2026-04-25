@@ -221,6 +221,13 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
 
 /* Lab UI — generated design tokens. DO NOT EDIT. */
 
+/* ─── DEPRECATED TOKENS ─── */
+/* DEPRECATED: --border-brand-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --border-danger-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --border-warning-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --border-success-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --border-info-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+
 :root {
   --opacity-0: 0.00;
   --opacity-1: 0.01;
@@ -1099,6 +1106,7 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-neutral-base: oklch(0.575 0.012 286 / 0.2);
   --border-neutral-soft: oklch(0.575 0.012 286 / 0.12);
   --border-neutral-ghost: oklch(0.575 0.012 286 / 0);
+  --border-neutral-inverted: oklch(1 0 0);
   --border-brand-strong: oklch(0.742 0.146 249.2);
   --border-brand-base: oklch(0.603 0.218 257.4 / 0.2);
   --border-brand-soft: oklch(0.603 0.218 257.4 / 0.12);
@@ -1925,6 +1933,7 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-neutral-base: oklch(0.555 0.012 286 / 0.2);
   --border-neutral-soft: oklch(0.555 0.012 286 / 0.12);
   --border-neutral-ghost: oklch(0.555 0.012 286 / 0);
+  --border-neutral-inverted: oklch(1 0 0);
   --border-brand-strong: oklch(0.652 0.199 255.8);
   --border-brand-base: oklch(0.464 0.242 263.3 / 0.2);
   --border-brand-soft: oklch(0.464 0.242 263.3 / 0.12);
@@ -2751,6 +2760,7 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-neutral-base: oklch(0.575 0.012 286 / 0.2);
   --border-neutral-soft: oklch(0.575 0.012 286 / 0.12);
   --border-neutral-ghost: oklch(0.575 0.012 286 / 0);
+  --border-neutral-inverted: oklch(0.174 0.004 286);
   --border-brand-strong: oklch(0.673 0.187 253.3);
   --border-brand-base: oklch(0.661 0.181 259.6 / 0.2);
   --border-brand-soft: oklch(0.661 0.181 259.6 / 0.12);
@@ -3577,6 +3587,7 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --border-neutral-base: oklch(0.555 0.012 286 / 0.2);
   --border-neutral-soft: oklch(0.555 0.012 286 / 0.12);
   --border-neutral-ghost: oklch(0.555 0.012 286 / 0);
+  --border-neutral-inverted: oklch(0 0 0);
   --border-brand-strong: oklch(0.757 0.14 246.1);
   --border-brand-base: oklch(0.685 0.17 253 / 0.2);
   --border-brand-soft: oklch(0.685 0.17 253 / 0.12);
@@ -4404,6 +4415,7 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
     --border-neutral-base: oklch(0.575 0.012 286 / 0.2);
     --border-neutral-soft: oklch(0.575 0.012 286 / 0.12);
     --border-neutral-ghost: oklch(0.575 0.012 286 / 0);
+    --border-neutral-inverted: oklch(0.174 0.004 286);
     --border-brand-strong: oklch(0.673 0.187 253.3);
     --border-brand-base: oklch(0.661 0.181 259.6 / 0.2);
     --border-brand-soft: oklch(0.661 0.181 259.6 / 0.12);

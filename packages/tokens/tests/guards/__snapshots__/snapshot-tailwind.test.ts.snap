@@ -849,6 +849,7 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --color-border-neutral-base: var(--border-neutral-base);
   --color-border-neutral-soft: var(--border-neutral-soft);
   --color-border-neutral-ghost: var(--border-neutral-ghost);
+  --color-border-neutral-inverted: var(--border-neutral-inverted);
   --color-border-brand-strong: var(--border-brand-strong);
   --color-border-brand-base: var(--border-brand-base);
   --color-border-brand-soft: var(--border-brand-soft);

@@ -197,14 +197,15 @@ function collectEntries(semantics: SemanticsConfig): SemEntry[] {
     def: fills.static.dark,
   })
 
-  // Borders
+  // Borders — per SPEC §5.4 / §10.D1+D2:
+  //   neutral has strong/base/soft/ghost/inverted; accents have strong/base/soft only.
   const borders = semantics.borders
-  pushBorder(out, 'border-neutral', 'borders.neutral', borders.neutral)
-  pushBorder(out, 'border-brand', 'borders.brand', borders.brand)
-  pushBorder(out, 'border-danger', 'borders.danger', borders.danger)
-  pushBorder(out, 'border-warning', 'borders.warning', borders.warning)
-  pushBorder(out, 'border-success', 'borders.success', borders.success)
-  pushBorder(out, 'border-info', 'borders.info', borders.info)
+  pushBorder(out, 'border-neutral', 'borders.neutral', borders.neutral, BORDER_TIERS_NEUTRAL)
+  pushBorder(out, 'border-brand', 'borders.brand', borders.brand, BORDER_TIERS_ACCENT)
+  pushBorder(out, 'border-danger', 'borders.danger', borders.danger, BORDER_TIERS_ACCENT)
+  pushBorder(out, 'border-warning', 'borders.warning', borders.warning, BORDER_TIERS_ACCENT)
+  pushBorder(out, 'border-success', 'borders.success', borders.success, BORDER_TIERS_ACCENT)
+  pushBorder(out, 'border-info', 'borders.info', borders.info, BORDER_TIERS_ACCENT)
   out.push({
     name: 'border-static-light',
     path: 'borders.static.light',
@@ -295,13 +296,25 @@ function pushTier4(
   }
 }
 
+/**
+ * Emit semantic entries for a border tier set.
+ *
+ * Per SPEC §5.4 / §10.D1+D2:
+ *   - Accent borders (Brand/Danger/Warning/Success/Info): strong, base, soft.
+ *   - Neutral border: strong, base, soft, ghost, inverted.
+ *
+ * Iteration order is fixed for snapshot stability. `tiers` parameter is
+ * required (no defaulting to a superset) to ensure callers explicitly state
+ * which contract the family follows.
+ */
 function pushBorder(
   out: SemEntry[],
   prefix: string,
   pathPrefix: string,
   set: Record<string, SemanticDef>,
+  tiers: readonly string[],
 ) {
-  for (const tier of ['strong', 'base', 'soft', 'ghost']) {
+  for (const tier of tiers) {
     const def = set[tier]
     if (!def) continue
     out.push({
@@ -311,6 +324,12 @@ function pushBorder(
     })
   }
 }
+
+const BORDER_TIERS_NEUTRAL = ['strong', 'base', 'soft', 'ghost', 'inverted'] as const
+// `ghost` here is deprecated (SPEC §10.D1) and removed in 0.3.0; entries
+// in `config.deprecated` add the warning banner. Until then we emit the
+// var so consumers don't break.
+const BORDER_TIERS_ACCENT = ['strong', 'base', 'soft', 'ghost'] as const
 
 // ─── Shadow presets ─────────────────────────────────────────────────────
 
