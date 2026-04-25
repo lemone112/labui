@@ -594,10 +594,45 @@ export interface ShadowPresetsConfig {
   xl: ShadowLayerDef[]
 }
 
+/**
+ * FX semantic tokens — non-color visual effects emitted as CSS vars
+ * (glows, focus rings, skeletons, shadows). Per SPEC §5.5 + production
+ * audit G2/G3/G4:
+ *   - Glow uses {Brand, Danger, Warning, Neutral, Inverted} sentiment set
+ *     (NOT Success/Info — those were emitted historically and are kept as
+ *     deprecated aliases until 0.3.0). The `glow` field below stays on the
+ *     5-sentiment SentimentName for backward compat; new entries live in
+ *     `glow_extra`.
+ *   - Focus-ring is sentiment-split into {Neutral, Brand, Danger, Warning}.
+ *     The legacy single `focus_ring` is retained as alias for
+ *     `focus_ring_tiers.neutral` (current production hex).
+ *   - Skeleton splits into {Base, Highlight} for shimmer animations. Legacy
+ *     single `skeleton` is retained as alias for `skeleton_tiers.base`.
+ */
 export interface FxConfig {
+  /** Legacy 5-sentiment glow set; Success/Info marked deprecated until 0.3.0. */
   glow: Record<SentimentName, SemanticDef>
+  /** New SPEC-§5.5 glow tiers — Neutral and Inverted (mode-aware). */
+  glow_extra: {
+    neutral: SemanticDef
+    inverted: SemanticDef
+  }
+  /** Legacy single focus ring — emits the same hex as focus_ring_tiers.neutral. */
   focus_ring: SemanticDef
+  /** SPEC §5.5 sentiment-split focus rings. */
+  focus_ring_tiers: {
+    neutral: SemanticDef
+    brand: SemanticDef
+    danger: SemanticDef
+    warning: SemanticDef
+  }
+  /** Legacy single skeleton — emits the same hex as skeleton_tiers.base. */
   skeleton: SemanticDef
+  /** SPEC §5.5 skeleton split — Base + Highlight for shimmer animations. */
+  skeleton_tiers: {
+    base: SemanticDef
+    highlight: SemanticDef
+  }
   shadow_tints: ShadowTintsConfig
   shadow_presets: ShadowPresetsConfig
 }

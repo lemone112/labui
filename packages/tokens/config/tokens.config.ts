@@ -80,6 +80,20 @@ export const config: TokensConfig = {
       removed_in: '0.3.0',
       reason: 'Accent ghost was never in Figma; SPEC §10.D1.',
     },
+    // FX glow scope correction (production-audit G2). SPEC §5.5 specifies
+    // glow tiers = {Brand, Danger, Warning, Neutral, Inverted}. Success and
+    // Info were historical emissions with no Figma anchor; kept until 0.3.0
+    // to preserve grace period for any downstream consumer.
+    '--fx-glow-success': {
+      replacement: '--fx-glow-neutral',
+      removed_in: '0.3.0',
+      reason: 'Glow scope = {Brand, Danger, Warning, Neutral, Inverted}; SPEC §5.5 / G2.',
+    },
+    '--fx-glow-info': {
+      replacement: '--fx-glow-brand',
+      removed_in: '0.3.0',
+      reason: 'Glow scope = {Brand, Danger, Warning, Neutral, Inverted}; SPEC §5.5 / G2.',
+    },
   },
 
   colors: {
@@ -599,6 +613,10 @@ export const config: TokensConfig = {
     borders: buildBorders(),
 
     fx: {
+      // Legacy 5-sentiment glow set. Success/Info are deprecated (see
+      // `config.deprecated`) but continue emitting until 0.3.0. The
+      // SPEC-correct set lives in `glow_extra` below + Brand/Danger/Warning
+      // here.
       glow: {
         Brand: {
           kind: 'direct',
@@ -621,13 +639,70 @@ export const config: TokensConfig = {
           ref: { family: 'accent', id: 'blue', opacity_stop: 40 },
         },
       },
+      // SPEC §5.5 / G2: missing Neutral + Inverted glow tiers.
+      // Neutral glow = static white scrim (closest to 50% target = stop 48).
+      // Inverted glow = mid-gray neutral with alpha (matches Apple HIG
+      // "soft halo" pattern on inverted/dark surfaces).
+      glow_extra: {
+        neutral: {
+          kind: 'direct',
+          ref: { family: 'static', id: 'white', opacity_stop: 48 },
+        },
+        inverted: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '5', opacity_stop: 40 },
+        },
+      },
+      // Legacy single focus ring (= focus_ring_tiers.brand at the historical
+      // alpha). Maps to brand-tinted halo per existing production behaviour.
       focus_ring: {
         kind: 'direct',
         ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
       },
+      // SPEC §5.5 / G3: sentiment-split focus rings. All four use the
+      // historical brand-style alpha tint pattern (opacity 40) so the visual
+      // density matches the legacy single-ring emission.
+      focus_ring_tiers: {
+        neutral: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '6', opacity_stop: 40 },
+        },
+        brand: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'brand', opacity_stop: 40 },
+        },
+        danger: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'red', opacity_stop: 40 },
+        },
+        warning: {
+          kind: 'direct',
+          ref: { family: 'accent', id: 'orange', opacity_stop: 40 },
+        },
+      },
+      // Legacy single skeleton — kept at the historical opacity 16 stop so
+      // existing component implementations don't see a visual shift. New
+      // implementations should use skeleton_tiers.base + .highlight for
+      // shimmer animations (SPEC §5.5 / G4).
       skeleton: {
         kind: 'direct',
         ref: { family: 'neutral', id: '6', opacity_stop: 16 },
+      },
+      // SPEC §5.5 / G4: skeleton tier split for shimmer animations.
+      // Base sits at 8% (matches Figma `#78788014`), highlight at 4%
+      // (`#7878800a`). Production uses neutral.6 (≈ #787880) as the source
+      // primitive; ΔE drift vs the literal Apple system-mid-gray hex
+      // `#787880` is < 0.5 (visually imperceptible), and the value is on
+      // the OKLCH spine rather than a hand-authored hex per C-1.
+      skeleton_tiers: {
+        base: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '6', opacity_stop: 8 },
+        },
+        highlight: {
+          kind: 'direct',
+          ref: { family: 'neutral', id: '6', opacity_stop: 4 },
+        },
       },
       shadow_tints: {
         minor: { family: 'static', id: 'dark', opacity_stop: 1 },

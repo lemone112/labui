@@ -227,6 +227,8 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
 /* DEPRECATED: --border-warning-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
 /* DEPRECATED: --border-success-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
 /* DEPRECATED: --border-info-ghost → --border-neutral-ghost (removed in 0.3.0): Accent ghost was never in Figma; SPEC §10.D1. */
+/* DEPRECATED: --fx-glow-success → --fx-glow-neutral (removed in 0.3.0): Glow scope = {Brand, Danger, Warning, Neutral, Inverted}; SPEC §5.5 / G2. */
+/* DEPRECATED: --fx-glow-info → --fx-glow-brand (removed in 0.3.0): Glow scope = {Brand, Danger, Warning, Neutral, Inverted}; SPEC §5.5 / G2. */
 
 :root {
   --opacity-0: 0.00;
@@ -1144,8 +1146,16 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --fx-glow-warning: oklch(0.786 0.172 68.6 / 0.4);
   --fx-glow-success: oklch(0.73 0.194 147.4 / 0.4);
   --fx-glow-info: oklch(0.64 0.193 259.9 / 0.4);
+  --fx-glow-neutral: oklch(1 0 0 / 0.48);
+  --fx-glow-inverted: oklch(0.666 0.013 286 / 0.4);
   --fx-focus-ring: oklch(0.603 0.218 257.4 / 0.4);
+  --fx-focus-ring-neutral: oklch(0.575 0.012 286 / 0.4);
+  --fx-focus-ring-brand: oklch(0.603 0.218 257.4 / 0.4);
+  --fx-focus-ring-danger: oklch(0.654 0.232 28.7 / 0.4);
+  --fx-focus-ring-warning: oklch(0.786 0.172 68.6 / 0.4);
   --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.08);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -1981,8 +1991,16 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --fx-glow-warning: oklch(0.552 0.192 35.3 / 0.4);
   --fx-glow-success: oklch(0.558 0.146 147.5 / 0.4);
   --fx-glow-info: oklch(0.479 0.207 261 / 0.4);
+  --fx-glow-neutral: oklch(1 0 0 / 0.48);
+  --fx-glow-inverted: oklch(0.636 0.012 286.1 / 0.4);
   --fx-focus-ring: oklch(0.464 0.242 263.3 / 0.4);
+  --fx-focus-ring-neutral: oklch(0.555 0.012 286 / 0.4);
+  --fx-focus-ring-brand: oklch(0.464 0.242 263.3 / 0.4);
+  --fx-focus-ring-danger: oklch(0.553 0.225 27.3 / 0.4);
+  --fx-focus-ring-warning: oklch(0.552 0.192 35.3 / 0.4);
   --fx-skeleton: oklch(0.555 0.012 286 / 0.16);
+  --fx-skeleton-base: oklch(0.555 0.012 286 / 0.08);
+  --fx-skeleton-highlight: oklch(0.555 0.012 286 / 0.04);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -2818,8 +2836,16 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.4);
   --fx-glow-success: oklch(0.756 0.208 147 / 0.4);
   --fx-glow-info: oklch(0.681 0.169 259.8 / 0.4);
+  --fx-glow-neutral: oklch(1 0 0 / 0.48);
+  --fx-glow-inverted: oklch(0.467 0.013 285.9 / 0.4);
   --fx-focus-ring: oklch(0.661 0.181 259.6 / 0.4);
+  --fx-focus-ring-neutral: oklch(0.575 0.012 286 / 0.4);
+  --fx-focus-ring-brand: oklch(0.661 0.181 259.6 / 0.4);
+  --fx-focus-ring-danger: oklch(0.654 0.232 26.5 / 0.4);
+  --fx-focus-ring-warning: oklch(0.757 0.176 59.8 / 0.4);
   --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
+  --fx-skeleton-base: oklch(0.575 0.012 286 / 0.08);
+  --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -3655,8 +3681,16 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
   --fx-glow-warning: oklch(0.802 0.153 67.2 / 0.4);
   --fx-glow-success: oklch(0.782 0.218 146.9 / 0.4);
   --fx-glow-info: oklch(0.801 0.101 257.8 / 0.4);
+  --fx-glow-neutral: oklch(1 0 0 / 0.48);
+  --fx-glow-inverted: oklch(0.449 0.013 285.9 / 0.4);
   --fx-focus-ring: oklch(0.685 0.17 253 / 0.4);
+  --fx-focus-ring-neutral: oklch(0.555 0.012 286 / 0.4);
+  --fx-focus-ring-brand: oklch(0.685 0.17 253 / 0.4);
+  --fx-focus-ring-danger: oklch(0.698 0.193 23.5 / 0.4);
+  --fx-focus-ring-warning: oklch(0.802 0.153 67.2 / 0.4);
   --fx-skeleton: oklch(0.555 0.012 286 / 0.16);
+  --fx-skeleton-base: oklch(0.555 0.012 286 / 0.08);
+  --fx-skeleton-highlight: oklch(0.555 0.012 286 / 0.04);
   --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
   --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
   --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);
@@ -4493,8 +4527,16 @@ exports[`G1 · dist/tokens.css byte-stable matches committed snapshot 1`] = `
     --fx-glow-warning: oklch(0.757 0.176 59.8 / 0.4);
     --fx-glow-success: oklch(0.756 0.208 147 / 0.4);
     --fx-glow-info: oklch(0.681 0.169 259.8 / 0.4);
+    --fx-glow-neutral: oklch(1 0 0 / 0.48);
+    --fx-glow-inverted: oklch(0.467 0.013 285.9 / 0.4);
     --fx-focus-ring: oklch(0.661 0.181 259.6 / 0.4);
+    --fx-focus-ring-neutral: oklch(0.575 0.012 286 / 0.4);
+    --fx-focus-ring-brand: oklch(0.661 0.181 259.6 / 0.4);
+    --fx-focus-ring-danger: oklch(0.654 0.232 26.5 / 0.4);
+    --fx-focus-ring-warning: oklch(0.757 0.176 59.8 / 0.4);
     --fx-skeleton: oklch(0.575 0.012 286 / 0.16);
+    --fx-skeleton-base: oklch(0.575 0.012 286 / 0.08);
+    --fx-skeleton-highlight: oklch(0.575 0.012 286 / 0.04);
     --fx-shadow-minor: oklch(0.08 0 0 / 0.01);
     --fx-shadow-ambient: oklch(0.08 0 0 / 0.02);
     --fx-shadow-penumbra: oklch(0.08 0 0 / 0.04);

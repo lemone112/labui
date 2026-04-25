@@ -887,8 +887,16 @@ exports[`Tailwind preset · dist/tailwind-preset.css byte-stable matches committ
   --color-fx-glow-warning: var(--fx-glow-warning);
   --color-fx-glow-success: var(--fx-glow-success);
   --color-fx-glow-info: var(--fx-glow-info);
+  --color-fx-glow-neutral: var(--fx-glow-neutral);
+  --color-fx-glow-inverted: var(--fx-glow-inverted);
   --color-fx-focus-ring: var(--fx-focus-ring);
+  --color-fx-focus-ring-neutral: var(--fx-focus-ring-neutral);
+  --color-fx-focus-ring-brand: var(--fx-focus-ring-brand);
+  --color-fx-focus-ring-danger: var(--fx-focus-ring-danger);
+  --color-fx-focus-ring-warning: var(--fx-focus-ring-warning);
   --color-fx-skeleton: var(--fx-skeleton);
+  --color-fx-skeleton-base: var(--fx-skeleton-base);
+  --color-fx-skeleton-highlight: var(--fx-skeleton-highlight);
   --color-fx-shadow-minor: var(--fx-shadow-minor);
   --color-fx-shadow-ambient: var(--fx-shadow-ambient);
   --color-fx-shadow-penumbra: var(--fx-shadow-penumbra);

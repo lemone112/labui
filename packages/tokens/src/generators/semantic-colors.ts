@@ -282,8 +282,53 @@ function collectEntries(semantics: SemanticsConfig): SemEntry[] {
       def,
     })
   }
+  // SPEC §5.5 / G2 — Neutral + Inverted glow tiers.
+  out.push({
+    name: 'fx-glow-neutral',
+    path: 'fx.glow_extra.neutral',
+    def: fx.glow_extra.neutral,
+  })
+  out.push({
+    name: 'fx-glow-inverted',
+    path: 'fx.glow_extra.inverted',
+    def: fx.glow_extra.inverted,
+  })
+  // Legacy single focus ring — kept for v0.2.x backward compat.
   out.push({ name: 'fx-focus-ring', path: 'fx.focus_ring', def: fx.focus_ring })
+  // SPEC §5.5 / G3 — sentiment-split focus rings.
+  out.push({
+    name: 'fx-focus-ring-neutral',
+    path: 'fx.focus_ring_tiers.neutral',
+    def: fx.focus_ring_tiers.neutral,
+  })
+  out.push({
+    name: 'fx-focus-ring-brand',
+    path: 'fx.focus_ring_tiers.brand',
+    def: fx.focus_ring_tiers.brand,
+  })
+  out.push({
+    name: 'fx-focus-ring-danger',
+    path: 'fx.focus_ring_tiers.danger',
+    def: fx.focus_ring_tiers.danger,
+  })
+  out.push({
+    name: 'fx-focus-ring-warning',
+    path: 'fx.focus_ring_tiers.warning',
+    def: fx.focus_ring_tiers.warning,
+  })
+  // Legacy single skeleton — kept for v0.2.x backward compat.
   out.push({ name: 'fx-skeleton', path: 'fx.skeleton', def: fx.skeleton })
+  // SPEC §5.5 / G4 — skeleton Base + Highlight for shimmer animations.
+  out.push({
+    name: 'fx-skeleton-base',
+    path: 'fx.skeleton_tiers.base',
+    def: fx.skeleton_tiers.base,
+  })
+  out.push({
+    name: 'fx-skeleton-highlight',
+    path: 'fx.skeleton_tiers.highlight',
+    def: fx.skeleton_tiers.highlight,
+  })
 
   // Shadow tints (flat primitive refs — emit as semantics so consumers can use them)
   out.push({
