@@ -32,10 +32,10 @@ describe('Snapshot lock · anchors', () => {
     expect(apca).toBeLessThanOrEqual(68)
   })
 
-  test('count: 13 neutrals + 11 accents + 2 statics + 29 opacity stops', () => {
+  test('count: 13 neutrals + 11 accents + 3 statics + 29 opacity stops', () => {
     expect(primitive.neutrals.length).toBe(13)
     expect(primitive.accents.length).toBe(11)
-    expect(primitive.statics.length).toBe(2)
+    expect(primitive.statics.length).toBe(3)
     expect(primitive.opacityStops.length).toBe(29)
   })
 })

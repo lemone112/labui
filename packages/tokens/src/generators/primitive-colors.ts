@@ -236,6 +236,7 @@ function generateStatics(colors: ColorsConfig): ResolvedPrimitive[] {
     'alias' in darkDef
       ? { L: 0.08, C: 0, H: 0 } // TODO: resolve alias to neutral step
       : darkDef
+  const skeletonMid = colors.statics.skeleton_mid
 
   const fill = (v: OklchValue): Record<OutputKey, OklchValue> => {
     const out: Partial<Record<OutputKey, OklchValue>> = {}
@@ -250,6 +251,12 @@ function generateStatics(colors: ColorsConfig): ResolvedPrimitive[] {
   return [
     { name: 'static-white', group: 'static', id: 'white', values: fill(white) },
     { name: 'static-dark', group: 'static', id: 'dark', values: fill(dark) },
+    {
+      name: 'static-skeleton-mid',
+      group: 'static',
+      id: 'skeleton_mid',
+      values: fill(skeletonMid),
+    },
   ]
 }
 

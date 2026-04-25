@@ -317,6 +317,11 @@ export interface StaticsConfig {
    * Otherwise an explicit OKLCH value.
    */
   dark: OklchValue | { alias: string }
+  /**
+   * System mid-gray used by Skeleton and neutral translucent fills.
+   * Registered as a named primitive so the FX recipe stays auditable.
+   */
+  skeleton_mid: OklchValue
 }
 
 // ─── Config: perceptual compensation ────────────────────────────────────
@@ -579,12 +584,9 @@ export interface ShadowLayerDef {
   tint: 'minor' | 'ambient' | 'penumbra' | 'major'
 }
 
-export interface ShadowTintsConfig {
-  minor: PrimitiveRef
-  ambient: PrimitiveRef
-  penumbra: PrimitiveRef
-  major: PrimitiveRef
-}
+export type ShadowTintName = 'minor' | 'ambient' | 'penumbra' | 'major'
+
+export type ShadowTintsConfig = Record<ShadowTintName, SemanticDef>
 
 export interface ShadowPresetsConfig {
   xs: ShadowLayerDef[]
@@ -594,10 +596,25 @@ export interface ShadowPresetsConfig {
   xl: ShadowLayerDef[]
 }
 
+export type FxGlowName = 'Neutral' | 'Inverted' | 'Brand' | 'Danger' | 'Warning'
+export type FxLegacyGlowName = 'Success' | 'Info'
+export type FxFocusRingName = 'Neutral' | 'Brand' | 'Danger' | 'Warning'
+
+export interface FxSkeletonConfig {
+  base: SemanticDef
+  highlight: SemanticDef
+  /** Legacy alias retained through the 0.2.x deprecation window. */
+  legacy: SemanticDef
+}
+
 export interface FxConfig {
-  glow: Record<SentimentName, SemanticDef>
-  focus_ring: SemanticDef
-  skeleton: SemanticDef
+  glow: Record<FxGlowName, SemanticDef>
+  /** Deprecated 0.2.x aliases; not part of the canonical Figma FX.Glow contract. */
+  legacy_glow: Record<FxLegacyGlowName, SemanticDef>
+  focus_ring: Record<FxFocusRingName, SemanticDef>
+  /** Legacy alias retained through the 0.2.x deprecation window. */
+  focus_ring_legacy: SemanticDef
+  skeleton: FxSkeletonConfig
   shadow_tints: ShadowTintsConfig
   shadow_presets: ShadowPresetsConfig
 }

@@ -25,7 +25,6 @@ import type {
   ShadowPreset,
   ShadowLayerDef,
   ShadowPresetsConfig,
-  ShadowTintsConfig,
   TierName,
 } from '../types'
 import { BASE_MODES, CONTRASTS, outputKey } from '../types'
@@ -114,10 +113,7 @@ export function generateSemanticColors(
     tokens.push(token)
   }
 
-  const shadow_presets = buildShadowPresets(
-    semantics.fx.shadow_presets,
-    semantics.fx.shadow_tints,
-  )
+  const shadow_presets = buildShadowPresets(semantics.fx.shadow_presets)
 
   return { tokens, shadow_presets }
 }
@@ -275,36 +271,71 @@ function collectEntries(semantics: SemanticsConfig): SemEntry[] {
 
   // FX
   const fx = semantics.fx
-  for (const [sent, def] of Object.entries(fx.glow)) {
+  for (const name of ['Neutral', 'Inverted', 'Brand', 'Danger', 'Warning'] as const) {
+    const def = fx.glow[name]
     out.push({
-      name: `fx-glow-${sent.toLowerCase()}`,
-      path: `fx.glow.${sent}`,
+      name: `fx-glow-${name.toLowerCase()}`,
+      path: `fx.glow.${name}`,
       def,
     })
   }
-  out.push({ name: 'fx-focus-ring', path: 'fx.focus_ring', def: fx.focus_ring })
-  out.push({ name: 'fx-skeleton', path: 'fx.skeleton', def: fx.skeleton })
+  for (const name of ['Success', 'Info'] as const) {
+    const def = fx.legacy_glow[name]
+    out.push({
+      name: `fx-glow-${name.toLowerCase()}`,
+      path: `fx.legacy_glow.${name}`,
+      def,
+    })
+  }
+  for (const name of ['Neutral', 'Brand', 'Danger', 'Warning'] as const) {
+    const def = fx.focus_ring[name]
+    out.push({
+      name: `fx-focus-ring-${name.toLowerCase()}`,
+      path: `fx.focus_ring.${name}`,
+      def,
+    })
+  }
+  out.push({
+    name: 'fx-focus-ring',
+    path: 'fx.focus_ring_legacy',
+    def: fx.focus_ring_legacy,
+  })
+  out.push({
+    name: 'fx-skeleton-base',
+    path: 'fx.skeleton.base',
+    def: fx.skeleton.base,
+  })
+  out.push({
+    name: 'fx-skeleton-highlight',
+    path: 'fx.skeleton.highlight',
+    def: fx.skeleton.highlight,
+  })
+  out.push({
+    name: 'fx-skeleton',
+    path: 'fx.skeleton.legacy',
+    def: fx.skeleton.legacy,
+  })
 
-  // Shadow tints (flat primitive refs — emit as semantics so consumers can use them)
+  // Shadow tints (colors used inside progressive shadow preset strings).
   out.push({
     name: 'fx-shadow-minor',
     path: 'fx.shadow_tints.minor',
-    def: { kind: 'direct', ref: fx.shadow_tints.minor },
+    def: fx.shadow_tints.minor,
   })
   out.push({
     name: 'fx-shadow-ambient',
     path: 'fx.shadow_tints.ambient',
-    def: { kind: 'direct', ref: fx.shadow_tints.ambient },
+    def: fx.shadow_tints.ambient,
   })
   out.push({
     name: 'fx-shadow-penumbra',
     path: 'fx.shadow_tints.penumbra',
-    def: { kind: 'direct', ref: fx.shadow_tints.penumbra },
+    def: fx.shadow_tints.penumbra,
   })
   out.push({
     name: 'fx-shadow-major',
     path: 'fx.shadow_tints.major',
-    def: { kind: 'direct', ref: fx.shadow_tints.major },
+    def: fx.shadow_tints.major,
   })
 
   // Misc
@@ -389,10 +420,7 @@ const BORDER_TIERS_ACCENT = ['strong', 'base', 'soft', 'ghost'] as const
 
 // ─── Shadow presets ─────────────────────────────────────────────────────
 
-function buildShadowPresets(
-  presets: ShadowPresetsConfig,
-  _tints: ShadowTintsConfig,
-): ShadowPreset[] {
+function buildShadowPresets(presets: ShadowPresetsConfig): ShadowPreset[] {
   const tintToVar: Record<ShadowLayerDef['tint'], string> = {
     minor: '--fx-shadow-minor',
     ambient: '--fx-shadow-ambient',
