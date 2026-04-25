@@ -14,6 +14,7 @@
  */
 
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { differenceCiede2000, converter, formatHex } from 'culori'
 
 export const FIGMA_MODE_ORDER = [
@@ -33,7 +34,7 @@ const SCOPE_FOR_MODE: Record<Mode, RegExp> = {
     /^:root\[data-mode="dark"\]:not\(\[data-contrast="ic"\]\)\s*$/,
 }
 
-const cssPath = new URL('../../dist/tokens.css', import.meta.url).pathname
+const cssPath = fileURLToPath(new URL('../../dist/tokens.css', import.meta.url))
 
 let cachedVars: Record<Mode, Record<string, string>> | null = null
 
