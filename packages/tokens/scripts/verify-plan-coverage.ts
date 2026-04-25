@@ -21,6 +21,10 @@ const pkgRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(pkgRoot, '../..')
 const testsRoot = join(pkgRoot, 'tests')
 const planPath = join(repoRoot, 'plan/implementation-plan-v2.md')
+// SPEC.md is the canonical design-system spec (PR #28). It uses `§N`
+// in its headings, so we parse it alongside the legacy plan to cover
+// `@governs` references in newer tests.
+const specPath = join(repoRoot, 'plan/spec/SPEC.md')
 
 async function collect(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true })
@@ -85,8 +89,13 @@ function parsePlan(src: string): {
   const META_SECTION_PREFIXES = ['10', '11', '12', '13', '14', '15', '16']
 
   for (const line of lines) {
-    // Pull ## N. or ### N.N from heading lines.
-    const h = line.match(/^#{2,4}\s+(\d+(?:\.\d+)*)/)
+    // Match either:
+    //   `## 5.2. ...`  (legacy implementation-plan-v2.md numeric headings)
+    //   `### §5.2 ...` (SPEC.md §-prefixed headings)
+    // The section ID is normalized to `§N` / `§N.N` either way.
+    const hLegacy = line.match(/^#{2,4}\s+(\d+(?:\.\d+)*)/)
+    const hSpec = line.match(/^#{2,4}\s+§(\d+(?:\.\d+)*)/)
+    const h = hSpec ?? hLegacy
     if (h) {
       flush()
       currentSection = `§${h[1]}`
@@ -116,7 +125,14 @@ async function main(): Promise<void> {
     )
     return
   }
+  const specSrc = await readFile(specPath, 'utf-8').catch(() => '')
   const { allSections, invariantSections } = parsePlan(planSrc)
+  if (specSrc) {
+    const specParsed = parsePlan(specSrc)
+    for (const s of specParsed.allSections) allSections.add(s)
+    // Don't merge invariantSections from SPEC — those are tracked
+    // separately via SPEC.md acceptance tests, not via this verifier.
+  }
   const testFiles = await collect(testsRoot)
 
   const coveredSections = new Set<string>()
