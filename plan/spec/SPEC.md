@@ -1281,6 +1281,27 @@ Full implementation (2-color stack + `mix-blend-mode: color-dodge` + `backdrop-f
 
 **Rationale.** SPEC §2 hard constraints + §7 acceptance + §8 anti-hallucination gates are enforceable only with branch protection. Without it they're convention.
 
+### D11 — Label primary tier: APCA Lc 75 / WCAG 7:1 (Apple HIG body text)
+
+**Decision.** Label tier targets are dual-criterion `(apca, wcag)` rather than APCA-only. The primary tier targets **APCA Lc 75 normal / Lc 90 ic + WCAG 7:1 / 10.5:1** (Apple HIG `labelColor` body-text envelope), not the APCA Lc 60 "incidentally read" minimum used in the bootstrap config.
+
+| tier       | normal target          | ic target               |
+|------------|------------------------|-------------------------|
+| primary    | Lc 75 / WCAG 7.0:1     | Lc 90 / WCAG 10.5:1     |
+| secondary  | Lc 60 / WCAG 4.5:1     | Lc 75 / WCAG 7.0:1      |
+| tertiary   | Lc 45 / WCAG 3.0:1     | Lc 60 / WCAG 4.5:1      |
+| quaternary | Lc 30 / WCAG 2.0:1     | Lc 45 / WCAG 3.0:1      |
+
+Resolver picks the **stricter** L between APCA-inverse and WCAG-inverse searches per token. Fills and borders remain APCA-only (surface-contrast rules, not text-contrast rules).
+
+**Why dual-criterion.** APCA Lc is more sensitive than WCAG to short-wavelength blues; tokens like `label-brand-primary` on white can hit APCA 60 while only reaching WCAG ~3:1 — well below AA. The WCAG floor catches that. Conversely, WCAG over-penalizes near-luminance pairs APCA reads correctly; the APCA target catches that. Stricter-of-both is the safe envelope.
+
+**Why Apple HIG primary.** The original Lc 60 target was APCA's "incidentally read" minimum (footnotes, captions). Apple HIG `labelColor` is ~Lc 90 — body text. Designer's intent is body-text-grade primary, not footnote-grade.
+
+**Implementation status.** Decision locked. The original implementation (PR #27, closed 2026-04-25) ran on the pre-SPEC-v0.2 pipeline. Re-implementation is queued as **PR-N4**: ports `src/utils/wcag.ts` + dual-criterion resolver onto the post-v0.3 pipeline (after Bezold-Brücke RFC-005 lands), and updates `tokens.config.ts:tier_targets` to the table above.
+
+**Rationale.** G2 (production-ready, Tier-1 quality), G7 (no magic). Designed-for-body-text labels must read as such on every (sentiment × mode) combination, not just the APCA-easy ones.
+
 ---
 
 ### Reset protocol
