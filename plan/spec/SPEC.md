@@ -1306,7 +1306,7 @@ Resolver picks the **stricter** L between APCA-inverse and WCAG-inverse searches
 
 ### Reset protocol
 
-A locked decision (D0–D10) can only be reverted via:
+A locked decision (D0–D11) can only be reverted via:
 1. Explicit designer message reopening the question (e.g. "пересмотри D5 — Fills.Neutral на Gray.500 не работает, попробуй Gray.600").
 2. Or a calibration test failure that surfaces the locked decision as the root cause, in which case Devin proposes alternatives with rationale and blocks until designer resolves.
 
