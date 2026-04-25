@@ -1,0 +1,101 @@
+[
+  {
+    "family": "Brand",
+    "base": {
+      "light/normal": "#007aff",
+      "light/ic": "#0040dd",
+      "dark/normal": "#0a84ff",
+      "dark/ic": "#409cff"
+    }
+  },
+  {
+    "family": "Red",
+    "base": {
+      "light/normal": "#ff3030",
+      "light/ic": "#d70004",
+      "dark/normal": "#ff443a",
+      "dark/ic": "#ff6961"
+    }
+  },
+  {
+    "family": "Orange",
+    "base": {
+      "light/normal": "#ff9500",
+      "light/ic": "#c93400",
+      "dark/normal": "#ff9f0a",
+      "dark/ic": "#ffb340"
+    }
+  },
+  {
+    "family": "Yellow",
+    "base": {
+      "light/normal": "#ffbf00",
+      "light/ic": "#b25000",
+      "dark/normal": "#ffd60a",
+      "dark/ic": "#ffd426"
+    }
+  },
+  {
+    "family": "Green",
+    "base": {
+      "light/normal": "#34c759",
+      "light/ic": "#248a3d",
+      "dark/normal": "#30d158",
+      "dark/ic": "#30db5b"
+    }
+  },
+  {
+    "family": "Mint",
+    "base": {
+      "light/normal": "#00c7be",
+      "light/ic": "#0c817b",
+      "dark/normal": "#63e6e2",
+      "dark/ic": "#6cebe7"
+    }
+  },
+  {
+    "family": "Teal",
+    "base": {
+      "light/normal": "#5ac8fa",
+      "light/ic": "#0071a4",
+      "dark/normal": "#64d2ff",
+      "dark/ic": "#70d7ff"
+    }
+  },
+  {
+    "family": "Blue",
+    "base": {
+      "light/normal": "#3e87ff",
+      "light/ic": "#0050cf",
+      "dark/normal": "#5696ff",
+      "dark/ic": "#95c0ff"
+    }
+  },
+  {
+    "family": "Indigo",
+    "base": {
+      "light/normal": "#5856d6",
+      "light/ic": "#3634a3",
+      "dark/normal": "#5e5ce6",
+      "dark/ic": "#7d7aff"
+    }
+  },
+  {
+    "family": "Purple",
+    "base": {
+      "light/normal": "#af52de",
+      "light/ic": "#8944ab",
+      "dark/normal": "#bf5af2",
+      "dark/ic": "#da8fff"
+    }
+  },
+  {
+    "family": "Pink",
+    "base": {
+      "light/normal": "#ff2d55",
+      "light/ic": "#d30f45",
+      "dark/normal": "#ff2d55",
+      "dark/ic": "#ff6482"
+    }
+  }
+]
